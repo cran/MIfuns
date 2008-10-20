@@ -8,7 +8,10 @@
  the statistic computed for the observed data.
 }
 \usage{
-PlotPredictiveCheck(PCData, Parameters = c("min", "max", "mean", "median", "Tmin", "Tmax", "AUC"), Summaries = c("min", "max", "mean", "median", "Q25", "Q75"), plot.hist = TRUE, plot.qq = TRUE, DrugName = "DV", plotType = "pdf", FileTemplate = "Plots")
+PlotPredictiveCheck(PCData, Parameters = c("min", "max", "mean",
+"median", "Tmin", "Tmax", "AUC"), Summaries = c("min", "max", "mean",
+"median", "Q25", "Q75"), plot.hist = TRUE, plot.qq = TRUE,
+DrugName = "DV", plotType = "pdf", FileTemplate = "Plots")
 }
 \arguments{
   \item{PCData}{The output of the \code{ComputePredictiveCheck} function}

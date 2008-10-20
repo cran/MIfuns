@@ -1,12 +1,16 @@
 `rlog` <-
-function (b, boot, ProjectDir, runlog) 
+  function (b, boot, ProjectDir, runlog) 
 {
   k <- 0
-     # determine platform
-     Platform <- "Windows"
-     z<-regexpr("bsd",version$platform)
-     if (z>0){Platform <- "Nix"}else{Platform <- "Windows"}
-
+  Platform <- "Windows"
+  z <- regexpr("bsd", version$platform)
+  z1 <- regexpr("apple", version$platform)
+  if (z > 0|z1 >0) {
+    Platform <- "Nix"
+  }
+  else {
+    Platform <- "Windows"
+  }
   for (j in b) {
     k <- k + 1
     if (Platform == "Nix") {
@@ -17,19 +21,20 @@ function (b, boot, ProjectDir, runlog)
       }
       else {
         rdir <- paste(ProjectDir, "/", j, ".boot", sep = "")
-        testf<-paste(rdir,"/FILE10",sep="")
-        if(!file.exists(testf)){
-        delfd <- paste("rm -rf ", rdir, "/F*", sep = "")
-        delfd2 <- paste("rm -rf ", rdir, "/nonmem.exe", 
-                        sep = "")
-        delfd3 <- paste("rm -rf ", rdir, "/P*", sep = "")
-        delfd4 <- paste("rm -rf ", rdir, "/O*", sep = "")
-        delfd5 <- paste("rm -rf ", rdir, "/Run*", sep = "")
-        system(delfd)
-        system(delfd2)
-        system(delfd3)
-        system(delfd4)
-         system(delfd5)}
+        testf <- paste(rdir, "/FILE10", sep = "")
+        if (!file.exists(testf)) {
+          delfd <- paste("rm -rf ", rdir, "/F*", sep = "")
+          delfd2 <- paste("rm -rf ", rdir, "/nonmem.exe", 
+                          sep = "")
+          delfd3 <- paste("rm -rf ", rdir, "/P*", sep = "")
+          delfd4 <- paste("rm -rf ", rdir, "/O*", sep = "")
+          delfd5 <- paste("rm -rf ", rdir, "/Run*", sep = "")
+          system(delfd)
+          system(delfd2)
+          system(delfd3)
+          system(delfd4)
+          system(delfd5)
+        }
       }
     }
     if (Platform == "Windows") {
@@ -69,4 +74,3 @@ function (b, boot, ProjectDir, runlog)
     }
   }
 }
-

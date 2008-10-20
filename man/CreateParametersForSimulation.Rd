@@ -6,7 +6,8 @@
  results of a (final) model
 }
 \usage{
-CreateParametersForSimulation(nsim, ThetaMean, ThetaCovar, OmegaModeList, OmegaDfList, SigmaModeList, SigmaDfList, digits = 4)
+CreateParametersForSimulation(nsim, ThetaMean, ThetaCovar,
+OmegaModeList, OmegaDfList, SigmaModeList, SigmaDfList, digits = 4)
 }
 \arguments{
   \item{nsim}{the number of simulations/sets of model parameters}

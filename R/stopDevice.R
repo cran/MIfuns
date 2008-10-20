@@ -1,3 +1,0 @@
-`stopDevice` <-
-function () dev.off()
-

@@ -1,130 +1,150 @@
 `diagnostics` <-
 function (grp, grpnames, ProjectDir, b, dataObs, dvname,  covplt) 
 {
-  grph.cwres <- "CWRES" %in% names(dataObs)
+  plots <-list()
+  data <- dataObs
   if (is.null(grp)) {
-    dataObs$plotrGroup <- 1
+    data$plotrGroup <- "all"
     grp <- "plotrGroup"
-    grpnames <- "all"
   }
-  grps <- sort(unique(dataObs[[grp]]))
-  if (is.null(grpnames)) {
-    grpnames <- grps
+  grp <- intersect(grp,names(data))
+  data$grpnames <- factor(
+  	do.call(
+  		paste,
+  		c(
+  			as.list(data[,grp,drop=FALSE]),
+  			sep=", "
+  		)
+  	)
+  )
+  nlevs <- length(levels(data$grpnames))
+  if(!is.null(grpnames))if(length(grpnames)==nlevs)levels(data$grpnames) <- grpnames
+  if(!is.null(grpnames))if(length(grpnames)!=nlevs)warning(
+  	paste(
+  		"Run", 
+  		b, 
+  		"has",
+  		nlevs,
+  		"grouping levels but",
+  		length(grpnames),
+  		"grpnames (ignored)." 
+  	)
+  )
+  observed <- melt(data,measure.var=intersect(c("PRED","IPRE"),names(data)),id.var=c("DV","grpnames"))
+  observed$variable <- factor(
+  	observed$variable,
+  	levels=intersect(c("PRED","IPRE"),names(data)),
+  	labels=c("population","individual")[c("PRED","IPRE") %in% names(data)]
+  )
+  groupSubtitle <- function(grp){
+  	if(grp[[1]] == "plotrGroup")return(NULL)
+  	paste("by",paste(grp,collapse=", "))
   }
-  if (length(grps) != length(grpnames)) {
-    grpnames <- grps
-    warning(paste("Number of grouping variables does not equal number of grouping names for Run ", 
-                  b, ".", sep = ""))
-  }
-  tad <- is.element("TAD", names(dataObs))
-  if (!tad) 
-    message(paste("No TAD item for run ", b, ".", sep = ""))
-  startDevice(ProjectDir, "DiagnosticPlotReview", b)
-  for (j in 1:length(grps)) {
-    gnm <- grpnames[j]
-    data.t <- dataObs[dataObs[[grp]] == grps[j], ]
-    par(mfrow=c(2,2))
-    count <- 0
-    increment <- function() {
-      tiles <- max(cumprod(par("mfrow")))
-      if (count%%tiles == 0) 
-        mtext(paste("Model ", b, " Group = ", gnm, " [", 
-                    grps[j], "]"), line = 0.5, outer = TRUE)
-      count <<- count + 1
-    }
-    xlim <- c(min(0, data.t$DV, data.t$PRED), max(data.t$DV, 
-                                                  data.t$PRED))
-    plot(y = data.t$DV, x = data.t$PRED, ylab = paste("Observed ", 
-                                           dvname), xlab = paste("Predicted ", dvname), ylim = xlim, 
-         xlim = xlim)
-    abline(c(0, 1))
-    increment()
-    if (!is.null(data.t$IPRE)) {
-      xlim <- c(min(0, data.t$DV, data.t$PRED), max(data.t$DV, 
-                                                    data.t$PRED, data.t$IPRE))
-      plot(y = data.t$DV, x = data.t$IPRE, ylab = paste("Observed ", 
-                                             dvname), xlab = paste("Individual Predicted "), 
-           ylim = xlim, xlim = xlim)
-      abline(c(0, 1))
-      increment()
-    }
-    plot(y = data.t$RES, x = data.t$PRED, ylab = paste("Residuals"), 
-         xlab = paste("Predicted ", dvname))
-    abline(h = 0)
-    lines(lowess(x = data.t$PRED, y = data.t$RES), lty = 2)
-    increment()
-    try(plot(y = data.t$RES, x = data.t$TIME, ylab = "Residuals", 
-         xlab = "Time (hr)"), silent=TRUE)
-    try(abline(h = 0), silent=TRUE)
-    try(lines(lowess(x = data.t$TIME, y = data.t$RES), lty = 2), silent=TRUE)
-    increment()
-    plot(y = data.t$WRES, x = data.t$PRED, ylab = "Weighted Residuals", 
-         xlab = paste("Predicted ", dvname))
-    abline(h = 0)
-    lines(lowess(x = data.t$PRED, y = data.t$WRES), lty = 2)
-    increment()
-    if (grph.cwres) {
-      plot(y = data.t$CWRES, x = data.t$PRED, ylab = paste("Conditional Weighted Residuals"), 
-           xlab = paste("Predicted ", dvname))
-      abline(h = 0)
-      lines(lowess(x = data.t$PRED, y = data.t$CWRES), 
-            lty = 2)
-      increment()
-    }
-    try(plot(y = data.t$WRES, x = data.t$TIME, ylab = "Weighted Residuals", 
-         xlab = "Time (hr)"), silent=TRUE)
-    try(abline(h = 0), silent=TRUE)
-    try(lines(lowess(x = data.t$TIME, y = data.t$WRES), lty = 2), silent=TRUE)
-    increment()
-    if (grph.cwres) {
-     try(plot(y = data.t$CWRES, x = data.t$TIME, ylab = paste("Conditional Weighted Residuals"), 
-           xlab = paste("Time (hr)")), silent=TRUE)
-      try(abline(h = 0), silent=TRUE)
-      try(lines(lowess(x = data.t$TIME, y = data.t$CWRES), 
-            lty = 2), silent=TRUE)
-      increment()
-    }
-    qqnorm(data.t$WRES, main = "Normal Q-Q Plot of WRES")
-    abline(0, 1)
-    increment()
-    if (grph.cwres) {
-      qqnorm(data.t$CWRES, main = "Normal Q-Q Plot of CWRES")
-      abline(0, 1)
-      increment()
-    }
-    if(grph.cwres){
-      qqplot(data.t$CWRES, data.t$WRES, xlab = "CWRES", ylab = "WRES", 
-           main = "Q-Q Plot of WRES vs. CWRES")
-      abline(0, 1)
-      increment()
-    }
-    if (grph.cwres) 
-      boxplot(data.t$WRES, data.t$CWRES, names = c("WRES", 
-                                           "CWRES"), main = "Boxplots of (C)WRES")
-    if (!grph.cwres) 
-      boxplot(data.t$WRES, names = "WRES", main = "Boxplot of WRES")
-    increment()
-    if (tad) {
-      plot(y = data.t$RES, x = data.t$TAD, ylab = "Residuals", 
-           xlab = "Time After Dose (hr)")
-      abline(h = 0)
-      lines(lowess(x = data.t$TAD, y = data.t$RES), lty = 2)
-      increment()
-      plot(y = data.t$WRES, x = data.t$TAD, ylab = "Weighted Residuals", 
-           xlab = "Time After Dose (hr)")
-      abline(h = 0)
-      lines(lowess(x = data.t$TAD, y = data.t$WRES), lty = 2)
-      increment()
-      if (grph.cwres) {
-        plot(y = data.t$CWRES, x = data.t$TAD, ylab = "Conditional Weighted Residuals", 
-             xlab = "Time After Dose (hr)")
-        abline(h = 0)
-        lines(lowess(x = data.t$TAD, y = data.t$CWRES), 
-              lty = 2)
-        increment()
-      }
-    }
-  }
-  if(covplt==0) stopDevice()
+  #Observed vs. Predicted 
+  plots$obsPred <- xyplot(
+  	DV ~ value | grpnames + variable, 
+  	observed,
+  	as.table=TRUE,
+  	aspect=1,
+  	layout=c(2,2),
+  	xlim = with(data,c(min(0, DV, PRED), max(0, DV, PRED))),
+  	ylim = with(data,c(min(0, DV, PRED), max(0, DV, PRED))),
+  	ylab = paste("Observed", dvname), 
+  	xlab = paste("Predicted", dvname),
+  	panel= function(x,y,...){
+  		panel.xyplot(x,y,...)
+  		panel.abline(0,1)
+  	},
+  	main=paste("Model",b,"\nObserved vs. Predicted",groupSubtitle(grp))
+  )
+  #Residuals vs. Predicted
+  resvar <- intersect(c("RES","WRES","CWRES"),names(data))
+  resid <- intersect(c("PRED","TIME","grpnames","TAD"),names(data))
+  res <- melt(data,measure.var=resvar,id.var=resid)
+  plots$resPred <- xyplot(
+  	value ~ PRED | grpnames + variable, 
+  	res,
+  	as.table=TRUE,
+  	layout=c(2,2),
+  	ylab = "residuals", 
+  	xlab = paste("Predicted", dvname),
+  	panel= function(x,y,lty=1,...){
+  		panel.xyplot(x,y,lty=lty,...)
+  		panel.abline(h=0,lty=lty,)
+  		panel.loess(x,y,lty=2,...)
+  	},
+  	scales=list(y=list(relation="free")),
+  	main=paste("Model",b,"\nResiduals vs. Predicted",groupSubtitle(grp))
+  )
+  #Residuals vs. Time
+  plots$resTime <- xyplot(
+  	value ~ TIME | grpnames + variable, 
+  	res,
+  	as.table=TRUE,
+  	layout=c(2,2),
+  	ylab = "residuals", 
+  	xlab = paste("Time (hr)"),
+  	panel= function(x,y,lty=1,...){
+  		panel.xyplot(x,y,lty=lty,...)
+  		panel.abline(h=0,lty=lty,)
+  		panel.loess(x,y,lty=2,...)
+  	},
+  	scales=list(y=list(relation="free")),
+  	main=paste("Model",b,"\nResiduals vs. Time by",groupSubtitle(grp))
+  )
+  #Residuals vs. TAD
+  if("TAD" %in% names(res))plots$resTad <- xyplot(
+  	value ~ TAD | grpnames + variable, 
+  	res,
+  	as.table=TRUE,
+  	layout=c(2,2),
+  	ylab = "residuals", 
+  	xlab = paste("Time (hr)"),
+  	panel= function(x,y,lty=1,...){
+  		panel.xyplot(x,y,lty=lty,...)
+  		panel.abline(h=0,lty=lty,)
+  		panel.loess(x,y,lty=2,...)
+  	},
+  	scales=list(y=list(relation="free")),
+  	main=paste("Model",b,"\nResiduals vs. TAD",groupSubtitle(grp))
+  )
+  #QQ-Norm
+  plots$resQ <- qqmath(
+  	~ value | grpnames + variable, 
+  	res,
+  	as.table=TRUE,
+  	layout=c(2,2),
+  	aspect=1,
+  	ylab = "residuals", 
+  	xlab = paste("theoretical quantiles"),
+  	panel = function(x, ...) {
+    	panel.qqmathline(x, ...)
+    	panel.qqmath(x, ...)
+    },
+  	scales=list(y=list(relation="free")),
+  	main=paste("Model",b,"\nNormal Q-Q Plot Residuals",groupSubtitle(grp))
+  )
+  #QQ-Res
+  if("CWRES" %in% names(data))plots$resCwresQ <- qq(
+  	variable ~ value | grpnames,
+  	res,
+  	as.table=TRUE,
+  	layout=c(2,2),
+  	aspect=1,
+  	subset=variable %in% c("WRES","CWRES"),
+  	panel = function(...) {
+    	panel.qq(...)
+    	panel.abline(0,1)
+    },
+  	main=paste("Model",b,"\nQ-Q Plot of CWRES vs. WRES",groupSubtitle(grp))
+  )
+  #Residuals
+  plotsRes <- bwplot(
+  	value ~ variable | grpnames,
+  	res,
+  	main="Boxplots of Residuals",
+  	ylab="residuals"
+  )
+  plots
 }
 

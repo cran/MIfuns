@@ -15,7 +15,7 @@
   \code{resample.character()}.
 }
 \source{
-  The file was borrowed from 8.ctl as distributed with NMQual from 
+  The file was borrowed from 8.ctl as distributed with NMQual from
   http://metruminstitute.org/downloads/nmqual.
 }
 \examples{

@@ -8,7 +8,8 @@ NONMEM run }
   TABR can also be used to add 95% CI estimates generated from bootstrap 
   analysis of final NONMEM model. }
 \usage{
-TABR(ProjectDir, i, concurrent = 1, boot = 0, bootres = NULL, btcol = NULL, btcoll = NULL, btcolh = NULL, outname)
+TABR(ProjectDir, i, concurrent = 1, boot = 0, bootres = NULL, btcol =
+NULL, btcoll = NULL, btcolh = NULL, outname)
 }
 \arguments{
   \item{ProjectDir}{System path to the directory containing the NONMEM control (*.ctl) streams.}

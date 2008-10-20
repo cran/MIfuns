@@ -9,7 +9,11 @@
  each study (beta)
 }
 \usage{
-ComputePredictiveCheck(NonmemData, SimulatedData, SimpleFun = c("min", "max", "mean", "median"), CombFun = c("Tmin", "Tmax", "AUC"), StatFun = c("min", "max", "mean", "median", "Q25", "Q75"), IDname = "ID", TimeName = "TIME", DVname = "DV", CName = "C", Ignore = "C")
+ComputePredictiveCheck(NonmemData, SimulatedData, SimpleFun = c("min",
+"max", "mean", "median"),
+CombFun = c("Tmin", "Tmax", "AUC"), StatFun = c("min", "max", "mean",
+"median", "Q25", "Q75"),
+IDname = "ID", TimeName = "TIME", DVname = "DV", CName = "C", Ignore = "C")
 }
 \arguments{
   \item{NonmemData}{data frame that contains the data set used for simulations. This data 

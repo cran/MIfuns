@@ -4,7 +4,7 @@ ver <- read.dcf(file.path(lib, pkg, "DESCRIPTION"), "Version")
      ver <- as.character(ver)	
 
 
-cat("MItools", ver, "loaded\n")
+cat("MIfuns", ver, "loaded\n")
 z<-regexpr("bsd",version$platform)
 z1<-regexpr("apple",version$platform)
 if(z>1|z1>1){

@@ -40,11 +40,20 @@ function (b, ProjectDir, dvname = NULL, logtrans = FALSE,
         sep = ",", as.is=TRUE)
     data.table <- read.table(TabFileName, skip = 1, header = TRUE, 
         as.is = TRUE, comment.char = "")
-    if (!is.null(grp)) 
-        if (!grp %in% c(names(data.file), names(data.table))) {
-            grp <- NULL
-            warning("grp variable being set to NULL and excluded from plots because it does not exist in *.TAB file or in data set.")
+    if (!is.null(grp)){
+    	available <- union(names(data.file),names(data.table))
+    	ignore <- setdiff(grp,available)
+        if (length(ignore)) {
+            grp <- setdiff(grp,ignore)
+            warning(
+            	paste(
+            		"ignoring grp variable",
+            		paste(grp,collapse=", "),
+            		"(not exist in *.TAB file or in data set)"
+            	)
+            )
         }
+    }
     data.file.nC <- data.file[data.file$C != "C", ]
     covariates <- data.file.nC[!duplicated(data.file.nC$ID), 
         ]
@@ -52,7 +61,7 @@ function (b, ProjectDir, dvname = NULL, logtrans = FALSE,
     #Data preparation.
     data.table$ID <- as.character(data.table$ID)
     if (!file.exists(cwtab1)) 
-        message(paste("No CWRES plots because file cwtab1.deriv not found in NONMEM run directory."))
+        message(paste("No CWRES plots because file",cwtab1,"not found in NONMEM run directory."))
     if (file.exists(cwtab1)) {
     	# if CWRES already exists in data.table do not recalculate it
     	if(!"CWRES" %in% names(data.table)) {
@@ -67,36 +76,67 @@ function (b, ProjectDir, dvname = NULL, logtrans = FALSE,
     	}
     }
     dataObs <- data.table[data.table$EVID == 0, ]
-    if (!is.null(grp)) 
-        if (grp %in% names(covariates) & !grp %in% names(dataObs)) 
-            dataObs <- merge(dataObs, covariates[, c("ID", grp)], 
-                by = "ID")
+    if (!is.null(grp)) {
+    	need <- grp[!grp %in% names(dataObs)]
+    	have <- grp[grp  %in% names(covariates)]
+    	can <- intersect(need,have)
+        if (length(can)) dataObs <- merge(
+        	dataObs, 
+        	covariates[, c("ID", can)], 
+        	by = "ID"
+        )
+    }   
     if (logtrans) {
         dataObs$DV <- exp(dataObs$DV)
         dataObs$PRED <- exp(dataObs$PRED)
         dataObs$IPRE <- exp(dataObs$IPRE)
     }
-    
+    pdf(
+    paste(ProjectDir, "/","DiagnosticPlotReview_", b,".pdf",sep=""),
+  	height=6,
+  	width=6
+  )
     #Do the standard diagnostic plots.
-    diagnostics(grp, grpnames, ProjectDir, b, dataObs, dvname, covplt)
+    lapply(
+    	diagnostics(grp, grpnames, ProjectDir, b, dataObs, dvname, covplt),
+    	print
+    )
 	
     #Consider covariate plots.
-    canDoCov <- file.exists(ParFileName) & file.exists(TabFileName)
-    if (!covplt) 
-        message(paste("No Covariate Plots requested for Run ", 
-            b, ".", sep = ""))
-    if (covplt & !file.exists(ParFileName)) 
-        warning(paste("Cov. plots requested but can't find", 
-            ParFileName))
-    if (covplt & !file.exists(TabFileName)) 
-        warning(paste("Cov. plots requested but can't find", 
-            TabFileName))
-    #Do the covariate plotting.
-    if (covplt & canDoCov) 
-        doCov(ParFileName, par.list, eta.list, CovFile, 
-            ProjectDir, b, cont.cov, cat.cov, covariates, dataObs, 
-            missing)
+    if (!covplt) message(paste("No Covariate Plots requested for Run ", b, ".", sep = ""))
+    if (covplt & !file.exists(ParFileName)) warning(paste("Cov. plots requested but can't find",ParFileName))
+    if (covplt & !file.exists(TabFileName)) warning(paste("Cov. plots requested but can't find",TabFileName))
+    if (covplt & file.exists(ParFileName) & file.exists(TabFileName))lapply(
+        doCov(ParFileName, par.list, eta.list, CovFile, ProjectDir, b, cont.cov, cat.cov, covariates, dataObs,missing),
+        print
+    )
+    dev.off()
     message(paste("Plotting for run ", b, " complete.", sep = ""))
     setwd(start)
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 

@@ -2,169 +2,176 @@
 function (ParFileName, par.list, eta.list, CovFile, 
     ProjectDir, b, cont.cov, cat.cov, covariates, dataObs, missing) 
 {
-    #This function handles the Covariate plotting
-    grph.cwres <- "CWRES" %in% names(dataObs)
-    parfile <- read.table(file = ParFileName, header = TRUE, 
-        skip = 1)
-    parfile.i <- parfile[!duplicated(parfile$ID), ]
-    p.names <- names(parfile.i)
-    par.eta <- c("ID", par.list, eta.list)
-    par.eta <- intersect(par.eta, p.names)
-    par.list <- intersect(par.eta, par.list)
-    eta.list <- intersect(par.eta, eta.list)
-    if(!is.null(cont.cov)) cont.cov <- intersect(cont.cov, names(covariates))
-    if(!is.null(cat.cov)) cat.cov <- intersect(cat.cov, names(covariates))
-    if (!all(par.eta %in% p.names)) {
-        warning(paste("Some parameters or etas missing from *par.TAB file for Run ", 
-            b, ".", sep = ""))
+	plots <- list()
+    data <- dataObs
+    cont <- cont.cov
+    cat <- cat.cov
+    parfile <- read.table(file = ParFileName, header = TRUE, skip = 1)
+    parfile <- parfile[!duplicated(parfile$ID),]
+    par.list <- intersect(par.list,names(parfile))
+    eta.list <- intersect(eta.list,names(parfile))
+    cont <- intersect(cont, names(covariates))
+    cat <- intersect(cat, names(covariates))
+    if(length(union(par.list,eta.list)))covariates <- stableMerge(
+    	covariates, 
+    	parfile[, c("ID",union(par.list,eta.list))]
+    )
+    write.table(
+    	covariates, 
+        file = CovFile, 
+        sep = ",", 
+        quote = FALSE, 
+        row.names = FALSE, 
+        col.names = TRUE, 
+        append = FALSE, 
+        na = "."
+    )
+    for(col in cont){
+    	covariates[[col]] <- as.numeric(as.character(covariates[[col]]))
+    	covariates[[col]][!is.na(covariates[[col]]) & covariates[[col]]==missing] <- NA
     }
-    else {
-        if (any(par.eta != "ID")) 
-            cov.data <- merge(covariates, parfile.i[, par.eta], 
-                by = "ID")
-        write.table(cov.data, file = CovFile, sep = ",", quote = FALSE, 
-            row.names = FALSE, col.names = TRUE, append = FALSE, 
-            na = ".")
+    #Covariate SPLOM
+    if (length(cont) >= 2)plots$covSplom <- splom(
+    	covariates[, cont], 
+    	panel = function(x, y) {
+        	panel.splom(x, y)
+            panel.loess(x,y)
+        },
+        main="Covariate Scatterplots",
+        xlab=""
+    )
+    #Cont vs cat bwpots
+    if (length(cont) & length(cat)) {
+        molten <- melt(covariates,measure.var=cont,id.var=cat)
+        names(molten)[names(molten)=="variable"] <- "cont"
+    	names(molten)[names(molten)=="value"] <- "y"
+    	plasma <- melt(molten,measure.var=cat)
+    	names(plasma)[names(plasma)=="variable"] <- "cat"
+    	names(plasma)[names(plasma)=="value"] <- "x"
+    	plots$contCat <- bwplot(
+    		y ~ as.factor(x) | cont + cat,
+    		plasma,
+    		as.table=TRUE,
+    		layout=c(2,2),
+    		horizontal=FALSE,
+    		ylab="continuous covariate",
+    		xlab="categorical covariate",
+    		scales=list(y=list(relation="free")),
+    		main="Continuous Covariates vs. Categorical Covariates"
+    	)
     }
-#    startDevice(ProjectDir, "DiagnosticPlotReviewCov", b)
-    if (length(cont.cov) >= 2) {
-        for (k in 1:length(cont.cov)) {
-            if (k == 1) 
-                z <- cov.data
-            col <- cont.cov[[k]]
-            if (!col %in% names(z)) 
-                warning(paste(col, "not a valid column name."))
-            z[[col]] <- as.numeric(as.character(z[[col]]))
-            z <- z[z[[col]] != missing, ]
-        }
-        cov.data.r <- z
-        pairs(cov.data.r[, cont.cov], panel = function(x, y) {
-            points(x, y)
-            lines(lowess(x, y))
-        })
+    #ETA SPLOM
+	if (length(eta.list) >= 2) {
+        plots$etaSplom <- splom(
+        	covariates[, eta.list], 
+        	panel = function(x, y) {
+            	panel.splom(x, y)
+            	panel.loess(x,y)
+        	},
+        	main="ETA Scatterplots",
+        	xlab=""
+        )
     }
-    if (!is.null(cont.cov) & !is.null(cat.cov)) {
-        y <- cov.data
-        for (j in 1:length(cont.cov)) y[[cont.cov[j]]] <- as.numeric(as.character(y[[cont.cov[j]]]))
-        cov.data <- y
-        par(mfrow = c(2, 2))
-        for (k in 1:length(cont.cov)) {
-            z <- cov.data
-            col <- cont.cov[[k]]
-            if (!col %in% names(z)) 
-                warning(paste(col, "not a valid column name."))
-            z[[col]] <- as.numeric(as.character(z[[col]]))
-            z <- z[z[[col]] != missing, ]
-            cov.data.r <- z
-            for (j in 1:length(cat.cov)) {
-                plot(x = as.factor(cov.data.r[, cat.cov[j]]), 
-                  y = as.double(cov.data.r[, cont.cov[k]]), xlab = cat.cov[j], 
-                  ylab = cont.cov[k])
-            }
-        }
-    }
-    par(mfrow = c(1, 1))
-    if (length(eta.list) >= 2) {
-        pairs(cov.data[, eta.list], panel = function(x, y) {
-            points(x, y)
-            lines(lowess(x, y))
-        })
-    }
+    #Parmater SPLOM
     if (length(par.list) >= 2) {
-        pairs(cov.data[, par.list], panel = function(x, y) {
-            points(x, y)
-            lines(lowess(x, y))
-        })
+        plots$paramSplom <- splom(
+        	covariates[, par.list], 
+        	panel = function(x, y) {
+            	panel.splom(x, y)
+            	panel.loess(x,y)
+        	},
+        	main="Parameter Scatterplots",
+        	xlab=""
+        )
     }
-    z <- as.factor(eta.list)
-    if (length(z) > 0) {
-        par(mfrow = c(2, 1))
-        for (k in 1:length(eta.list)) {
-            hist(cov.data[, eta.list[k]], xlab = eta.list[k], 
-                breaks = 20, main = paste("Histogram of ", eta.list[k], 
-                  sep = ""))
-        }
-    }
-    if (!is.null(cat.cov)) {
-        par(mfrow = c(2, 2))
-        for (k in 1:length(eta.list)) {
-            for (j in 1:length(cat.cov)) {
-                plot(x = as.factor(cov.data[, cat.cov[j]]), y = as.double(cov.data[, 
-                  eta.list[k]]), xlab = cat.cov[j], ylab = eta.list[k])
-            }
-        }
-    }
-    if (!is.null(cont.cov)) {
-        par(mfrow = c(2, 2))
-        for (k in 1:length(eta.list)) {
-            for (j in 1:length(cont.cov)) {
-                x <- cov.data
-                x[[cont.cov[j]]] <- as.numeric(as.character(x[[cont.cov[j]]]))
-                x <- x[x[[cont.cov[j]]] != missing & !is.na(x[[cont.cov[j]]]), 
-                  ]
-                cov.data.r <- x
-                plot(x = as.double(cov.data.r[, cont.cov[j]]), 
-                  y = as.double(cov.data.r[, eta.list[k]]), xlab = cont.cov[j], 
-                  ylab = eta.list[k])
-                lines(lowess(x = as.double(cov.data.r[, cont.cov[j]]), 
-                  y = as.double(cov.data.r[, eta.list[k]])))
-                abline(h = 0, lty = 2)
-            }
-        }
-    }
-    
-    #Conditionally, graph CWRES.
-    if (grph.cwres) {
-    	if(!is.null(cont.cov) | !is.null(cat.cov)){
-    		
-        all.cov <- c(cont.cov, cat.cov)
-        c.names <- names(dataObs)
-        all.cov.miss <- setdiff(all.cov, c.names)
-        all.cov.miss <- c("ID", all.cov.miss)
-        a <- dim(dataObs)[1]
-		if(length(all.cov.miss) > 1) dataObs <- merge(dataObs, covariates[, all.cov.miss], by = "ID")
-        b <- dim(dataObs)[1]
-        if (!all(a == b)) 
-            warning("Problem with merge of CWRES and covariates; check plots.")
-        y <- dataObs
-		if(!is.null(cont.cov)) for (j in 1:length(cont.cov)) y[[cont.cov[j]]] <- as.numeric(as.character(y[[cont.cov[j]]]))
-        dataObs <- y
-        eta.list <- c("CWRES")
-        eta.name <- c("Conditional Weighted Residuals")
-        par(mfrow = c(2, 2), oma = c(0, 0, 0, 0), mar = c(4.1, 
-            4.1, 1.5, 0.8), cex.axis = 0.8)
-        if (!is.null(cat.cov)) {
-            for (k in 1:length(eta.list)) {
-                for (j in 1:length(cat.cov)) {
-                  plot(x = as.factor(dataObs[, cat.cov[j]]), 
-                    y = as.double(dataObs[, eta.list[k]]), xlab = cat.cov[j], 
-                    ylab = eta.name[k], col = "lightgrey")
-                  abline(h = 0)
-                }
-            }
-        }
-        if (!is.null(cont.cov)) {
-            for (k in 1:length(eta.list)) {
-                for (j in 1:length(cont.cov)) {
-                  x <- dataObs
-                  x <- x[x[[cont.cov[j]]] != missing, ]
-                  cov.data.r <- x
-                  plot(x = as.double(cov.data.r[, cont.cov[j]]), 
-                    y = as.double(cov.data.r[, eta.list[k]]), 
-                    xlab = cont.cov[j], ylab = eta.name[k])
-                  lines(lowess(x = as.double(cov.data.r[, cont.cov[j]]), 
-                    y = as.double(cov.data.r[, eta.list[k]])))
-                  abline(h = 0, lty = 2)
-                }
-            }
-        }
-	  }	
+    #ETA Histograms
+    if(length(eta.list)){
+    	etas <- melt(covariates,measure.var=eta.list)
+    	plots$etaHist <- histogram(
+    		~ value | variable,
+    		etas,
+    		as.table=TRUE,
+    		layout=c(2,2),
+    		main="Histograms of Etas",
+    		scales=list(relation="free")
+    	)
 	}
-    
-    
-    
-    stopDevice()
-    if (file.exists(CovFile)) 
-        file.remove(CovFile)
+    #ETA vs Categoricals
+    if(length(cat) && length(eta.list)){
+    	etas <- melt(covariates,measure.var=eta.list,id.var=cat)
+    	names(etas)[names(etas)=="variable"] <- "eta"
+    	names(etas)[names(etas)=="value"] <- "delta"
+    	condEtas <- melt(id.var=c("eta","delta"),etas)
+    	plots$etaCat <- bwplot(
+    		delta ~ as.factor(value) | variable + eta,
+    		condEtas,
+    		as.table=TRUE,
+    		layout=c(2,2),
+    		main="Boxplots of Etas by Categorical Covariate",
+    		horizontal=FALSE,
+    		scales=list(relation="free"),
+    		ylab="ETA",
+    		xlab="categorical covariate level"
+    	)
+    }
+    #ETAS vs. Continuous
+    if (length(cont) && length(eta.list)) {
+    	etas <- melt(covariates,measure.var=eta.list,id.var=cont)
+    	names(etas)[names(etas)=="variable"] <- "eta"
+    	names(etas)[names(etas)=="value"] <- "delta"
+    	condEtas <- melt(id.var=c("eta","delta"),etas)
+    	plots$etaCont <- xyplot(
+    		delta ~ value | variable + eta,
+    		condEtas,
+    		as.table=TRUE,
+    		layout=c(2,2),
+    		main="Etas vs. Continuous Covariates",
+    		ylab="ETA",
+    		xlab="continuous covariate",
+    		scales=list(relation="free"),
+    		panel=function(x,y,...){
+    			panel.xyplot(x,y,...)
+    			panel.abline(h=0)
+    			panel.loess(x,y,lty=2,col="red",...)
+    		}
+    	)
+    }
+    #CWRES
+    if(length(union(cont,cat)))data <- stableMerge(data,covariates[,c("ID",union(cont,cat))])
+    #CWRES vs. Categoricals
+    if("CWRES" %in% names(data) && length(cat)){
+    	res <- melt(data,id.var="CWRES",measure.var=cat)
+    	plots$cwresCat <- bwplot(
+    		CWRES ~ as.factor(value) | variable,
+    		res,
+    		as.table=TRUE,
+    		layout=c(2,2),
+    		main="CWRES vs. Categorical Covariates",
+    		xlab="categorical Covariate",
+    		ylab="conditional weighted residuals",
+    		scales=list(relation="free")
+    	)
+    }
+    #CWRES vs. Continuous
+    if("CWRES" %in% names(data) && length(cont)){
+    	res <- melt(data,id.var="CWRES",measure.var=cont)
+    	plots$cwresCont <- xyplot(
+    		CWRES ~ value | variable,
+    		res,
+    		as.table=TRUE,
+    		layout=c(2,2),
+    		main="CWRES vs. Continuous Covariates",
+    		xlab="continuous covariate",
+    		ylab="conditional weighted residuals",
+    		scales=list(relation="free"),
+    		panel=function(x,y,...){
+    			panel.xyplot(x,y,...)
+    			panel.abline(h=0)
+    			panel.loess(x,y,lty=2,col="red",...)
+    		}
+    	)
+    }
+    if (file.exists(CovFile)) file.remove(CovFile)
+    plots
 }
 

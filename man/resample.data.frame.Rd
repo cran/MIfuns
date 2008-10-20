@@ -13,7 +13,8 @@
 \usage{
 	\method{as.csv.filename}{character}(x, ...)
 	\method{resample}{csv.filename}(x, ...)
-	\method{resample}{data.frame}(x, names, key = NULL, rekey = FALSE, out = NULL, stratify = NULL, seed = 0, ...)
+	\method{resample}{data.frame}(x, names, key = NULL, rekey =
+      FALSE, out = NULL, stratify = NULL, seed = 0, ...)
 }
 
 \arguments{

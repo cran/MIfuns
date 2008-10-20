@@ -1,2 +1,2 @@
 `auc` <-
-function(cl,dose,...)cl/dose
+function(cl,dose,...)dose/cl

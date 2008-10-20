@@ -19,7 +19,6 @@ accept(
 		"lattice",
 		"locfit",
 		"MASS",
-		"MItools",
 		"nlme",
 		"R2WinBUGS",
 		"reshape",
@@ -78,7 +77,8 @@ function(
 	library(XML)
 	check <- NULL
 	if(!is.null(contingencies)){
-		if(!inherits(contingencies,"character"))stop("contingencies must be a character vector of package names, or NULL")
+		if(!inherits(contingencies,"character"))
+                stop("contingencies must be a character vector of package names, or NULL")
 		if(installMissing){
 			installed <- installed.packages(lib.loc=.Library)[,1]
 			missing <- setdiff(contingencies,installed)
@@ -87,7 +87,8 @@ function(
 			)
 		}
 		check <- sapply(contingencies,packageCheck,lib.loc=.Library)
-		if(any(check==0))stop(paste("check failed for",paste(names(check)[check==0],collapse=", ")))
+		if(any(check==0))
+                stop(paste("check failed for",paste(names(check)[check==0],collapse=", ")))
 	}
 	acceptor <- Sys.info()["login"]
 	time <- Sys.time()
