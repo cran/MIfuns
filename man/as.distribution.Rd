@@ -16,7 +16,7 @@ Class "annotated" is a subclass of "data.frame".  It has arbitrary "annotations"
 which consist of named lists (or vectors) having one descriptive element for 
 each column in the data.frame.  Class "distribution" is a subclass of "annotated",
 having at least "z" and "influence" among its annotations.  "z" and "influence" 
-are required by covplot.stats(), the default stats function for bwplot.distribution().
+are required by covplot.stats(), the default stats function for covplot().
 "annotated" methods are defined for element selection, subsetting, and printing.
 }
 \usage{
@@ -37,7 +37,7 @@ are required by covplot.stats(), the default stats function for bwplot.distribut
   		x, giving further annotations that may be referenced in submodels.}
 }
 \details{
-bwplot.distribution() wants to make plot elements, per column specified, that take
+covplot() wants to make plot elements, per column specified, that take
 into account the distribution of the column values, typically parameter estimates
 of a covariate effect (x). Also to be considered are the value of a model parameter
 on which the covariate has an effect (y), and the actual values of the covariate
@@ -62,12 +62,12 @@ thereof. Exactly what happens to non-atomic annotations is highly specific to th
 stats function (covplot.stats() by default).
 }
 \value{
-as.distribution() returns a distribution object.  bwplot.distribution() returns a
+as.distribution() returns a distribution object.  covplot() returns a
 trellis object.
 }
 \author{Tim Bergsma}
 \seealso{
-	\code{\link{bwplot.distribution}},
+	\code{\link{covplot}},
 	\code{\link{panel.covplot}}
 	\code{\link{covplot.stats}}
 	\code{\link{bwplot}}

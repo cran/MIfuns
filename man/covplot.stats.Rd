@@ -5,7 +5,7 @@
 \title{Calculate Statistics for "Forest Plots"}
 \description{
 covplot.stats() is a replacement for boxplot.stats(), and serves as the default
-'stats' argument for bwplot.distribution(), called via boxplot.prestats().
+'stats' argument for covplot(), called via boxplot.prestats().
 }
 \usage{
 covplot.stats(x,y,z,influence,coef,do.out=TRUE,transform="x*1",file=NULL,...)
@@ -55,7 +55,7 @@ file if file==NULL. Like boxplot.stats(), covplot.stats() does not do "conf"
 }
 \seealso{
 	\code{\link{as.distribution}},
-	\code{\link{bwplot.distribution}},
+	\code{\link{covplot}},
 	\code{\link{panel.covplot}}
 	\code{\link{boxplot.stats}}
 	\code{\link{bwplot}}

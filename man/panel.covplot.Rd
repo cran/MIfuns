@@ -41,7 +41,7 @@ panel.covplot() is used for its side effects.
 \author{Tim Bergsma}
 \seealso{
 	\code{\link{as.distribution}},
-	\code{\link{bwplot.distribution}},
+	\code{\link{covplot}},
 	\code{\link{covplot.stats}}
 	\code{\link{bwplot}}
 }

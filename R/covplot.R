@@ -1,4 +1,4 @@
-`bwplot.distribution` <-
+`covplot` <-
 function(
 	x,
 	data, 
@@ -42,7 +42,7 @@ function(
 	)
 ##An important technical issue was ignored in the help given above.  When 'stats' receives 'coef' from bwplot, it does precious little good that there are a lot of fancy parasites clinging to it.  It will still only look like one argument with one natural value.  Somebody needs to unload those hitch-hikers, or perhaps aliens, and provide them with independent identities (forged passports?).  That somebody is going to be boxplot.prestats:  instead of calling the stats argument specified, we instruct bwplot to call boxplot.prestats, who is an expert in getting aliens off the boat, so to speak.  This means that 'stats' ITSELF, whatever it happens to be (usually covplot.stats) travels incognito, as an attribute of coef.  boxplot.prestats will intercept coef, unpack the aliens, and send them off to whatever is specified by stats.
 
-##We define values and ind in the local environment, which will be searched by default if we don't pass 'data' to bwplot.  We also name the values with their corresponding indicies, so each value carries with it a memory of its origin.
+##We define 'values' and 'ind' in the local environment, which will be searched by default if we don't pass 'data' to bwplot.  We also name the values with their corresponding indicies, so each value carries with it a memory of its origin.
 	values <- long$values
 	names(values) <- long$ind
 	ind <- long$ind

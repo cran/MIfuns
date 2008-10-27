@@ -1,20 +1,30 @@
 \name{covplot}
 \alias{boxplot.prestats}
-\alias{bwplot.distribution}
+\alias{covplot}
 \title{Make "Forest Plots" of Covariate Effects, etc.}
 \description{
-bwplot() is customized for a distribution object.  It gives an easy and flexible 
+covplot() customizes bwplot() for a distribution object.  It gives an easy and flexible 
 way to construct "Forest Plots", which consist largely of horizontal boxes and 
 whiskers that show the effects, for instance, of covariates on model parameters.
 }
 \usage{
-	\method{bwplot}{distribution}(x,data,coef = 1.5, stats =
-covplot.stats, panel = panel.covplot,
-prepanel = prepanel.covplot, transform = "x*1", pch = 1, xlab = NULL, ref = NULL, ...)
+	covplot(
+		x,
+		data,
+		coef = 1.5, 
+		stats =covplot.stats, 
+		panel = panel.covplot,
+		prepanel = prepanel.covplot, 
+		transform = "x*1", 
+		pch = 1, 
+		xlab = NULL, 
+		ref = NULL, 
+		...
+	)
 	\method{boxplot}{prestats}(x, coef, ...)
 }
 \arguments{
-  \item{x}{For bwplot.distribution, a formula. for boxplot.prestats, numeric.}
+  \item{x}{For covplot, a formula. for boxplot.prestats, numeric.}
   \item{data}{A distribution object.}
   \item{coef}{Like coef in boxplot.stats.}
   \item{stats}{A function to compute boxes and whiskers for data subsets.}
@@ -28,13 +38,11 @@ prepanel = prepanel.covplot, transform = "x*1", pch = 1, xlab = NULL, ref = NULL
   \item{\dots}{Extra arguments passed to called functions.}
 }
 \details{
-bwplot(), when called with a distribution object in the first position, dispatches
-bwplot.distribution().  This is a specialization of bwplot that constructs 
-"Forest Plots" or "Covariate Plots". 
+This is a specialization of bwplot that constructs "Forest Plots" or "Covariate Plots". 
 
 The distribution object typically consists of columns of bootstrap estimates of 
 model parameters.  Each column has extra attributes associated with it, including
-at least "z" and "influence".  bwplot.distribution() calls 'stats' indirectly:
+at least "z" and "influence".  covplot() calls 'stats' indirectly:
 boxplot.prestats() is called first, which unpacks and passes to 'stats' any extra
 arguments not normally passed to 'stats'.  By default, 'stats' is covplot.stats,
 which expects as extra arguments "z" and "influence".
@@ -51,15 +59,14 @@ elements to be plotted in top-down order.  Many features of the plot can be
 customized by passing extra arguments expected by panel.covplot() or panel.bwplot().
 }
 \value{
-bwplot.distribution() returns a trellis object. boxplot.prestats() returns whatever
+covplot() returns a trellis object. boxplot.prestats() returns whatever
 is returned by stats.
 }
 \author{Tim Bergsma}
 \note{
 The only two functions the user calls directly are \code{as.distribution()} 
-(called with a data.frame) and \code{bwplot()} (called with a distribution 
-object as first argument). But see in particular extra arguments passable to 
-panel.covplot().
+(called with a data.frame) and \code{covplot()}. But see in particular extra 
+arguments passable to panel.covplot().
 }
 \seealso{
 	\code{\link{as.distribution}},
@@ -102,7 +109,7 @@ boot <- as.distribution(
 	influence=z.influence[c(FALSE,TRUE)]	#(just the even elements)
 )
 
-bwplot(CL~CL+AGE+WT+MALE,boot,rlim=0.2)
+covplot(CL~CL+AGE+WT+MALE,boot,rlim=0.2)
 }
 
 \keyword{manip}

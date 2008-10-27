@@ -35,11 +35,7 @@ as beta.
     substitutions in text files (as.filename,metaSub.filename).\cr
     \code{\link{CreateParametersForSimulation}} \tab Create parameters
     for simulation from uncertainity.\cr
-    \code{\link{as.miDate}} \tab Create date object with default
-    behaviors appropriate for NMTRAN datasets.\cr
-    \code{\link{as.miTime}} \tab Create time object with default
-    behaviors appropriate for NMTRAN datasets.\cr
-    \code{\link{as.miDateTime}} \tab Create date-time object with
+    \code{\link{miTemporal}} \tab Create date, time, and date-time objects with
     default behaviors appropriate for NMTRAN datasets.\cr
     \code{\link{bsa}} \tab Calculate various clinical measurements: body
     size, etc. (bsa, bmi, ibw, lbm, crcl).\cr
@@ -51,7 +47,7 @@ as beta.
     safely.\cr
     \code{\link{css}} \tab Calculate One-Compartment Model Properties
     (acr, cavg, cmax, cmin, ke, tmax, auc).\cr
-    \code{\link{bwplot.distribution}} \tab Make "forest plots" of
+    \code{\link{covplot}} \tab Make "forest plots" of
     covariate effects, etc.\cr
     \code{\link{forbak}} \tab Impute missing vector values(locf,
     nocb).\cr
@@ -67,8 +63,8 @@ as beta.
     \tabular{ll}{
 Package: \tab MIfuns\cr
 Type: \tab Package\cr
-Version: \tab 3.2.7\cr
-Date: \tab 2008-10-20\cr
+Version: \tab 3.2.9\cr
+Date: \tab 2008-10-27\cr
 License: \tab GPL\cr
 }
 

@@ -9,10 +9,11 @@ function (
   #Set NONMEM output directory.
   origin <- getwd()
   ndir <- paste(ProjectDir, "/", i, sep = "")
+  bootstrap <- boot %in% c(1,3)
   
   #Set runtime directory.
-  if (concurrent & boot %in% c(0,2)) rdir <- paste(ProjectDir, "/", i, ".lock", sep = "")
-  if (concurrent & boot %in% c(1,3)) rdir <- paste(ProjectDir, "/", i, ".boot", sep = "")
+  if (concurrent & !bootstrap) rdir <- paste(ProjectDir, "/", i, ".lock", sep = "")
+  if (concurrent & bootstrap) rdir <- paste(ProjectDir, "/", i, ".boot", sep = "")
   if ((Platform %in% c("Windows","Mac")) & grid==FALSE) rdir <- ndir
   if (!concurrent & (Platform != "Windows" & Platform != "Mac")) stop("rdir not set for !concurrent/Nix")
   
@@ -49,13 +50,13 @@ function (
   		if(length(files))file.remove(files)
   	}
   }
+  
   #Prepare the file environment.
   setwd(ProjectDir) 
   purge.files(paste("^",i,"[^0-9]*\\.TAB$",sep=""))
   purge.files(paste("^[^0-9]*",i,"\\.PDF$",sep=""))
   purge.dir(ndir,nice)
   if(contains("\\.lock$",rdir))purge.dir(rdir)
-  dir.create(ndir, showWarnings = FALSE)
   dir.create(rdir, showWarnings = FALSE)
   file.copy(ctl1, ctl2, overwrite = TRUE)
   setwd(rdir)
@@ -63,33 +64,38 @@ function (
   #Run NONMEM.
   runnm(NMcom, i, boot, concurrent, Platform, SGEflgs, dosbox, nochecksum, grid)
   
-  #Clean up.
-  purge.files("^F[ISRC].*")
-  purge.files("^OU.*")
-  purge.files("^nonm.*")
-  if(!fdata)purge.files("^FD*")
-  if(!fdata)purge.files("^PR*")
-  Sys.chmod(grep(paste("^",i,"\\.",sep=""),dir(),value=TRUE),mode="0664")
-  Sys.chmod(grep("n.*\\.",dir(),value=TRUE),mode="0664")
-  try(file.rename(grep("^Run",dir(),value=TRUE),"nonmem.log"),silent=TRUE)
-  if(contains("\\.lock$",rdir)) file.copy(from=dir(),to=ndir,overwrite=TRUE)
-  setwd(ndir)
-  if(contains("\\.lock$",rdir))purge.dir(rdir)
-  Sys.chmod(dir(), mode="0664")
-  setwd("..")
-  Sys.chmod(grep("\\.TAB$",dir(),value=TRUE), mode="0664")
-  Sys.chmod(grep("\\.MSF$",dir(),value=TRUE), mode="0664")
+  #Clean up (if not bootstrap run).
+  if(!bootstrap){
+  	purge.files("^F[ISRC].*")
+  	purge.files("^OU.*")
+  	purge.files("nonmem.exe")
+  	if(!fdata)purge.files("^FD*")
+  	if(!fdata)purge.files("^PR*")
+  	Sys.chmod(grep(paste("^",i,"\\.",sep=""),dir(),value=TRUE),mode="0664")
+  	Sys.chmod(grep("n.*\\.",dir(),value=TRUE),mode="0664")
+  	try(file.rename(grep("^Run",dir(),value=TRUE),"nonmem.log"),silent=TRUE)
+  	if(contains("\\.lock$",rdir)){ 
+  		dir.create(ndir, showWarnings = FALSE)
+  		file.copy(from=dir(),to=ndir,overwrite=TRUE)
+  		setwd(ndir)
+  		purge.dir(rdir)
+  	}
+  	Sys.chmod(dir(), mode="0664")
+  	setwd("..")
+  	Sys.chmod(grep("\\.TAB$",dir(),value=TRUE), mode="0664")
+  	Sys.chmod(grep("\\.MSF$",dir(),value=TRUE), mode="0664")
+  }
   
   #Diagnostics
-  if (diag) try(
+  if(diag & !bootstrap)try(
     	PLOTR(
     		i, ProjectDir, dvname, logtrans, covplt, 
             grp, grpnames, cont.cov, cat.cov, par.list, eta.list, 
             missing
         )
     )
-  else try(cwres_1(i, ProjectDir))   
-  if (!is.null(epilog)) try(source(epilog, local = TRUE, print.eval = TRUE))
+  if(!diag & !bootstrap)try(cwres_1(i, ProjectDir))   
+  if (!is.null(epilog))try(source(epilog, local = TRUE, print.eval = TRUE))
   setwd(origin)
 }
 

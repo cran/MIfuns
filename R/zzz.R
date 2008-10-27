@@ -9,10 +9,7 @@ z<-regexpr("bsd",version$platform)
 z1<-regexpr("apple",version$platform)
 if(z>1|z1>1){
 library(fork)
-library(MASS)
 require(XML)
-library(lattice)
-library(methods)
 handleSIGCLD()
 }
 library(MASS) 
