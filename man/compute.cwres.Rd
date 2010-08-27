@@ -11,7 +11,7 @@
   method of linearizing a pharmacometric model (WRES are calculated
   based on the first-order (FO) method). The function requires a NONMEM table file
   and an extra output file that must be explicitly asked for when
-  running NONMEM, see details below.
+  running NONMEM. See details below.
 }
 \usage{
 compute.cwres(run.number,
@@ -48,11 +48,11 @@ compute.cwres(run.number,
     named cwtab1, cwtab1.50, cwtab1.51, ... , cwtab.58 for example).}
   \item{id}{Can be either "ALL" or a number matching an ID label in the
     \code{datasetname}.}
-  \item{printToOutfile}{Logical (TRUE/FALSE) indicating whether the
+    \item{printToOutfile}{Logical (\code{TRUE}/\code{FALSE}) indicating whether the
     CWRES values calculated should be appended to a copy of the
     \code{datasetname}.  Only works if \code{id}="ALL".  If chosen the
-    resulting output file will be \code{datasetname}.cwres. }
-  \item{onlyNonZero}{Logical (TRUE/FALSE) indicating if the return value
+    resulting output file will be \code{datasetname}.cwres.}
+  \item{onlyNonZero}{Logical (\code{TRUE}/\code{FALSE}) indicating if the return value
     (the CWRES values) of \code{compute.cwres} should include the zero
     values associated with non-measurement lines in a NONMEM data file.}
   \item{tab.suffix}{The suffix to the  NONMEM table file containing the
@@ -61,36 +61,36 @@ compute.cwres(run.number,
   \item{\dots}{Other arguments passed to basic functions in code.}
 }
 \details{
-  \item{\bold{\code{compute.cwres}}}{This function is the computational 'brains' of
+  \code{compute.cwres}This function is the computational 'brains' of
     the CWRES computation.  The function simply reads in the following two files:
     
     \preformatted{
       paste(tab.prefix,run.number,sim.suffix,est.tab.suffix,sep="")
       paste(tab.prefix,run.number,sim.suffix,deriv.tab.suffix,sep="")
-    }
+   }
     
     Which might be for example:
     
     \preformatted{
       cwtab1.est
       cwtab1.deriv
-    }
+   }
     
     and (depending on the input values to the function) returns the CWRES
     in vector form as well as creating a new table file named:
 
     \preformatted{
       paste(tab.prefix,run.number,sim.suffix,sep="")
-    }
+   }
     
     Which might be for example:
     
     \preformatted{
       cwtab1
-    }
-  }    
+   }
+     
   
-  }
+ }
 \section{Setting up the NONMEM model file}{In order for this function to 
   calculate the CWRES, NONMEM must be run while requesting certain
   tables and files to be created.  How these
@@ -115,8 +115,8 @@ compute.cwres(run.number,
        $ABB COMRES=5
        $INPUT ID TIME DV MDV AMT EVID
        $SUB ADVAN2 TRANS2
-     } % preformatted
-   } % item
+    } % preformatted
+  } % item
      
    \item{2. Verbatim code.}{
 
@@ -141,9 +141,9 @@ compute.cwres(run.number,
 	   "  COM(3)=G(3,1) %"
 	   "  COM(4)=HH(1,1) %"
 	   "  COM(5)=HH(2,1) %"
-	 } % preformatted       
+	} % preformatted       
          
-       } % item
+      } % item
         
        \item{B. Using PRED.}{
 
@@ -163,13 +163,13 @@ compute.cwres(run.number,
 	   "  COM(3)=G(3,1) %"
 	   "  COM(4)=H(1,1) %"
 	   "  COM(5)=H(2,1) %"
-         } % preformatted
-       } % item
+        } % preformatted
+      } % item
        
        
-     } % itemize
+    } % itemize
       
-   } % item (verbatim)
+  } % item (verbatim)
     
    \item{3. INFN routine.}{
      
@@ -200,9 +200,9 @@ compute.cwres(run.number,
 	     WRITE(50,*) 'SIGMAS'
 	     WRITE(50,*) SIGMA(BLOCK)
 	   ENDIF
-	 } % preformatted       
+	} % preformatted       
         
-       } % item
+      } % item
         
        \item{B. Using ADVAN with NONMEM V.}{
 
@@ -216,7 +216,7 @@ compute.cwres(run.number,
 	 
 	 \preformatted{
 	   $SUB ADVAN2 TRANS2 INFN=myinfn.for
-	 } % preformatted
+	} % preformatted
 	 
 	 The 'myinfn.for' routine for 4 thetas, 3 etas and 1 epsilon
 	 is shown below.  If your model has different numbers of
@@ -281,9 +281,9 @@ C     open files here, if necessary
       RETURN
       END
 
-         } % preformatted
+        } % preformatted
       
-       } % item
+      } % item
        
        \item{C. Using \$PRED with NONMEM VIb.}{
 
@@ -309,9 +309,9 @@ C     open files here, if necessary
 	     WRITE(50,*) 'SIGMAS'
 	     WRITE(50,*) SIGMA(BLOCK)
 	   ENDIF
-	 } % preformatted
+	} % preformatted
 	 
-       } % item
+      } % item
       
        \item{D. Using \$PRED with NONMEM V.}{
 
@@ -324,10 +324,7 @@ C     open files here, if necessary
 	 NTH, NETA, and NEPS, should be changed respectively.  These
 	 vales are found  in the DATA statement below.   Please note  that
 	 the 3rd and 4th lines of
-	 code should be one line with the '...' removed from each line,
-	 reading:  \code{"     COMMON /ROCM6/
-	   THETAF(40),OMEGAF(30,30),SIGMAF(30,30) %"
-	 }.   NOTE: Files 51, 53, 55
+	 code should be one line with the '...' removed from each line.   NOTE: Files 51, 53, 55
 	 and 57 are not used in the CWRES calculation and can be removed
 	 from the NONMEM model file if problems arise due to failure of the
 	 \$COV step in a NONMEM run.
@@ -346,7 +343,7 @@ C     open files here, if necessary
 	   "      INTEGER MODE %"
 	   "      INTEGER NTH,NETA,NEPS %" 
 	   "      DATA NTH,NETA,NEPS/4,3,1/ %"
-	 } % preformatted
+	} % preformatted
       
 	 After this verbatim code you add all of the abbreviated code
 	 needed for the \$PRED routine in your model file.  After the
@@ -384,12 +381,12 @@ C     open files here, if necessary
 	   " 99   FORMAT (20E15.7) %"
 	   " 98   FORMAT (2I8) %"
 	   " 97   FORMAT (10E15.7) %"
-	 } % preformatted
+	} % preformatted
       
-       } % item
+      } % item
     
-     } % itemize
-   } % item (infn)
+    } % itemize
+  } % item (infn)
 
    \item{4. cwtab*.deriv table file.}{
 
@@ -407,9 +404,9 @@ C     open files here, if necessary
        $TABLE ID COM(1)=G11 COM(2)=G21 COM(3)=G31
        COM(4)=H11 COM(5)=H21 
        IPRED MDV NOPRINT ONEHEADER FILE=cwtab1.deriv
-     } % preformatted
+    } % preformatted
      
-   } % item (cwtab)
+  } % item (cwtab)
     
    \item{5. \$ESTIMATION.}{
 
@@ -422,16 +419,16 @@ C     open files here, if necessary
      are using another method of parameter estimation (e.g. FOCE with
      interaction), the CWRES will not be calculated based on the same
      model linearization procedure.
-   } % item (est)
+  } % item (est)
    
- }  % Enumerate
+}  % Enumerate
 
 
 } % Section
 
 
 \value{
-  \item{compute.cwres}{    Returns a vector containing the values of the
+  \item{compute.cwres}{   Returns a vector containing the values of the
     CWRES.}
 }
 \references{
@@ -440,7 +437,9 @@ C     open files here, if necessary
   Abstr 1001 [\url{http://www.page-meeting.org/?abstract=1001}].
 }
 \author{Andrew Hooker}
-\seealso{\code{\link{CWRES}},\code{\link{compute.cwres}} }
-\examples{
+\seealso{
+	\itemize{
+		\item{}{\code{\link{compute.cwres}}}
+	}
 }
-\keyword{ manip }
+\keyword{manip}

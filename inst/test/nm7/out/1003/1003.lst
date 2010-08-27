@@ -1,0 +1,330 @@
+<?xml version="1.0"?>
+<nonmem>
+<text><![CDATA[
+/Users/timb/project/metrum-mifuns/inst/test/nm7/script/../out/1003.lock/1003.lst
+2010.05.21.0940.36
+$PROB RUN# 1003 ESTIMATE PK W/COVARIATE RELATIONSHIPS
+$INPUT C ID DV AMT II ADDL TIME RATE HT WT CLCR SEX AGE
+$DATA  ../../data/1003.csv IGNORE=C 
+$SUB ADVAN1 TRANS2
+$PK
+TVCL=THETA(1)
+CL=TVCL*EXP(ETA(1))
+TVV=THETA(2)
+V=TVV*EXP(ETA(2))
+S1=V
+$ERROR
+Y=F + F*ERR(1) +ERR(2)
+IPRED=F
+$THETA
+ (0, 13) ;1. CL
+ (0, 75);2. V
+$OMEGA BLOCK(2)
+(0.04) ;1. CL VAR
+(0.02) (0.04) ;2. V VAR
+$SIGMA 
+0.04
+1
+;$MSFI=./1003.msf
+$ESTIMATION MAXEVAL=9999 PRINT=10 POSTHOC MSFO=./1003.msf
+$TABLE ID TIME EVID IPRED CWRES NOPRINT ONEHEADER FILE=./1003.tab
+$TABLE ID CL V EVID ETA1 ETA2 NOPRINT ONEHEADER FILE=./1003par.tab
+License Registered to: Metrum Research Group
+Expiration Date:    14 JUL 2010
+Current Date:       21 MAY 2010
+Days until program expires :  53
+1NONLINEAR MIXED EFFECTS MODEL PROGRAM (NONMEM) VERSION 7.1.2
+ ORIGINALLY DEVELOPED BY STUART BEAL, LEWIS SHEINER, AND ALISON BOECKMANN
+ CURRENT DEVELOPERS ARE ROBERT BAUER, ICON DEVELOPMENT SOLUTIONS,
+ AND ALISON BOECKMANN. IMPLEMENTATION, EFFICIENCY, AND STANDARDIZATION
+ PERFORMED BY NOUS INFOSYSTEMS.
+ 
+ PROBLEM NO.:         1
+ RUN# 1003 ESTIMATE PK W/COVARIATE RELATIONSHIPS                         
+0DATA CHECKOUT RUN:              NO 
+ DATA SET LOCATED ON UNIT NO.:    2
+ THIS UNIT TO BE REWOUND:        NO 
+ NO. OF DATA RECS IN DATA SET:      600
+ NO. OF DATA ITEMS IN DATA SET:  15
+ ID DATA ITEM IS DATA ITEM NO.:   2
+ DEP VARIABLE IS DATA ITEM NO.:   3
+ MDV DATA ITEM IS DATA ITEM NO.: 15
+0INDICES PASSED TO SUBROUTINE PRED:
+ 14  7  4  8  0  5  0  0  0
+  0  6
+0LABELS FOR DATA ITEMS:
+ C ID DV AMT II ADDL TIME RATE HT WT CLCR SEX AGE EVID MDV
+0(NONBLANK) LABELS FOR PRED-DEFINED ITEMS:
+ CL      V       IPRE
+0FORMAT FOR DATA:
+ (E2.0,E3.0,E6.0,E4.0,E3.0,E2.0,E6.0,2E4.0,E3.0,E7.0,E2.0,E3.0,2F2.0)            
+ 
+ TOT. NO. OF OBS RECS:      560
+ TOT. NO. OF INDIVIDUALS:     40
+0LENGTH OF THETA:  2
+0DEFAULT THETA BOUNDARY TEST OMITTED:    NO 
+0OMEGA HAS BLOCK FORM:
+  1
+  1  1
+0DEFAULT OMEGA BOUNDARY TEST OMITTED:    NO 
+0SIGMA HAS SIMPLE DIAGONAL FORM WITH DIMENSION:  2
+0DEFAULT SIGMA BOUNDARY TEST OMITTED:    NO 
+0INITIAL ESTIMATE OF THETA:
+ LOWER BOUND    INITIAL EST    UPPER BOUND
+  0.0000E+00     0.1300E+02     0.1000E+07
+  0.0000E+00     0.7500E+02     0.1000E+07
+0INITIAL ESTIMATE OF OMEGA:
+ BLOCK SET NO.   BLOCK                                                                    FIXED
+        1                                                                                   NO 
+                  0.4000E-01
+                  0.2000E-01   0.4000E-01
+0INITIAL ESTIMATE OF SIGMA:
+ 0.4000E-01
+ 0.0000E+00   0.1000E+01
+0ESTIMATION STEP OMITTED:           NO 
+ EPS-ETA INTERACTION:               NO 
+ POP. ETAS OBTAINED POST HOC:      YES 
+ NO. OF FUNCT. EVALS. ALLOWED:       9999
+ NO. OF SIG. FIGURES REQUIRED:       3
+ INTERMEDIATE PRINTOUT:            YES 
+ ESTIMATE OUTPUT TO MSF:           YES 
+ IND. OBJ. FUNC. VALUES SORTED:     NO 
+0TABLES STEP OMITTED:    NO 
+ NO. OF TABLES:           2
+0-- TABLE  1 --
+ PRINTED:                NO 
+ HEADER:                YES 
+ FILE TO BE FORWARDED:   NO 
+0USER-CHOSEN ITEMS:
+ ID TIME EVID IPRED CWRES
+0-- TABLE  2 --
+ PRINTED:                NO 
+ HEADER:                YES 
+ FILE TO BE FORWARDED:   NO 
+0USER-CHOSEN ITEMS:
+ ID CL V EVID ETA1 ETA2
+ 
+ THE FOLLOWING LABELS ARE EQUIVALENT
+ PRED=NPRED
+ RES=NRES
+ WRES=NWRES
+1DOUBLE PRECISION PREDPP VERSION 7.1.2     
+ 
+ ONE COMPARTMENT MODEL (ADVAN1)
+0MAXIMUM NO. OF BASIC PK PARAMETERS:   2
+0BASIC PK PARAMETERS (AFTER TRANSLATION):
+   ELIMINATION RATE (K) IS BASIC PK PARAMETER NO.:  1
+ 
+ TRANSLATOR WILL CONVERT PARAMETERS 
+ CLEARANCE (CL) AND VOLUME (V) TO K (TRANS2)
+0COMPARTMENT ATTRIBUTES 
+ COMPT. NO.   FUNCTION   INITIAL    ON/OFF      DOSE      DEFAULT    DEFAULT
+                         STATUS     ALLOWED    ALLOWED    FOR DOSE   FOR OBS.
+    1         CENTRAL      ON         NO         YES        YES        YES
+    2         OUTPUT       OFF        YES        NO         NO         NO 
+1
+ ADDITIONAL PK PARAMETERS - ASSIGNMENT OF ROWS IN GG
+ COMPT. NO.                             INDICES
+              SCALE      BIOAVAIL.   ZERO-ORDER  ZERO-ORDER  ABSORB
+                         FRACTION    RATE        DURATION    LAG  
+    1           3           *           *           *           *
+    2           *           -           -           -           -
+             - PARAMETER IS NOT ALLOWED FOR THIS MODEL
+             * PARAMETER IS NOT SUPPLIED BY PK SUBROUTINE;
+               WILL DEFAULT TO ONE IF APPLICABLE
+0DATA ITEM INDICES USED BY PRED ARE:
+   EVENT ID DATA ITEM IS DATA ITEM NO.:     14
+   TIME DATA ITEM IS DATA ITEM NO.:          7
+   DOSE AMOUNT DATA ITEM IS DATA ITEM NO.:   4
+   DOSE RATE DATA ITEM IS DATA ITEM NO.:     8
+   INTERVAL DATA ITEM IS DATA ITEM NO.:      5
+   ADDL. DOSES DATA ITEM IS DATA ITEM NO.:   6
+ 
+0PK SUBROUTINE CALLED WITH EVERY EVENT RECORD.
+ PK SUBROUTINE NOT CALLED AT NONEVENT (ADDITIONAL OR LAGGED) DOSE TIMES.
+0ERROR SUBROUTINE CALLED WITH EVERY EVENT RECORD.
+1
+ 
+ 
+ #METH: First Order
+ MONITORING OF SEARCH:
+
+0ITERATION NO.:    0    OBJECTIVE VALUE:   835.973399062303        NO. OF FUNC. EVALS.: 6
+ CUMULATIVE NO. OF FUNC. EVALS.:        6
+ PARAMETER:  1.0000E-01  1.0000E-01  1.0000E-01  1.0000E-01  1.0000E-01  1.0000E-01  1.0000E-01
+ GRADIENT:   5.7224E+02 -4.9150E+02 -1.3814E+02  5.8492E+02 -8.1502E+01  9.4996E+01  3.3282E+02
+0ITERATION NO.:   10    OBJECTIVE VALUE:   573.611379311441        NO. OF FUNC. EVALS.: 7
+ CUMULATIVE NO. OF FUNC. EVALS.:       82
+ PARAMETER:  7.5153E-02  3.0399E-01  1.4840E-01  3.0851E-02  3.0299E-01  1.6171E-01 -1.0690E+00
+ GRADIENT:   3.6044E+02 -1.2933E+02 -6.1028E+01  9.4970E+01  8.9001E+00 -3.6849E+01  3.8617E+01
+0ITERATION NO.:   20    OBJECTIVE VALUE:   527.614161631737        NO. OF FUNC. EVALS.: 7
+ CUMULATIVE NO. OF FUNC. EVALS.:      152
+ PARAMETER: -3.1367E-02  3.2009E-01  3.0023E-01 -1.3704E-02  9.7064E-02  1.2734E-01 -1.9074E+00
+ GRADIENT:  -5.0315E-01  8.3650E-01 -1.3298E-01 -2.1618E-01 -8.6392E-02  1.7426E-01 -3.0028E-02
+0ITERATION NO.:   26    OBJECTIVE VALUE:   527.613726615300        NO. OF FUNC. EVALS.: 0
+ CUMULATIVE NO. OF FUNC. EVALS.:      198
+ PARAMETER: -3.0975E-02  3.2029E-01  3.0141E-01 -1.3530E-02  9.8871E-02  1.2761E-01 -1.9058E+00
+ GRADIENT:   3.5254E-03 -4.9251E-03 -7.8102E-04 -3.3248E-03 -2.3985E-04  2.8439E-04  5.9518E-04
+ Elapsed estimation time in seconds:     0.34
+ 
+ #TERM:
+0MINIMIZATION SUCCESSFUL
+ NO. OF FUNCTION EVALUATIONS USED:      198
+ NO. OF SIG. DIGITS IN FINAL EST.:  4.3
+ #TERE:
+1
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ ************************************************************************************************************************
+ ********************                                                                                ********************
+ ********************                                   FIRST ORDER                                  ********************
+ #OBJT:**************                       MINIMUM VALUE OF OBJECTIVE FUNCTION                      ********************
+ ********************                                                                                ********************
+ ************************************************************************************************************************
+ 
+
+
+
+
+
+ #OBJV:********************************************      527.614       **************************************************
+1
+ ************************************************************************************************************************
+ ********************                                                                                ********************
+ ********************                                   FIRST ORDER                                  ********************
+ ********************                             FINAL PARAMETER ESTIMATE                           ********************
+ ********************                                                                                ********************
+ ************************************************************************************************************************
+ 
+
+
+ THETA - VECTOR OF FIXED EFFECTS PARAMETERS   *********
+
+
+         TH 1      TH 2     
+ 
+         1.14E+01  9.35E+01
+ 
+
+
+ OMEGA - COV MATRIX FOR RANDOM EFFECTS - ETAS  ********
+
+
+            ETA1      ETA2
+ 
+ ETA1
++        5.98E-02
+ 
+ ETA2
++       -3.31E-03  3.01E-02
+ 
+
+
+ SIGMA - COV MATRIX FOR RANDOM EFFECTS - EPSILONS  ****
+
+
+            EPS1      EPS2
+ 
+ EPS1
++        4.23E-02
+ 
+ EPS2
++        0.00E+00  1.81E-02
+ 
+2010.05.21.0940.38
+........................................
+NONMEM run with /common/NONMEM/nm7_osx1/test/nm7_osx1.pl
+........................................
+NONMEM Installation Log for /common/NONMEM/nm7_osx1
+]]></text>
+<nmqual><version>7.1.0</version><origin><identifier>This log was generated by nmqual.pl, a component of NMQual</identifier><copyright>NMQual copyright (c) 2006 Metrum Institute -- http://metruminstitute.org</copyright></origin><time><year>2010</year><month>05</month><day>17</day><hour>12</hour><minute>58</minute></time><script><name>nmqual.pl</name><arguments><configurationFile>/usr/local/nmqual-7.1.0/../config.ifort712.xml</configurationFile></arguments></script><directory><source>/Volumes/NONMEM_7.1.0/NONMEM_7.1.0</source><target>/common/NONMEM/nm7_osx1</target></directory><tests on="installation"><environment><variable name="SHELL">/bin/zsh</variable><variable name="USER">billk</variable><variable name="PATH">/common/sge/bin/darwin-x86:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin:/usr/texbin:/usr/X11/bin:/Users/billk/bin:/Users/billk/script:/Users/billk/script/contrib:/opt/local/bin</variable></environment><system><test><command>perl -e 'use POSIX; print join qq(,\n),uname'</command><result>Darwin,
+metrum-host01.managed.contegix.com,
+9.8.0,
+Darwin Kernel Version 9.8.0: Wed Jul 15 16:55:01 PDT 2009; root:xnu-1228.15.4~1/RELEASE_I386,
+i386</result></test></system></tests><checksum><path name="nm">da2f3f7a80eafc922e5f17e7918a7758</path><path name="pr">37b7c3cd6c14f08e84a54aedd732dfe4</path><path name="tr">c420720b5e37b0406abd7d4fd06737fb</path><path name="test/config.xml">bee5fceea15df970ecb073735227e480</path><path name="test/runtest.pl">40b09ce7db8966e9f116db8e3d0fc7f3</path><path name="test/nmqual.pm">624d6e9e001212ec09cf3765f3e493eb</path><path name="test/nm7_osx1.pl">ee45f05f9a5b4165c0ae0194b03bf2e6</path></checksum><changed /><configuration xmlns="http://metruminstitute.org/nmqual/configuration" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://metruminstitute.org/nmqual/configuration   http://metruminstitute.org/schemas/config.nmqual-7.xsd">
+
+<pause>0</pause>
+<verbose>1</verbose>
+<directory id="source">/Volumes/NONMEM_7.1.0/NONMEM_7.1.0</directory> 
+<directory id="target">/common/NONMEM/nm7_osx1</directory> 
+<file type="zip" from="NMQUAL/nm7control.zip" to="test" />
+<file type="zip" from="guides.zip" to="guides" />
+<file type="zip" from="help.zip" to="help" />
+<file type="zip" from="html.zip" to="html" />
+<file nix="0" from="/usr/local/NM7.1.2/nonmem712e.zip" to="nonmem712e.zip" />
+<file nix="0" from="/usr/local/NM7.1.2/nonmem712r.zip" to="nonmem712r.zip" />
+<file type="zip" from="TARGET/nonmem712r.zip" />
+<file nix="0" from="install_Darwin" to="install" />
+<file nix="0" from="/usr/local/NM7.1.2/NONMEM.lic" to="license/nonmem.lic" />
+<file to="TARGET/resource/SIZES.f90" from="TARGET/resource/SIZES_big" />
+
+<instruction id="compile">./install 2 nonmem712e.zip nonmem712r.zip ifort '-Gs -nologo -nbs -w -Ob1gyti -Qprec_div -4Yportlib -traceback -vec-report0' '-module resource' Linux 'unzip -a' o n x</instruction>
+<instruction id="compile">./install 3 nonmem712e.zip nonmem712r.zip ifort '-Gs -nologo -nbs -w -Ob1gyti -Qprec_div -4Yportlib -traceback -vec-report0' '-module resource' Linux 'unzip -a' o n x</instruction>
+<instruction id="compile" cd="resource">ar -r resource.a *.o</instruction>
+<instruction id="compile" cd="nm">rm -rf termiowin.o</instruction>
+<instruction id="compile" cd="nm">ifort -c ifortlinux.f -I../resource</instruction>
+<instruction id="compile" cd="tr">ifort -c ifortlinuxtr.f -I../resource</instruction>
+<instruction id="library" cd="nm">ar -r nonmem.a *.o new_imsl/*.o</instruction>
+<instruction id="nmtran" cd="tr">ifort -o nmtran.exe *.o ../resource/resource.a</instruction>
+<instruction id="nonmem">ifort -ITARGET/resource -o nonmem.exe -Gs -nologo -nbs -w -Ob1gyti -Qprec_div -4Yportlib -traceback -vec-report0 FSUBS.f90 FREPORT TARGET/nm/NONMEM_Recoded.o TARGET/nm/nonmem.a TARGET/resource/resource.a TARGET/resource/*.o</instruction> 
+
+<suffix id="fortran">f90</suffix>
+<suffix id="object">o</suffix>
+<suffix id="library">a</suffix>
+<test class="system" command="perl -e 'use POSIX; print join qq(,\n),uname'" />
+<test class="environment" variable="SHELL" />
+<test class="environment" variable="USER" />
+<test class="environment" variable="PATH" />
+<attribution>Altered on installation by NMQual (copyright metruminstitute.org)</attribution>
+<trash>FSUBS</trash>
+<trash>FSUBS.F</trash>
+<trash>fsubs.for</trash>
+<trash>FSUBS.f90</trash>
+<trash>FREPORT</trash>
+<trash>FLIB</trash>
+<trash>nonmem.exe</trash>
+<trash>output</trash>
+<checksum>nm</checksum>
+<checksum>pr</checksum>
+<checksum>tr</checksum>
+<checksum>test/config.xml</checksum>
+<checksum>test/runtest.pl</checksum>
+<checksum>test/nmqual.pm</checksum>
+<checksum>test/nm.pl</checksum>
+<nonmem version="7" level="1.2" date="03-01-2010" />
+<meta>nmqual 7.1.0 for nonmem 7.1.2</meta>
+</configuration></nmqual><tests on="execution"><environment><variable name="SHELL">/bin/csh</variable><variable name="USER">timb</variable><variable name="PATH">/tmp/190576.1.all.q:/common/sge/bin/darwin-x86:/usr/local/bin:/usr/X11R6/bin:/bin:/sbin:/usr/bin:/bin:/usr/sbin:/sbin</variable></environment><system><test><command>perl -e 'use POSIX; print join qq(,\n),uname'</command><result>Darwin,
+metrum-host03.managed.contegix.com,
+9.8.0,
+Darwin Kernel Version 9.8.0: Wed Jul 15 16:55:01 PDT 2009; root:xnu-1228.15.4~1/RELEASE_I386,
+i386</result></test></system></tests><text><![CDATA[
+
+........................................
+NONMEM control test log(s) generated by runtest.pl for /common/NONMEM/nm7_osx1
+]]></text>
+<runtest><time><year>2010</year><month>05</month><day>17</day><hour>13</hour><minute>04</minute><second>51</second></time><script><name>runtest.pl</name><arguments><argument>3</argument><argument>4</argument><argument>5</argument><argument>6</argument><argument>7</argument><argument>8</argument></arguments></script><directory>/common/NONMEM/nm7_osx1/test</directory><filename>/common/NONMEM/nm7_osx1/test/runtest.2010.05.17.1304.51.xml</filename><username /><user>billk</user><install_log>/common/NONMEM/nm7_osx1/test/nmqual_install.2010.05.17.1258.xml</install_log><checksum><path name="nm">da2f3f7a80eafc922e5f17e7918a7758</path><path name="pr">37b7c3cd6c14f08e84a54aedd732dfe4</path><path name="tr">c420720b5e37b0406abd7d4fd06737fb</path><path name="test/config.xml">bee5fceea15df970ecb073735227e480</path><path name="test/runtest.pl">40b09ce7db8966e9f116db8e3d0fc7f3</path><path name="test/nmqual.pm">624d6e9e001212ec09cf3765f3e493eb</path><path name="test/nm7_osx1.pl">ee45f05f9a5b4165c0ae0194b03bf2e6</path></checksum><tests><test_3><refFile>control3.ref.xml</refFile><testFile>control3.test.xml</testFile><streamFile>3.ctl</streamFile><outFile>3.lst</outFile><command>nm7_osx1.pl</command><commandline>perl /common/NONMEM/nm7_osx1/test/nm7_osx1.pl /common/NONMEM/nm7_osx1/test/3.ctl /common/NONMEM/nm7_osx1/test/3.lst nochecksum</commandline><parameters><MIN><ref>0</ref><test>0</test><similarity>99</similarity><status>match</status></MIN><DESC><ref>3, THEOPHYLLINE SINGLE SUBJECT DATA</ref><test>3, THEOPHYLLINE SINGLE SUBJECT DATA
+</test><similarity>99</similarity><status>match</status></DESC><TH2><ref>1.01681E-01</ref><test>1.01681E-01</test><similarity>99</similarity><status>match</status></TH2><COV><ref>0</ref><test>0</test><similarity>99</similarity><status>match</status></COV><TH1><ref>1.94057E+00</ref><test>1.94057E+00</test><similarity>99</similarity><status>match</status></TH1><TH3><ref>3.20217E+01</ref><test>3.20217E+01</test><similarity>99</similarity><status>match</status></TH3><OFV><ref>8.94010167314457</ref><test>8.94010165119441</test><similarity>8.61</similarity><status>partial match</status></OFV><OM1.1><ref>8.99322E-01</ref><test>8.99334E-01</test><similarity>4.87</similarity><status>partial match</status></OM1.1></parameters></test_3><test_4><refFile>control4.ref.xml</refFile><testFile>control4.test.xml</testFile><streamFile>4.ctl</streamFile><outFile>4.lst</outFile><command>nm7_osx1.pl</command><commandline>perl /common/NONMEM/nm7_osx1/test/nm7_osx1.pl /common/NONMEM/nm7_osx1/test/4.ctl /common/NONMEM/nm7_osx1/test/4.lst nochecksum</commandline><parameters><OM3.2><ref>9.10643E-03</ref><test>9.10643E-03</test><similarity>99</similarity><status>match</status></OM3.2><MIN><ref>0</ref><test>0</test><similarity>99</similarity><status>match</status></MIN><DESC><ref>4, THEOPHYLLINE POPULATION DATA</ref><test>4, THEOPHYLLINE POPULATION DATA
+</test><similarity>99</similarity><status>match</status></DESC><TH2><ref>7.81286E-02</ref><test>7.81286E-02</test><similarity>99</similarity><status>match</status></TH2><OM3.1><ref>-1.27668E-01</ref><test>-1.27668E-01</test><similarity>99</similarity><status>match</status></OM3.1><OM3.3><ref>5.15206E-01</ref><test>5.15206E-01</test><similarity>99</similarity><status>match</status></OM3.3><OM2.2><ref>2.39848E-04</ref><test>2.39848E-04</test><similarity>99</similarity><status>match</status></OM2.2><OFV><ref>104.561067398632</ref><test>104.561067398632</test><similarity>99</similarity><status>match</status></OFV><OM2.1><ref>5.23932E-03</ref><test>5.23932E-03</test><similarity>99</similarity><status>match</status></OM2.1><OM1.1><ref>5.54976E+00</ref><test>5.54976E+00</test><similarity>99</similarity><status>match</status></OM1.1><COV><ref>0</ref><test>0</test><similarity>99</similarity><status>match</status></COV><TH1><ref>2.77387E+00</ref><test>2.77387E+00</test><similarity>99</similarity><status>match</status></TH1><TH3><ref>3.63073E-02</ref><test>3.63073E-02</test><similarity>99</similarity><status>match</status></TH3><SG1.1><ref>3.87501E-01</ref><test>3.87501E-01</test><similarity>99</similarity><status>match</status></SG1.1></parameters></test_4><test_5><refFile>control5.ref.xml</refFile><testFile>control5.test.xml</testFile><streamFile>5.ctl</streamFile><outFile>5.lst</outFile><command>nm7_osx1.pl</command><commandline>perl /common/NONMEM/nm7_osx1/test/nm7_osx1.pl /common/NONMEM/nm7_osx1/test/5.ctl /common/NONMEM/nm7_osx1/test/5.lst nochecksum</commandline><parameters><OM3.2><ref>9.10643E-03</ref><test>9.10643E-03</test><similarity>99</similarity><status>match</status></OM3.2><MIN><ref>0</ref><test>0</test><similarity>99</similarity><status>match</status></MIN><DESC><ref>5, THEOPHYLLINE POPULATION DATA</ref><test>5, THEOPHYLLINE POPULATION DATA
+</test><similarity>99</similarity><status>match</status></DESC><TH2><ref>7.81286E-02</ref><test>7.81286E-02</test><similarity>99</similarity><status>match</status></TH2><OM3.1><ref>-1.27668E-01</ref><test>-1.27668E-01</test><similarity>99</similarity><status>match</status></OM3.1><OM3.3><ref>5.15206E-01</ref><test>5.15206E-01</test><similarity>99</similarity><status>match</status></OM3.3><OM2.2><ref>2.39848E-04</ref><test>2.39848E-04</test><similarity>99</similarity><status>match</status></OM2.2><OFV><ref>104.561067398633</ref><test>104.561067398633</test><similarity>99</similarity><status>match</status></OFV><OM2.1><ref>5.23932E-03</ref><test>5.23932E-03</test><similarity>99</similarity><status>match</status></OM2.1><OM1.1><ref>5.54976E+00</ref><test>5.54976E+00</test><similarity>99</similarity><status>match</status></OM1.1><COV><ref>0</ref><test>0</test><similarity>99</similarity><status>match</status></COV><TH1><ref>2.77387E+00</ref><test>2.77387E+00</test><similarity>99</similarity><status>match</status></TH1><TH3><ref>3.63073E-02</ref><test>3.63073E-02</test><similarity>99</similarity><status>match</status></TH3><SG1.1><ref>3.87501E-01</ref><test>3.87501E-01</test><similarity>99</similarity><status>match</status></SG1.1></parameters></test_5><test_6><refFile>control6.ref.xml</refFile><testFile>control6.test.xml</testFile><streamFile>6.ctl</streamFile><outFile>6.lst</outFile><command>nm7_osx1.pl</command><commandline>perl /common/NONMEM/nm7_osx1/test/nm7_osx1.pl /common/NONMEM/nm7_osx1/test/6.ctl /common/NONMEM/nm7_osx1/test/6.lst nochecksum</commandline><parameters><OM3.2><ref>9.10643E-03</ref><test>9.10643E-03</test><similarity>99</similarity><status>match</status></OM3.2><MIN><ref>0</ref><test>0</test><similarity>99</similarity><status>match</status></MIN><DESC><ref>6, THEOPHYLLINE POPULATION DATA</ref><test>6, THEOPHYLLINE POPULATION DATA
+</test><similarity>99</similarity><status>match</status></DESC><TH2><ref>7.81286E-02</ref><test>7.81286E-02</test><similarity>99</similarity><status>match</status></TH2><OM3.1><ref>-1.27668E-01</ref><test>-1.27668E-01</test><similarity>99</similarity><status>match</status></OM3.1><OM3.3><ref>5.15206E-01</ref><test>5.15206E-01</test><similarity>99</similarity><status>match</status></OM3.3><OM2.2><ref>2.39848E-04</ref><test>2.39848E-04</test><similarity>99</similarity><status>match</status></OM2.2><OFV><ref>104.561067398633</ref><test>104.561067398633</test><similarity>99</similarity><status>match</status></OFV><OM2.1><ref>5.23932E-03</ref><test>5.23932E-03</test><similarity>99</similarity><status>match</status></OM2.1><OM1.1><ref>5.54976E+00</ref><test>5.54976E+00</test><similarity>99</similarity><status>match</status></OM1.1><COV><ref>0</ref><test>0</test><similarity>99</similarity><status>match</status></COV><TH1><ref>2.77387E+00</ref><test>2.77387E+00</test><similarity>99</similarity><status>match</status></TH1><TH3><ref>3.63073E-02</ref><test>3.63073E-02</test><similarity>99</similarity><status>match</status></TH3><SG1.1><ref>3.87501E-01</ref><test>3.87501E-01</test><similarity>99</similarity><status>match</status></SG1.1></parameters></test_6><test_7><refFile>control7.ref.xml</refFile><testFile>control7.test.xml</testFile><streamFile>7.ctl</streamFile><outFile>7.lst</outFile><command>nm7_osx1.pl</command><commandline>perl /common/NONMEM/nm7_osx1/test/nm7_osx1.pl /common/NONMEM/nm7_osx1/test/7.ctl /common/NONMEM/nm7_osx1/test/7.lst nochecksum</commandline><parameters><OM3.2><ref>9.10643E-03</ref><test>9.10643E-03</test><similarity>99</similarity><status>match</status></OM3.2><MIN><ref>0</ref><test>0</test><similarity>99</similarity><status>match</status></MIN><DESC><ref>7, THEOPHYLLINE POPULATION DATA</ref><test>7, THEOPHYLLINE POPULATION DATA
+</test><similarity>99</similarity><status>match</status></DESC><TH2><ref>7.81286E-02</ref><test>7.81286E-02</test><similarity>99</similarity><status>match</status></TH2><OM3.1><ref>-1.27668E-01</ref><test>-1.27668E-01</test><similarity>99</similarity><status>match</status></OM3.1><OM3.3><ref>5.15206E-01</ref><test>5.15206E-01</test><similarity>99</similarity><status>match</status></OM3.3><OM2.2><ref>2.39848E-04</ref><test>2.39848E-04</test><similarity>99</similarity><status>match</status></OM2.2><OFV><ref>104.561067310441</ref><test>104.561067310441</test><similarity>99</similarity><status>match</status></OFV><OM2.1><ref>5.23932E-03</ref><test>5.23932E-03</test><similarity>99</similarity><status>match</status></OM2.1><OM1.1><ref>5.54976E+00</ref><test>5.54976E+00</test><similarity>99</similarity><status>match</status></OM1.1><COV><ref>0</ref><test>0</test><similarity>99</similarity><status>match</status></COV><TH1><ref>2.77387E+00</ref><test>2.77387E+00</test><similarity>99</similarity><status>match</status></TH1><TH3><ref>3.63073E-02</ref><test>3.63073E-02</test><similarity>99</similarity><status>match</status></TH3><SG1.1><ref>3.87501E-01</ref><test>3.87501E-01</test><similarity>99</similarity><status>match</status></SG1.1></parameters></test_7><test_8><refFile>control8.ref.xml</refFile><testFile>control8.test.xml</testFile><streamFile>8.ctl</streamFile><outFile>8.lst</outFile><command>nm7_osx1.pl</command><commandline>perl /common/NONMEM/nm7_osx1/test/nm7_osx1.pl /common/NONMEM/nm7_osx1/test/8.ctl /common/NONMEM/nm7_osx1/test/8.lst nochecksum</commandline><parameters><TH5><ref>7.34486E+00</ref><test>7.34475E+00</test><similarity>4.82</similarity><status>partial match</status></TH5><MIN><ref>0</ref><test>0</test><similarity>99</similarity><status>match</status></MIN><TH2><ref>1.29135E+01</ref><test>1.29135E+01</test><similarity>99</similarity><status>match</status></TH2><TH6><ref>1.77076E+01</ref><test>1.77076E+01</test><similarity>99</similarity><status>match</status></TH6><OM3.3><ref>3.43608E-02</ref><test>3.43605E-02</test><similarity>5.06</similarity><status>partial match</status></OM3.3><OFV><ref>4425.31299055917</ref><test>4425.31299050029</test><similarity>10.88</similarity><status>partial match</status></OFV><SG6.6><ref>1.18045E+01</ref><test>1.18042E+01</test><similarity>4.59</similarity><status>partial match</status></SG6.6><OM1.1><ref>9.48496E-03</ref><test>9.48483E-03</test><similarity>4.86</similarity><status>partial match</status></OM1.1><SG5.5><ref>6.01007E-02</ref><test>6.01015E-02</test><similarity>4.88</similarity><status>partial match</status></SG5.5><SG4.4><ref>1.42000E-01</ref><test>1.41991E-01</test><similarity>4.20</similarity><status>partial match</status></SG4.4><DESC><ref>8, Parent-Metabolite-Urine Model</ref><test>8, Parent-Metabolite-Urine Model
+</test><similarity>99</similarity><status>match</status></DESC><OM4.4><ref>2.67234E-02</ref><test>2.67255E-02</test><similarity>4.10</similarity><status>partial match</status></OM4.4><TH8><ref>1.31768E+00</ref><test>1.31768E+00</test><similarity>99</similarity><status>match</status></TH8><SG3.3><ref>4.52108E-02</ref><test>4.52108E-02</test><similarity>99</similarity><status>match</status></SG3.3><SG2.2><ref>1.57506E+04</ref><test>1.57501E+04</test><similarity>4.50</similarity><status>partial match</status></SG2.2><OM2.2><ref>2.18600E-02</ref><test>2.18604E-02</test><similarity>4.74</similarity><status>partial match</status></OM2.2><OM6.6><ref>7.41652E-02</ref><test>7.41637E-02</test><similarity>4.69</similarity><status>partial match</status></OM6.6><COV><ref>0</ref><test>0</test><similarity>99</similarity><status>match</status></COV><TH1><ref>4.93015E-01</ref><test>4.93015E-01</test><similarity>99</similarity><status>match</status></TH1><TH7><ref>5.91295E-01</ref><test>5.91300E-01</test><similarity>5.07</similarity><status>partial match</status></TH7><OM5.5><ref>1.84058E-02</ref><test>1.84063E-02</test><similarity>4.57</similarity><status>partial match</status></OM5.5><TH4><ref>1.84011E+01</ref><test>1.84011E+01</test><similarity>99</similarity><status>match</status></TH4><TH3><ref>5.74744E+00</ref><test>5.74747E+00</test><similarity>5.28</similarity><status>partial match</status></TH3><TH9><ref>2.15449E+00</ref><test>2.15449E+00</test><similarity>99</similarity><status>match</status></TH9><SG1.1><ref>7.14281E-02</ref><test>7.14287E-02</test><similarity>5.08</similarity><status>partial match</status></SG1.1></parameters></test_8></tests></runtest>
+</nonmem>

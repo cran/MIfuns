@@ -1,0 +1,854 @@
+<?xml version="1.0"?>
+<nonmem>
+<text><![CDATA[
+/Users/timb/project/metrum-mifuns/inst/test/nm6/script/../out/1/1.lst
+2010.08.05.1610.09
+$PROB RUN# 1 ESTIMATE PK W/COVARIATE RELATIONSHIPS
+$INPUT C ID DV AMT II ADDL TIME RATE HT WT CLCR SEX AGE
+$DATA  ../../data/1.csv IGNORE=C 
+$SUB ADVAN1 TRANS2 INFN=../../infn/MIfunsRunlogNM6.for
+$ABB COMRES=4
+$PK
+TVCL=THETA(1)
+CL=TVCL*EXP(ETA(1))
+TVV=THETA(2)
+V=TVV*EXP(ETA(2))
+S1=V
+$ERROR
+Y=F + F*ERR(1) +ERR(2)
+IPRED=F
+"  LAST 
+"  COM(1)=G(1,1) 
+"  COM(2)=G(2,1) 
+"  COM(3)=HH(1,1) 
+"  COM(4)=HH(2,1)
+$THETA
+ (0, 13) ;1. CL
+ (0, 75);2. V
+$OMEGA BLOCK(2)
+(0.04) ;1. CL VAR
+(0.02) (0.04) ;2. V VAR
+$SIGMA 
+0.04
+1
+;$MSFI=./1.msf
+$ESTIMATION MAXEVAL=9999 PRINT=10 POSTHOC MSFO=./1.msf
+$TABLE ID TIME EVID IPRED NOPRINT ONEHEADER FILE=./1.tab
+$TABLE ID CL V EVID ETA1 ETA2 NOPRINT
+ ONEHEADER FILE=./1par.tab
+$TABLE ID TIME COM(1)=G11 COM(2)=G21 COM(3)=H11
+COM(4)=H21 IPRED MDV NOPRINT ONEHEADER FILE=./cwtab1.deriv
+1NONLINEAR MIXED EFFECTS MODEL PROGRAM (NONMEM)    DOUBLE PRECISION NONMEM    VERSION VI LEVEL 2.0  
+ DEVELOPED AND PROGRAMMED BY STUART BEAL AND LEWIS SHEINER
+ 
+ PROBLEM NO.:         1
+ RUN# 1 ESTIMATE PK W/COVARIATE RELATIONSHIPS                            
+0DATA CHECKOUT RUN:              NO 
+ DATA SET LOCATED ON UNIT NO.:    2
+ THIS UNIT TO BE REWOUND:        NO 
+ NO. OF DATA RECS IN DATA SET:      600
+ NO. OF DATA ITEMS IN DATA SET:  15
+ ID DATA ITEM IS DATA ITEM NO.:   2
+ DEP VARIABLE IS DATA ITEM NO.:   3
+ MDV DATA ITEM IS DATA ITEM NO.: 15
+0INDICES PASSED TO SUBROUTINE PRED:
+ 14  7  4  8  0  5  0  0  0
+  0  6
+0LABELS FOR DATA ITEMS:
+    C      ID      DV     AMT      II    ADDL    TIME    RATE      HT
+   WT    CLCR     SEX     AGE    EVID     MDV
+0(NONBLANK) LABELS FOR PRED-DEFINED ITEMS:
+  G11     G21     H11     H21      CL       V    IPRE
+0FORMAT FOR DATA:
+ (E2.0,E3.0,E6.0,E4.0,E3.0,E2.0,E6.0,2E4.0,E3.0,E7.0,E2.0,E3.0,2F2.0)            
+ 
+ TOT. NO. OF OBS RECS:      560
+ TOT. NO. OF INDIVIDUALS:     40
+0LENGTH OF THETA:  2
+0DEFAULT THETA BOUNDARY TEST OMITTED:    NO 
+0OMEGA HAS BLOCK FORM:
+  1
+  1  1
+0DEFAULT OMEGA BOUNDARY TEST OMITTED:    NO 
+0SIGMA HAS SIMPLE DIAGONAL FORM WITH DIMENSION:  2
+0DEFAULT SIGMA BOUNDARY TEST OMITTED:    NO 
+0INITIAL ESTIMATE OF THETA:
+ LOWER BOUND    INITIAL EST    UPPER BOUND
+  0.0000E+00     0.1300E+02     0.1000E+07
+  0.0000E+00     0.7500E+02     0.1000E+07
+0INITIAL ESTIMATE OF OMEGA:
+ BLOCK SET NO.   BLOCK                                                                    FIXED
+        1                                                                                   NO 
+                  0.4000E-01
+                  0.2000E-01   0.4000E-01
+0INITIAL ESTIMATE OF SIGMA:
+ 0.4000E-01
+ 0.0000E+00   0.1000E+01
+0ESTIMATION STEP OMITTED:           NO 
+ EPS-ETA INTERACTION:               NO 
+ POP. ETAS OBTAINED POST HOC:      YES 
+ NO. OF FUNCT. EVALS. ALLOWED:       9999
+ NO. OF SIG. FIGURES REQUIRED:       3
+ INTERMEDIATE PRINTOUT:            YES 
+ ESTIMATE OUTPUT TO MSF:           YES 
+ IND. OBJ. FUNC. VALUES SORTED:     NO 
+0TABLES STEP OMITTED:    NO 
+ NO. OF TABLES:           3
+0-- TABLE  1 --
+ PRINTED:                NO 
+ HEADER:                YES 
+ FILE TO BE FORWARDED:   NO 
+0USER-CHOSEN ITEMS 
+ IN THE ORDER THEY WILL APPEAR IN THE TABLE:
+   ID    TIME    EVID    IPRE
+0-- TABLE  2 --
+ PRINTED:                NO 
+ HEADER:                YES 
+ FILE TO BE FORWARDED:   NO 
+0USER-CHOSEN ITEMS 
+ IN THE ORDER THEY WILL APPEAR IN THE TABLE:
+   ID      CL       V    EVID    ETA1    ETA2
+0-- TABLE  3 --
+ PRINTED:                NO 
+ HEADER:                YES 
+ FILE TO BE FORWARDED:   NO 
+0USER-CHOSEN ITEMS 
+ IN THE ORDER THEY WILL APPEAR IN THE TABLE:
+   ID    TIME     G11     G21     H11     H21    IPRE     MDV
+1DOUBLE PRECISION PREDPP VERSION V LEVEL 2.0  
+ 
+ ONE COMPARTMENT MODEL (ADVAN1)
+0MAXIMUM NO. OF BASIC PK PARAMETERS:   2
+0BASIC PK PARAMETERS (AFTER TRANSLATION):
+   ELIMINATION RATE (K) IS BASIC PK PARAMETER NO.:  1
+ 
+ TRANSLATOR WILL CONVERT PARAMETERS 
+ CLEARANCE (CL) AND VOLUME (V) TO K (TRANS2)
+0COMPARTMENT ATTRIBUTES 
+ COMPT. NO.   FUNCTION   INITIAL    ON/OFF      DOSE      DEFAULT    DEFAULT
+                         STATUS     ALLOWED    ALLOWED    FOR DOSE   FOR OBS.
+    1         CENTRAL      ON         NO         YES        YES        YES
+    2         OUTPUT       OFF        YES        NO         NO         NO 
+1
+ ADDITIONAL PK PARAMETERS - ASSIGNMENT OF ROWS IN GG
+ COMPT. NO.                             INDICES
+              SCALE      BIOAVAIL.   ZERO-ORDER  ZERO-ORDER  ABSORB
+                         FRACTION    RATE        DURATION    LAG  
+    1           3           *           *           *           *
+    2           *           -           -           -           -
+             - PARAMETER IS NOT ALLOWED FOR THIS MODEL
+             * PARAMETER IS NOT SUPPLIED BY PK SUBROUTINE;
+               WILL DEFAULT TO ONE IF APPLICABLE
+0DATA ITEM INDICES USED BY PRED ARE:
+   EVENT ID DATA ITEM IS DATA ITEM NO.:     14
+   TIME DATA ITEM IS DATA ITEM NO.:          7
+   DOSE AMOUNT DATA ITEM IS DATA ITEM NO.:   4
+   DOSE RATE DATA ITEM IS DATA ITEM NO.:     8
+   INTERVAL DATA ITEM IS DATA ITEM NO.:      5
+   ADDL. DOSES DATA ITEM IS DATA ITEM NO.:   6
+ 
+0PK SUBROUTINE CALLED WITH EVERY EVENT RECORD.
+ PK SUBROUTINE NOT CALLED AT NONEVENT (ADDITIONAL OR LAGGED) DOSE TIMES.
+0ERROR SUBROUTINE CALLED WITH EVERY EVENT RECORD.
+1
+ MONITORING OF SEARCH:
+
+0ITERATION NO.:    0    OBJECTIVE VALUE:  0.84708E+03    NO. OF FUNC. EVALS.: 6
+ CUMULATIVE NO. OF FUNC. EVALS.:        6
+ PARAMETER:  0.1000E+00  0.1000E+00  0.1000E+00  0.1000E+00  0.1000E+00  0.1000E+00  0.1000E+00
+ GRADIENT:   0.5845E+03 -0.4274E+03 -0.1456E+03  0.5169E+03 -0.7574E+02  0.8174E+02  0.3323E+03
+0ITERATION NO.:   10    OBJECTIVE VALUE:  0.54582E+03    NO. OF FUNC. EVALS.: 9
+ CUMULATIVE NO. OF FUNC. EVALS.:       82
+ PARAMETER: -0.4305E-01  0.2774E+00  0.2631E+00  0.2869E-01  0.3507E+00  0.1423E+00 -0.1746E+01
+ GRADIENT:  -0.7957E+02  0.4439E+02 -0.8205E+01 -0.1807E+02 -0.1235E+01  0.3935E+02  0.2672E+02
+0ITERATION NO.:   19    OBJECTIVE VALUE:  0.54127E+03    NO. OF FUNC. EVALS.: 0
+ CUMULATIVE NO. OF FUNC. EVALS.:      145
+ PARAMETER: -0.3683E-01  0.2858E+00  0.3311E+00  0.4666E-01  0.3862E+00  0.1332E+00 -0.2032E+01
+ GRADIENT:  -0.6131E-01 -0.3867E-01  0.7553E-03  0.7881E-02  0.5981E-02  0.1623E-01 -0.6605E-02
+0MINIMIZATION SUCCESSFUL
+ NO. OF FUNCTION EVALUATIONS USED:      145
+ NO. OF SIG. DIGITS IN FINAL EST.:  3.4
+1
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ ************************************************************************************************************************
+ ********************                                                                                ********************
+ ********************                           MINIMUM VALUE OF OBJECTIVE FUNCTION                  ********************
+ ********************                                                                                ********************
+ ************************************************************************************************************************
+ 
+
+
+
+
+
+ **************************************************        541.269     **************************************************
+1
+ ************************************************************************************************************************
+ ********************                                                                                ********************
+ ********************                                  FINAL PARAMETER ESTIMATE                      ********************
+ ********************                                                                                ********************
+ ************************************************************************************************************************
+ 
+
+
+ THETA - VECTOR OF FIXED EFFECTS PARAMETERS   *********
+
+
+            TH 1      TH 2
+ 
+         1.13E+01  9.03E+01
+ 
+
+
+ OMEGA - COV MATRIX FOR RANDOM EFFECTS - ETAS  ********
+
+
+            ETA1      ETA2
+ 
+ ETA1
++        6.35E-02
+ 
+ ETA2
++        1.18E-02  5.54E-02
+ 
+
+
+ SIGMA - COV MATRIX FOR RANDOM EFFECTS - EPSILONS  ****
+
+
+            EPS1      EPS2
+ 
+ EPS1
++        4.27E-02
+ 
+ EPS2
++        0.00E+00  1.41E-02
+ 
+2010.08.05.1610.12
+........................................
+NONMEM run with /common/NONMEM/nm6osx6/test/nm6osx6.pl
+........................................
+NONMEM Installation Log for /common/NONMEM/nm6osx6
+]]></text>
+<nmqual><version>6.4.2</version><origin><identifier>This log was generated by nmqual.pl, a component of NMQual</identifier><copyright>NMQual copyright (c) 2006 Metrum Institute -- http://metruminstitute.org</copyright></origin><time><year>2009</year><month>11</month><day>02</day><hour>10</hour><minute>48</minute></time><script><name>nmqual.pl</name><arguments><configurationFile>/usr/local/nmqual-6.4.2/nm6osx6.xml</configurationFile></arguments></script><directory><source>/Volumes/NONMEMVI2.0/NONMEM_6.2.0</source><target>/common/NONMEM/nm6osx6</target></directory><tests on="installation"><environment><variable name="SHELL">/bin/zsh</variable><variable name="USER">billk</variable><variable name="PATH">/common/sge/bin/darwin-x86:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin:/usr/texbin:/usr/X11/bin:/Users/billk/bin:/Users/billk/script:/Users/billk/script/contrib:/opt/local/bin</variable></environment><system><test><command>perl -e "use POSIX; print join qq(,\n),uname"</command><result>Darwin,
+metrum-host01.managed.contegix.com,
+9.8.0,
+Darwin Kernel Version 9.8.0: Wed Jul 15 16:55:01 PDT 2009; root:xnu-1228.15.4~1/RELEASE_I386,
+i386</result></test></system></tests><checksum><path name="nm">fb16aef4d90a363fc979e34a1e7a26c4</path><path name="pr">3e66c6847df4776fc37c0577ff2b5351</path><path name="tl">0b33f3fcfc3ae2a8a7a23cc542bd219c</path><path name="tr">f8da0860b6e4cfa8a272a026c1823721</path><path name="test/config.xml">247f6be5021856d55c43ae74bfe42a39</path><path name="test/runtest.pl">9ed002d0906001a25c4f02be6fe82e78</path><path name="test/nmqual.pm">d20ec821b65d33c5ba0484cff9a0582c</path><path name="test/nm6osx6.pl">ca45f198e6584fea9731d11c6e033ad8</path></checksum><changed><change type="Bugs">
+		<ref>NONMEM VI 2.0 Bug Alert #1</ref>
+		<subref>2</subref>
+		<file>pr/TRANS6.for</file>
+		<from>
+      GG(1,KP,1)=(DALP*BETA*GAMMA+ALPHA*DBET*GAMMA+ALPHA*BETA*DGAM
+     X  +GG(1,1,1)*(K21*DK31+GG(4,KP,1)*K31))/(K21*K31)
+      DS1=DALP+DBET+DGAM</from>
+		<to>
+C     Altered on installation by NMQual (copyright metruminstitute.org): 2009.11.02.1048
+C CHANGED +GG(1,1,1) TO -GG(1,1,1) 6/2008
+C      GG(1,KP,1)=(DALP*BETA*GAMMA+ALPHA*DBET*GAMMA+ALPHA*BETA*DGAM
+C    X  +GG(1,1,1)*(K21*DK31+GG(4,KP,1)*K31))/(K21*K31)
+C     DS1=DALP+DBET+DGAM
+      GG(1,KP,1)=(DALP*BETA*GAMMA+ALPHA*DBET*GAMMA+ALPHA*BETA*DGAM
+     X  -GG(1,1,1)*(K21*DK31+GG(4,KP,1)*K31))/(K21*K31)
+      DS1=DALP+DBET+DGAM</to>
+	<confirmed /></change><change type="Bugs">
+		<ref>http://www.cognigencorp.com/nonmem/nmo/topic024.html</ref>
+		<subref>29 Sep 1994</subref>
+		<file>nm/ZXMIN1.for</file>
+		<from>
+      CALL FLU (6)
+ 6015 IF (IEND.EQ.2) GO TO 212</from>
+		<to>
+      CALL FLU (6)
+C     Altered on installation by NMQual (copyright metruminstitute.org): 2009.11.02.1048
+      CALL FLU (UNIT)
+ 6015 IF (IEND.EQ.2) GO TO 212</to>
+	<confirmed /></change><change type="Bugs">
+		<ref>NONMEM VI 2.0 Bug Alert #1</ref>
+		<subref>3</subref>
+		<file>tr/BIND.for</file>
+		<from>
+      DO 2010 I=1,NDNAME
+      IF (DROPDT.AND.DNAME(I).EQ.'DATE') THEN
+        IDDAT=1</from>
+		<to>
+C     Altered on installation by NMQual (copyright metruminstitute.org): 2009.11.02.1048
+C TEST FOR DAT1, DAT2, DAT3 ADDED 8/2008
+C     DO 2010 I=1,NDNAME
+C     IF (DROPDT.AND.DNAME(I).EQ.'DATE') THEN
+C       IDDAT=1
+      DO 2010 I=1,NDNAME
+      IF (DROPDT.AND.(DNAME(I).EQ.'DATE'
+     X   .OR.DNAME(I).EQ.'DAT1'.OR.DNAME(I).EQ.'DAT2'
+     X   .OR.DNAME(I).EQ.'DAT3')) THEN
+        IDDAT=1</to>
+	<confirmed /></change><change type="Options">
+		<ref>570</ref>
+		<file>SIZES</file>
+		<from>
+      PARAMETER (LTH=40)</from>
+		<to>
+C     Altered on installation by NMQual (copyright metruminstitute.org): 2009.11.02.1048
+C     PARAMETER (LTH=40)
+      PARAMETER (LTH=70)</to>
+	<confirmed /></change><change type="Options">
+		<ref>570</ref>
+		<file>SIZES</file>
+		<from>
+      PARAMETER (LVR=30)</from>
+		<to>
+C     Altered on installation by NMQual (copyright metruminstitute.org): 2009.11.02.1048
+C     PARAMETER (LVR=30)
+      PARAMETER (LVR=70)</to>
+	<confirmed /></change><change type="Options">
+		<ref>570</ref>
+		<file>SIZES</file>
+		<from>
+      PARAMETER (LVR2=20)</from>
+		<to>
+C     Altered on installation by NMQual (copyright metruminstitute.org): 2009.11.02.1048
+C     PARAMETER (LVR2=20)
+      PARAMETER (LVR2=70)</to>
+	<confirmed /></change><change type="Options">
+		<ref>570</ref>
+		<file>SIZES</file>
+		<from>
+      PARAMETER (LPAR=70)</from>
+		<to>
+C     Altered on installation by NMQual (copyright metruminstitute.org): 2009.11.02.1048
+C     PARAMETER (LPAR=70)
+      PARAMETER (LPAR=195)</to>
+	<confirmed /></change><change type="Options">
+		<ref>570</ref>
+		<file>SIZES</file>
+		<from>
+      PARAMETER (LPAR2=66)</from>
+		<to>
+C     Altered on installation by NMQual (copyright metruminstitute.org): 2009.11.02.1048
+C     PARAMETER (LPAR2=66)
+      PARAMETER (LPAR2=190)</to>
+	<confirmed /></change><change type="Options">
+		<ref>570</ref>
+		<file>SIZES</file>
+		<from>
+      PARAMETER (LPAR3=2850)</from>
+		<to>
+C     Altered on installation by NMQual (copyright metruminstitute.org): 2009.11.02.1048
+C     PARAMETER (LPAR3=2850)
+      PARAMETER (LPAR3=19110)</to>
+	<confirmed /></change><change type="Options">
+		<ref>570</ref>
+		<file>SIZES</file>
+		<from>
+      PARAMETER (MTHVR=40)</from>
+		<to>
+C     Altered on installation by NMQual (copyright metruminstitute.org): 2009.11.02.1048
+C     PARAMETER (MTHVR=40)
+      PARAMETER (MTHVR=70)</to>
+	<confirmed /></change><change type="Options">
+		<ref>570</ref>
+		<file>SIZES</file>
+		<from>
+      PARAMETER (LNP4=2000)</from>
+		<to>
+C     Altered on installation by NMQual (copyright metruminstitute.org): 2009.11.02.1048
+C     PARAMETER (LNP4=2000)
+      PARAMETER (LNP4=30000)</to>
+	<confirmed /></change><change type="Options">
+		<ref>570</ref>
+		<file>SIZES</file>
+		<from>
+      PARAMETER (DIMTMP=500)</from>
+		<to>
+C     Altered on installation by NMQual (copyright metruminstitute.org): 2009.11.02.1048
+C     PARAMETER (DIMTMP=500)
+      PARAMETER (DIMTMP=1000)</to>
+	<confirmed /></change><change type="Options">
+		<ref>570</ref>
+		<file>SIZES</file>
+		<from>
+      PARAMETER (NO=250)</from>
+		<to>
+C     Altered on installation by NMQual (copyright metruminstitute.org): 2009.11.02.1048
+C     PARAMETER (NO=250)
+      PARAMETER (NO=500)</to>
+	<confirmed /></change><change type="Options">
+		<ref>570</ref>
+		<file>SIZES</file>
+		<from>
+      PARAMETER (LWS1=100000)</from>
+		<to>
+C     Altered on installation by NMQual (copyright metruminstitute.org): 2009.11.02.1048
+C     PARAMETER (LWS1=100000)
+      PARAMETER (LWS1=300000)</to>
+	<confirmed /></change><change type="Options">
+		<ref>570</ref>
+		<file>SIZES</file>
+		<from>
+      PARAMETER (LWS2=217620)</from>
+		<to>
+C     Altered on installation by NMQual (copyright metruminstitute.org): 2009.11.02.1048
+C     PARAMETER (LWS2=217620)
+      PARAMETER (LWS2=6182680)</to>
+	<confirmed /></change><change type="Options">
+		<ref>570</ref>
+		<file>SIZES</file>
+		<from>
+      PARAMETER (LWS3=9000)</from>
+		<to>
+C     Altered on installation by NMQual (copyright metruminstitute.org): 2009.11.02.1048
+C     PARAMETER (LWS3=9000)
+      PARAMETER (LWS3=52272)</to>
+	<confirmed /></change><change type="Options">
+		<ref>570</ref>
+		<file>SIZES</file>
+		<from>
+      PARAMETER (LADD=31375)</from>
+		<to>
+C     Altered on installation by NMQual (copyright metruminstitute.org): 2009.11.02.1048
+C     PARAMETER (LADD=31375)
+      PARAMETER (LADD=125250)</to>
+	<confirmed /></change><change type="Options">
+		<ref>570</ref>
+		<file>SIZES</file>
+		<from>
+      PARAMETER (LIM1=400)</from>
+		<to>
+C     Altered on installation by NMQual (copyright metruminstitute.org): 2009.11.02.1048
+C     PARAMETER (LIM1=400)
+      PARAMETER (LIM1=1000000)</to>
+	<confirmed /></change><change type="Options">
+		<ref>570</ref>
+		<file>SIZES</file>
+		<from>
+      PARAMETER (LIM2=400)</from>
+		<to>
+C     Altered on installation by NMQual (copyright metruminstitute.org): 2009.11.02.1048
+C     PARAMETER (LIM2=400)
+      PARAMETER (LIM2=5000)</to>
+	<confirmed /></change><change type="Options">
+		<ref>570</ref>
+		<file>SIZES</file>
+		<from>
+      PARAMETER (LIM6=400)</from>
+		<to>
+C     Altered on installation by NMQual (copyright metruminstitute.org): 2009.11.02.1048
+C     PARAMETER (LIM6=400)
+      PARAMETER (LIM6=5000)</to>
+	<confirmed /></change><change type="Linux">
+		<ref>Globomax NONMEM v.1.1 SETUP script for Linux</ref>
+		<file>nm/FLU.f</file>
+		<from>
+      CALL COMMITQQ(I)</from>
+		<to>
+C     Altered on installation by NMQual (copyright metruminstitute.org): 2009.11.02.1048
+C     CALL COMMITQQ(I)
+      CALL FLUSH(I)</to>
+	<confirmed /></change><change type="Linux">
+		<ref>Globomax NONMEM v.1.1 SETUP script for Linux</ref>
+		<file>nm/BLKDAT.f</file>
+		<from>
+     1/'nul','con','PRDERR','INTER','nul'/</from>
+		<to>
+C     Altered on installation by NMQual (copyright metruminstitute.org): 2009.11.02.1048
+C    1/'nul','con','PRDERR','INTER','nul'/
+     1/'/dev/null','/dev/stdout','PRDERR','INTER','/dev/null'/</to>
+	<confirmed /></change></changed><configuration xmlns="http://metruminstitute.org/nmqual/configuration" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://metruminstitute.org/nmqual/configuration  http://metruminstitute.org/schemas/config.nmqual-6.xsd">
+
+<!-- pause:  proceed unsupervised (0) or prompt at each step(1)? Edit if desired. -->
+<!-- caution:  if pause is '0', nmqual.pl will not prompt you when overwriting an existing target directory. -->
+<pause>0</pause>
+
+<!-- verbose:  minimum message reporting (0) or maximum (1)?  Edit if desired. -->
+<verbose>0</verbose>
+
+<!-- directory with id='source':  replace with path to NONMEM source files. -->
+<directory id="source">/Volumes/NONMEMVI2.0/NONMEM_6.2.0</directory>
+
+<!-- directory with id='target':  replace with path to desired installation directory. -->
+<directory id="target">/common/NONMEM/nm6osx6</directory>
+
+     <!-- note:
+     If evaluate='TRUE' (or any non-zero value) nmqual will pass the element
+     content to the command line, and use the returned value in substitute.
+     This feature enables the use of shell expansion. e.g.:
+     <directory id='target' evaluate='TRUE'>echo $HOME/nonmem</directory>
+     -->
+
+<!-- file:  NMQual will install essential NONMEM files and essential
+     NMQual files.  Optional files can be installed using the syntax
+     <file type='myType' from='fromDir' to='toDir'>myFile</file>.
+
+     All file attributes are optional.  "type='change'" causes the file to 
+     be processed as a change file, which alters fortran source.  The default 
+     "from" directory is the nmqual directory.  Any other entry, 
+     e.g. 'Disk_3', will be interpreted relative to the NONMEM source directory 
+     The default "to" directory is target installation 'test' directory.  Any
+     other entry, e.g. 'util', will be interpreted relative to the NONMEM
+     target directory. The attribute 'as' causes the file to be copied to a 
+     new file name. e.g. <file from="Disk_3" to="util" as="theo">THEO</file>.
+     Line endings will be coerced to unix style '\n' unless the attribute 'nix' 
+     is set to '0' or ''.
+     -->
+
+<!-- Add, edit, remove lines as necessary. -->
+<file>3.ctl</file>
+<file>4.ctl</file>
+<file>5.ctl</file>
+<file>6.ctl</file>
+<file>7.ctl</file>
+<file>8.ctl</file>
+<file>control3.ref.xml</file>
+<file>control4.ref.xml</file>
+<file>control5.ref.xml</file>
+<file>control6.ref.xml</file>
+<file>control7.ref.xml</file>
+<file>control8.ref.xml</file>
+<file>PARAMS3</file>
+<file>PARAMS4</file>
+<!--delete previous, uncomment next, for NONMEM5-->
+<!--file as='PARAMS4'>PARAMS4_nm5</file-->
+<file>PARAMS5</file>
+<file>PARAMS6</file>
+<file>PARAMS7</file>
+<file>PARAMS8</file>
+<file>data8.csv</file>
+
+<!-- Uncomment ONE to get bug fixes for NONMEM5 or NONMEM6.-->
+<!--file type='change'>changes.bugs.nm5.xml</file-->
+<file type="change">changes.bugs.nm6.xml</file>
+
+<!-- Uncomment ONE to get non-default sizes. 
+     nm5.std:  NONMEM5 standard
+     nm5.big:  NONMEM5 bigger buffers, etc.
+     nm6.std:  NONMEM6 standard
+     nm6.std:  NONMEM6 bigger buffers, etc.   -->
+<!--file type='change'>changes.options.nm5.std.xml</file-->
+<!--file type='change'>changes.options.nm5.big.xml</file-->
+<!--file type='change'>changes.options.nm6.std.xml</file-->
+<file type="change">changes.options.nm6.big.xml</file>
+
+<!-- Uncomment for g77 compiler on Windows, NONMEM5. Comment otherwise.-->
+<!--file type='change'>changes.g77.nm5.xml</file-->
+
+<!-- Uncomment for g77 compiler on Windows, NONMEM6. -->
+<!--file type='change'>changes.g77.nm6.xml</file-->
+
+<!-- Uncomment for Unix/Linux/Mac, NONMEM5. -->
+<!--file type='change'>changes.nix.nm5.xml</file-->
+
+<!-- Uncomment for Unix/Linux/Mac, NONMEM6. -->
+<file type="change">changes.nix.nm6.xml</file>
+
+<!-- Uncomment ONE for IEEE constants, e.g. PowerMac (IBM chip). Whether to use
+IEEE constants may depend more on the target platform of the compiler build than
+on the actual platform. nm5 for NONMEM5, nm6 for NONMEM6.-->
+<!--file type='change'>changes.ieee.nm5.xml</file-->
+<!--file type='change'>changes.ieee.nm6.xml</file-->
+
+<!-- NMQual will not use the files sent to 'util' and 'run' (optional). -->
+<!-- Add, edit, remove lines as necessary.-->
+<file from="Disk_3" to="test">DATA3</file>
+<file from="Disk_3" to="test">THEO</file>
+<file from="Disk_3" to="test">THEOPP</file>
+<file from="Disk_3" to="util">NMUTIL</file>
+<file from="Disk_3" to="util">PRED1</file>
+<file from="Disk_3" to="util">PK1</file>
+<file from="Disk_3" to="util">ERROR1</file>
+<file from="Disk_3" to="util">CONTROL1</file>
+<file from="Disk_3" to="util">CONTROL2</file>
+<file from="Disk_3" to="util">CONTROL3</file>
+<file from="Disk_3" to="util">CONTROL4</file>
+<file from="Disk_3" to="util">CONTROL5</file>
+<file from="Disk_3" to="util">CONTROL6</file>
+<file from="Disk_3" to="util">CONTROL7</file>
+<file from="Disk_3" to="util">PHENO</file>
+<file from="Disk_3" to="util">DATA3</file>
+<file from="Disk_3" to="util">THEO</file>
+<file from="Disk_3" to="util">THEOPP</file>
+<file from="Disk_3" to="run">CONTROL3</file>
+<file from="Disk_3" to="run">DATA3</file>
+<file from="Disk_3" to="run">CONTROL5</file>
+<file from="Disk_3" to="run">THEOPP</file>
+
+<!-- NONMEM PDF guides distributed with NONMEM6.-->
+<file from="guides" to="guides" nix="">I.pdf</file>
+<file from="guides" to="guides" nix="">II.pdf</file>
+<file from="guides" to="guides" nix="">III.pdf</file>
+<file from="guides" to="guides" nix="">IV.pdf</file>
+<file from="guides" to="guides" nix="">V.pdf</file>
+<file from="guides" to="guides" nix="">VI.pdf</file>
+<file from="guides" to="guides" nix="">VII.pdf</file>
+<file from="guides" to="guides" nix="">VIII.pdf</file>
+<file from="guides" to="guides" nix="">intro.pdf</file>
+<file from="guides" to="guides" nix="">supp.pdf</file>
+
+<!-- There are 6 instructions that are customizable.  These are passed 
+     to the command line with few or no changes.  If the command (first 'word')
+     is not in your search path, the complete path to the
+     command may be supplied. Below are listed the directories from which 
+     each instruction is issued, and any additional arguments appended to the 
+     instruction.
+    
+     INSTRUCTION  DIRECTORY        OPTIONAL    ADDITIONS
+     compile      nm,pr,tl,tr      no          none
+     library      nm               no          none
+     nmtran       tr               no          none
+     nonmem       (nonmem start)   no          fsubs.for, FREPORT *.obj, nonmem.obj, blkdat.obj, nonmem.lib
+     convert      (nmqual start)   yes         path to target directory   
+     final        (nonmem start)   yes         none   -->
+
+<!-- 'compile' compiles fortran code in various NONMEM directories.
+      Be sure to include optimization arguments as desired.
+      Supply full path to the executable if necessary.
+      Attributes "from" and "to" force the implied conversion of suffixes
+      E.g. file.o -> file.obj.    -->
+<!-- 'library' creates the nonmem library. 'link' for some compilers. -->
+<!-- 'nmtran' creates nmtran.exe (which must be so named). -->
+<!-- 'nonmem' creates nonmem.exe (which must be so named). -->
+<!-- 'convert' tries to reformat installed files, e.g. dos2unix.
+      It executes from nmqual start, for easy script access if desired.
+      Leave blank if not needed. If an instruction is supplied, the 
+      target directory (above) will be appended as an argument.
+      
+      Note. As of NMQual 6.3.3, use of dos2unix.pl is deprecated:  it improperly
+      modifies png files available in NONMEM html help since version 6 level 2.0.
+      NMQual now coerces line endings to 'Nix style "\n" for critical files.
+      This seems not to cause a problem for Windows.-->
+<!-- 'final', if non-blank, is executed after all other instructions
+      are complete and before permissions are reset or checksums executed.
+      It's purpose is to accommodate user-specific modifications.  It is 
+      passed verbatim to the command line.-->
+
+<!-- Use these for g77 on Windows. Comment otherwise.-->
+<!--instruction id='compile' from='o' to='obj'>g77 -c -O *.for</instruction>
+<instruction id='library'>ar -r nonmem.lib *.obj</instruction>
+<instruction id='nmtran'>g77 *.obj -o nmtran.exe</instruction>
+<instruction id='nonmem'>g77 -O -o nonmem.exe -fno-backslash</instruction>
+<instruction id='convert'/>
+<instruction id='final'/-->
+
+<!-- Uncommment these for Digital Fortran on Windows. -->
+<!--
+<instruction id='compile'>df /c /optimize:1 /fpe:0 /watch:none *.for</instruction>
+<instruction id='library'>link /lib /out:nonmem.lib *.obj</instruction>
+<instruction id='nmtran'>df /Fenmtran *.obj</instruction>
+<instruction id='nonmem'>df /optimize:1 /fpe:0 /Fenonmem</instruction>
+<instruction id='convert'/>
+<instruction id='final'/>
+-->
+
+<!--Uncomment these for f77 on Linux. -->
+<!--
+<instruction id='compile'>f77 -c -O *.f</instruction>
+<instruction id='library'>ar -r nonmem.a *.o</instruction>
+<instruction id='nmtran'>f77 *.o -o nmtran.exe</instruction>
+<instruction id='nonmem'>f77 -O -o nonmem.exe</instruction>
+<instruction id='convert'/>
+<instruction id='final'/>
+-->
+
+<!-- Uncomment these for g77 on Macintosh. -->
+<instruction id="compile">g77 -c -O *.f</instruction>
+<instruction id="library">ar -r nonmem.a *.o</instruction>
+<instruction id="nmtran"> g77 *.o -o nmtran.exe</instruction>
+<instruction id="nonmem"> g77 -O -o nonmem.exe</instruction>
+<instruction id="convert" />
+<instruction id="final" />
+
+<!-- Uncomment these for g95 on Macintosh. (experimental) -->
+<!--
+<instruction id='compile'>g95 -c -O -fsloppy-char *.f</instruction>
+<instruction id='library'>ar -r nonmem.a *.o</instruction>
+<instruction id='nmtran'> g95 *.o -o nmtran.exe</instruction>
+<instruction id='nonmem'> g95 -O -fsloppy-char -o nonmem.exe</instruction>
+<instruction id='convert'/>
+<instruction id='final'/>
+-->
+
+<!-- Uncomment these for Intel compiler on Windows. (experimental) -->
+<!-- You may also wish to increase the startup stack size (e.g. add /stack:64000000 to the ifort commands)
+<instruction id='compile'>ifort /c /nologo /nbs /w /4Yportlib /O3 /Qipo /QxO /Qprec-div- /link *.for</instruction>
+<instruction id='library'>link /lib /out:nonmem.lib *.obj</instruction>
+<instruction id='nmtran'>ifort /nologo /Fenmtran *.obj</instruction>
+<instruction id='nonmem'>ifort /nologo /nbs /w /4Yportlib /O3 /Qipo /QxO /Qprec-div- /Fenonmem</instruction>
+<instruction id='convert'/>
+<instruction id='final'/>
+-->
+
+<!-- Uncomment these for Intel compiler on Windows, optimized for Intel CPU. (experimental) -->
+<!--
+<instruction id='compile'>ifort /c /nologo /nbs /w /4Yportlib /Gs  /Ob1gyti /Qprec_div *.for</instruction>
+<instruction id='library'>link /lib /out:nonmem.lib *.obj</instruction>
+<instruction id='nmtran'>ifort /nologo /Fenmtran *.obj</instruction>
+<instruction id='nonmem'>ifort /nologo /nbs /w /4Yportlib /Gs  /Ob1gyti /Qprec_div /Fenonmem</instruction>
+<instruction id='convert'/>
+<instruction id='final'/>
+-->
+
+<!-- Integration with PDx-Pop or PsN:
+1. Uncomment the next two lines.  -->
+<!--file>nmlink.pl</file--> 
+<!--file to='util'>nmlink.for</file--> 
+
+<!-- Integration with PDx-Pop or PsN:
+2. Delete or comment the 'final' instruction  earlier in this file.
+3. Uncomment a 'final' instruction below for your configuration.
+See comments at http://metruminstitute.org/downloads/nmqual/faq.shtml#wrappers.-->
+<!--instruction id='final'>g77 -fno-backslash -o util/makeg77bat.exe util/nmlink.for</instruction-->
+<!--instruction id='final'>g95 -fno-backslash -o util/makeg95bat.exe util/nmlink.for</instruction-->
+<!--instruction id='final'>df /Feutil\nmlink5 util\nmlink.for</instruction-->
+<!--instruction id='final'>ifort /nbs /Feutil\nmlink5 util\nmlink.for</instruction-->
+<!--instruction id='final'>f77 -fno-backslash -o util/nmlink5.exe util/nmlink.for</instruction-->
+
+
+<!-- specify the system dependent file extensions. 
+     e.g. f or for, o or obj, a or lib. 
+-->
+
+<!-- Use 'for' on Windows, 'f' on Unix/Linux/Mac -->
+<suffix id="fortran">f</suffix>
+
+<!-- Use 'obj' on Windows, 'o' on Unix/Linux/Mac. -->
+<suffix id="object">o</suffix>
+
+<!-- Use 'lib' on Windows, 'a' on Unix/Linux/Mac. -->
+<suffix id="library">a</suffix>
+
+<!-- test: after all files are installed from media, nmqual.pl will test 
+     the operating environment and system.  Environment tests and system
+     tests may be defined with 'test' elements, and are optional.  A
+     test of class 'environment' must have a "variable" attribute. 
+     nmqual.pl will test for the existence of the environment variable,
+     and for the presence of a substring therein if a "contains" attribute
+     is specified.  If "any-case='1'", test is case insensitive.
+     Results will be included in the installation log.
+     
+     A test of class 'system' must have a "command" attribute: a string
+     of text to pass to the commandline.  It can also have a "contains"
+     attribute: a diagnostic substring of the expected result (when all lines 
+     of the result are concatenated).  With optional "stream='stderr'", the 
+     standard error stream will be tested, instead of the standard output
+     stream.  If "any-case='1'", test is case insensitive.
+     Results will be included in the installation log.
+     
+     If a test fails, nmqual.pl should terminate abnormally. -->
+
+<!-- The following records 5 comma-separated system descriptors, approximately:
+	the name of the operating system, 
+	the name of the host, 
+	the (major) release number of the operating system, 
+	the (minor) release number of the operating system, 
+	and a hardware identifier. -->
+<test class="system" command="perl -e &quot;use POSIX; print join qq(,\n),uname&quot;" />
+
+<!-- Uncomment any desired.  Add others as desired. Remove defaults as desired.-->
+<!-- for Windows -->
+<!--test class='environment' variable='OS'/>
+<test class='environment' variable='USERNAME'/>
+<test class='environment' variable='PATH'/-->
+
+<!-- for g77 on Windows -->
+<!--test class='environment' variable='LIBRARY_PATH'/>
+<test class='environment' variable='PATH' contains='G77\bin;' any-case='1'/-->
+
+<!-- for g77;  or use 'f77' on Linux  -->
+<!--test class='system' command='g77' stream='stderr' contains='no input files' any-case='1'/>
+<test class='system' command='g77 -v' stream='stderr'/-->
+
+<!-- for Digital Fortran -->
+<!--test class='system' command='df' stream='stdout' contains='Compaq'/-->
+
+<!-- for Unix/Linux/Mac  -->
+<test class="environment" variable="SHELL" />
+<test class="environment" variable="USER" />
+<test class="environment" variable="PATH" />
+
+<!-- for g95 -->
+<!--test class='system' command='g95 -v' stream='stderr'/-->
+
+<!-- for Intel compiler -->
+<!--test class='system' command='ifort' stream='stderr' contains='no files specified' any-case='1'/-->
+
+
+<!-- attribution:  whenever nmqual.pl finds 'ATTRIBUTION' in a file with 
+     type='change', it will substitute the <attribution/> text and a timestamp.
+     These changes will later be applied to fortran source code. -->
+<attribution>Altered on installation by NMQual (copyright metruminstitute.org)</attribution>
+
+<!-- trash: any file that should be deleted, if present, at the 
+     beginning of a nonmem run (e.g., files left over from a previous run).
+     Optional. -->
+
+<!-- Comment/uncomment as desired. -->
+<trash>FSUBS</trash>
+<trash>fsubs.for</trash>
+<trash>FREPORT</trash>
+<trash>nonmem.exe</trash>
+<trash>output</trash>
+<!--trash>FSUBS.F</trash-->
+<!--trash>FLIB</trash-->
+
+<!-- checksum:  any directory or file, relative to the NONMEM install root
+     (target directory), that should be checksummed. It is recommended to 
+     checksum at least nm, pr, tl, and tr.
+     
+     On installation, checksum.pl will record checksum values for these 
+     entities.  Thereafter, invocations of checksum.pl will compare current
+     checksums to installation checksums.  If you checksum this file too
+     (renamed on install to 'test\config.xml'), you can test whether the 
+     configuration has been altered. (Except the alteration where 
+     <checksum>test\config.xml</checksum> has been deleted!)-->
+
+<!-- Comment out each item that should not be checksummed. -->
+<checksum>nm</checksum>
+<checksum>pr</checksum>
+<checksum>tl</checksum>
+<checksum>tr</checksum>
+<checksum>test/config.xml</checksum>
+<checksum>test/runtest.pl</checksum>
+<checksum>test/nmqual.pm</checksum>
+<!-- nm.pl is understood as an alias for the dynamically-created script name 
+implied by your target directory -->
+<checksum>test/nm.pl</checksum>
+
+<!-- Uncomment one; edit as necessary. No Roman numerals. -->
+<!-- NOTE: 'version' affects the behavior of nmqual.pl! -->
+<!--nonmem version='5' level='1.1' date='04-15-2004'/-->
+<!--nonmem version='5' level='1.1' date='03-18-2005'/-->
+<!--nonmem version='6' level='1.0' date='10-27-2006'/-->
+<nonmem version="6" level="2.0" date="05-08-2008" />
+
+<!-- A field for arbitrary user content: can contain text or elements. -->
+<meta>Replace this text with any comments or data.</meta>
+</configuration><accepted><acceptor>billk</acceptor><time>2009.11.02.1055.16</time></accepted></nmqual><tests on="execution"><environment><variable name="SHELL">/bin/zsh</variable><variable name="USER">timb</variable><variable name="PATH">/common/sge/bin/darwin-x86:/usr/local/bin:/usr/X11R6/bin:/bin:/sbin:/usr/bin:/bin:/usr/sbin:/sbin</variable></environment><system><test><command>perl -e "use POSIX; print join qq(,\n),uname"</command><result>Darwin,
+metrum-host01.managed.contegix.com,
+9.8.0,
+Darwin Kernel Version 9.8.0: Wed Jul 15 16:55:01 PDT 2009; root:xnu-1228.15.4~1/RELEASE_I386,
+i386</result></test></system></tests><text><![CDATA[
+
+........................................
+NONMEM control test log(s) generated by runtest.pl for /common/NONMEM/nm6osx6
+]]></text>
+<runtest><time><year>2009</year><month>11</month><day>02</day><hour>10</hour><minute>51</minute><second>55</second></time><script><name>runtest.pl</name><arguments><argument>3</argument><argument>4</argument><argument>5</argument><argument>6</argument><argument>7</argument><argument>8</argument></arguments></script><directory>/common/NONMEM/nm6osx6/test</directory><filename>/common/NONMEM/nm6osx6/test/runtest.2009.11.02.1051.55.xml</filename><username /><user>root</user><install_log>/common/NONMEM/nm6osx6/test/nmqual_install.2009.11.02.1048.xml</install_log><checksum><path name="nm">fb16aef4d90a363fc979e34a1e7a26c4</path><path name="pr">3e66c6847df4776fc37c0577ff2b5351</path><path name="tl">0b33f3fcfc3ae2a8a7a23cc542bd219c</path><path name="tr">f8da0860b6e4cfa8a272a026c1823721</path><path name="test/config.xml">247f6be5021856d55c43ae74bfe42a39</path><path name="test/runtest.pl">9ed002d0906001a25c4f02be6fe82e78</path><path name="test/nmqual.pm">d20ec821b65d33c5ba0484cff9a0582c</path><path name="test/nm6osx6.pl">ca45f198e6584fea9731d11c6e033ad8</path></checksum><tests><test_3><refFile>control3.ref.xml</refFile><testFile>control3.test.xml</testFile><streamFile>3.ctl</streamFile><outFile>3.lst</outFile><command>nm6osx6.pl</command><commandline>perl /common/NONMEM/nm6osx6/test/nm6osx6.pl /common/NONMEM/nm6osx6/test/3.ctl /common/NONMEM/nm6osx6/test/3.lst nochecksum</commandline><parameters><MIN><ref>  0</ref><test>  0</test><similarity>99</similarity><status>match</status></MIN><DESC><ref>3, THEOPHYLLINE SINGLE SUBJECT DATA                                                                 </ref><test>3, THEOPHYLLINE SINGLE SUBJECT DATA                                                                 </test><similarity>99</similarity><status>match</status></DESC><TH2><ref>   0.102E+00</ref><test>   0.102E+00</test><similarity>99</similarity><status>match</status></TH2><COV><ref>  0</ref><test>  0</test><similarity>99</similarity><status>match</status></COV><TH1><ref>   0.194E+01</ref><test>   0.194E+01</test><similarity>99</similarity><status>match</status></TH1><TH3><ref>   0.320E+02</ref><test>   0.320E+02</test><similarity>99</similarity><status>match</status></TH3><OFV><ref>   0.894E+01</ref><test>   0.894E+01</test><similarity>99</similarity><status>match</status></OFV><OM1.1><ref>   0.899E+00</ref><test>   0.899E+00</test><similarity>99</similarity><status>match</status></OM1.1></parameters></test_3><test_4><refFile>control4.ref.xml</refFile><testFile>control4.test.xml</testFile><streamFile>4.ctl</streamFile><outFile>4.lst</outFile><command>nm6osx6.pl</command><commandline>perl /common/NONMEM/nm6osx6/test/nm6osx6.pl /common/NONMEM/nm6osx6/test/4.ctl /common/NONMEM/nm6osx6/test/4.lst nochecksum</commandline><parameters><OM1.2><ref>   0.524E-02</ref><test>   0.524E-02</test><similarity>99</similarity><status>match</status></OM1.2><MIN><ref>  0</ref><test>  0</test><similarity>99</similarity><status>match</status></MIN><DESC><ref>4, THEOPHYLLINE POPULATION DATA                                                                     </ref><test>4, THEOPHYLLINE POPULATION DATA                                                                     </test><similarity>99</similarity><status>match</status></DESC><TH2><ref>   0.781E-01</ref><test>   0.781E-01</test><similarity>99</similarity><status>match</status></TH2><OM3.3><ref>   0.515E+00</ref><test>   0.515E+00</test><similarity>99</similarity><status>match</status></OM3.3><OM2.2><ref>   0.240E-03</ref><test>   0.240E-03</test><similarity>99</similarity><status>match</status></OM2.2><OFV><ref> 0.10456E+03</ref><test> 0.10456E+03</test><similarity>99</similarity><status>match</status></OFV><OM1.1><ref>   0.555E+01</ref><test>   0.555E+01</test><similarity>99</similarity><status>match</status></OM1.1><OM2.3><ref>   0.911E-02</ref><test>   0.911E-02</test><similarity>99</similarity><status>match</status></OM2.3><COV><ref>  0</ref><test>  0</test><similarity>99</similarity><status>match</status></COV><TH1><ref>   0.277E+01</ref><test>   0.277E+01</test><similarity>99</similarity><status>match</status></TH1><OM1.3><ref>  -0.128E+00</ref><test>  -0.128E+00</test><similarity>99</similarity><status>match</status></OM1.3><TH3><ref>   0.363E-01</ref><test>   0.363E-01</test><similarity>99</similarity><status>match</status></TH3><SG1.1><ref>   0.388E+00</ref><test>   0.388E+00</test><similarity>99</similarity><status>match</status></SG1.1></parameters></test_4><test_5><refFile>control5.ref.xml</refFile><testFile>control5.test.xml</testFile><streamFile>5.ctl</streamFile><outFile>5.lst</outFile><command>nm6osx6.pl</command><commandline>perl /common/NONMEM/nm6osx6/test/nm6osx6.pl /common/NONMEM/nm6osx6/test/5.ctl /common/NONMEM/nm6osx6/test/5.lst nochecksum</commandline><parameters><OM1.2><ref>   0.524E-02</ref><test>   0.524E-02</test><similarity>99</similarity><status>match</status></OM1.2><MIN><ref>  0</ref><test>  0</test><similarity>99</similarity><status>match</status></MIN><DESC><ref>5, THEOPHYLLINE POPULATION DATA                                                                     </ref><test>5, THEOPHYLLINE POPULATION DATA                                                                     </test><similarity>99</similarity><status>match</status></DESC><TH2><ref>   0.781E-01</ref><test>   0.781E-01</test><similarity>99</similarity><status>match</status></TH2><OM3.3><ref>   0.515E+00</ref><test>   0.515E+00</test><similarity>99</similarity><status>match</status></OM3.3><OM2.2><ref>   0.240E-03</ref><test>   0.240E-03</test><similarity>99</similarity><status>match</status></OM2.2><OFV><ref> 0.10456E+03</ref><test> 0.10456E+03</test><similarity>99</similarity><status>match</status></OFV><OM1.1><ref>   0.555E+01</ref><test>   0.555E+01</test><similarity>99</similarity><status>match</status></OM1.1><OM2.3><ref>   0.911E-02</ref><test>   0.911E-02</test><similarity>99</similarity><status>match</status></OM2.3><COV><ref>  0</ref><test>  0</test><similarity>99</similarity><status>match</status></COV><TH1><ref>   0.277E+01</ref><test>   0.277E+01</test><similarity>99</similarity><status>match</status></TH1><OM1.3><ref>  -0.128E+00</ref><test>  -0.128E+00</test><similarity>99</similarity><status>match</status></OM1.3><TH3><ref>   0.363E-01</ref><test>   0.363E-01</test><similarity>99</similarity><status>match</status></TH3><SG1.1><ref>   0.388E+00</ref><test>   0.388E+00</test><similarity>99</similarity><status>match</status></SG1.1></parameters></test_5><test_6><refFile>control6.ref.xml</refFile><testFile>control6.test.xml</testFile><streamFile>6.ctl</streamFile><outFile>6.lst</outFile><command>nm6osx6.pl</command><commandline>perl /common/NONMEM/nm6osx6/test/nm6osx6.pl /common/NONMEM/nm6osx6/test/6.ctl /common/NONMEM/nm6osx6/test/6.lst nochecksum</commandline><parameters><OM1.2><ref>   0.524E-02</ref><test>   0.524E-02</test><similarity>99</similarity><status>match</status></OM1.2><MIN><ref>  0</ref><test>  0</test><similarity>99</similarity><status>match</status></MIN><DESC><ref>6, THEOPHYLLINE POPULATION DATA                                                                     </ref><test>6, THEOPHYLLINE POPULATION DATA                                                                     </test><similarity>99</similarity><status>match</status></DESC><TH2><ref>   0.781E-01</ref><test>   0.781E-01</test><similarity>99</similarity><status>match</status></TH2><OM3.3><ref>   0.515E+00</ref><test>   0.515E+00</test><similarity>99</similarity><status>match</status></OM3.3><OM2.2><ref>   0.240E-03</ref><test>   0.240E-03</test><similarity>99</similarity><status>match</status></OM2.2><OFV><ref> 0.10456E+03</ref><test> 0.10456E+03</test><similarity>99</similarity><status>match</status></OFV><OM1.1><ref>   0.555E+01</ref><test>   0.555E+01</test><similarity>99</similarity><status>match</status></OM1.1><OM2.3><ref>   0.911E-02</ref><test>   0.911E-02</test><similarity>99</similarity><status>match</status></OM2.3><COV><ref>  0</ref><test>  0</test><similarity>99</similarity><status>match</status></COV><TH1><ref>   0.277E+01</ref><test>   0.277E+01</test><similarity>99</similarity><status>match</status></TH1><OM1.3><ref>  -0.128E+00</ref><test>  -0.128E+00</test><similarity>99</similarity><status>match</status></OM1.3><TH3><ref>   0.363E-01</ref><test>   0.363E-01</test><similarity>99</similarity><status>match</status></TH3><SG1.1><ref>   0.388E+00</ref><test>   0.388E+00</test><similarity>99</similarity><status>match</status></SG1.1></parameters></test_6><test_7><refFile>control7.ref.xml</refFile><testFile>control7.test.xml</testFile><streamFile>7.ctl</streamFile><outFile>7.lst</outFile><command>nm6osx6.pl</command><commandline>perl /common/NONMEM/nm6osx6/test/nm6osx6.pl /common/NONMEM/nm6osx6/test/7.ctl /common/NONMEM/nm6osx6/test/7.lst nochecksum</commandline><parameters><OM1.2><ref>   0.524E-02</ref><test>   0.524E-02</test><similarity>99</similarity><status>match</status></OM1.2><MIN><ref>  0</ref><test>  0</test><similarity>99</similarity><status>match</status></MIN><DESC><ref>7, THEOPHYLLINE POPULATION DATA                                                                     </ref><test>7, THEOPHYLLINE POPULATION DATA                                                                     </test><similarity>99</similarity><status>match</status></DESC><TH2><ref>   0.781E-01</ref><test>   0.781E-01</test><similarity>99</similarity><status>match</status></TH2><OM3.3><ref>   0.515E+00</ref><test>   0.515E+00</test><similarity>99</similarity><status>match</status></OM3.3><OM2.2><ref>   0.240E-03</ref><test>   0.240E-03</test><similarity>99</similarity><status>match</status></OM2.2><OFV><ref> 0.10456E+03</ref><test> 0.10456E+03</test><similarity>99</similarity><status>match</status></OFV><OM1.1><ref>   0.555E+01</ref><test>   0.555E+01</test><similarity>99</similarity><status>match</status></OM1.1><OM2.3><ref>   0.911E-02</ref><test>   0.911E-02</test><similarity>99</similarity><status>match</status></OM2.3><COV><ref>  0</ref><test>  0</test><similarity>99</similarity><status>match</status></COV><TH1><ref>   0.277E+01</ref><test>   0.277E+01</test><similarity>99</similarity><status>match</status></TH1><OM1.3><ref>  -0.128E+00</ref><test>  -0.128E+00</test><similarity>99</similarity><status>match</status></OM1.3><TH3><ref>   0.363E-01</ref><test>   0.363E-01</test><similarity>99</similarity><status>match</status></TH3><SG1.1><ref>   0.388E+00</ref><test>   0.388E+00</test><similarity>99</similarity><status>match</status></SG1.1></parameters></test_7><test_8><refFile>control8.ref.xml</refFile><testFile>control8.test.xml</testFile><streamFile>8.ctl</streamFile><outFile>8.lst</outFile><command>nm6osx6.pl</command><commandline>perl /common/NONMEM/nm6osx6/test/nm6osx6.pl /common/NONMEM/nm6osx6/test/8.ctl /common/NONMEM/nm6osx6/test/8.lst nochecksum</commandline><parameters><TH5><ref>   0.735E+01</ref><test>   0.734E+01</test><similarity>2.87</similarity><status>partial match</status></TH5><MIN><ref>  0</ref><test>  0</test><similarity>99</similarity><status>match</status></MIN><TH2><ref>   0.129E+02</ref><test>   0.129E+02</test><similarity>99</similarity><status>match</status></TH2><TH6><ref>   0.177E+02</ref><test>   0.177E+02</test><similarity>99</similarity><status>match</status></TH6><OM3.3><ref>   0.344E-01</ref><test>   0.344E-01</test><similarity>99</similarity><status>match</status></OM3.3><OFV><ref> 0.44253E+04</ref><test> 0.44253E+04</test><similarity>99</similarity><status>match</status></OFV><SG6.6><ref>   0.118E+02</ref><test>   0.118E+02</test><similarity>99</similarity><status>match</status></SG6.6><OM1.1><ref>   0.949E-02</ref><test>   0.948E-02</test><similarity>2.98</similarity><status>partial match</status></OM1.1><SG5.5><ref>   0.601E-01</ref><test>   0.601E-01</test><similarity>99</similarity><status>match</status></SG5.5><SG4.4><ref>   0.142E+00</ref><test>   0.142E+00</test><similarity>99</similarity><status>match</status></SG4.4><DESC><ref>8, Parent-Metabolite-Urine Model                                                                    </ref><test>8, Parent-Metabolite-Urine Model                                                                    </test><similarity>99</similarity><status>match</status></DESC><OM4.4><ref>   0.267E-01</ref><test>   0.267E-01</test><similarity>99</similarity><status>match</status></OM4.4><TH8><ref>   0.132E+01</ref><test>   0.132E+01</test><similarity>99</similarity><status>match</status></TH8><SG3.3><ref>   0.452E-01</ref><test>   0.452E-01</test><similarity>99</similarity><status>match</status></SG3.3><SG2.2><ref>   0.158E+05</ref><test>   0.158E+05</test><similarity>99</similarity><status>match</status></SG2.2><OM2.2><ref>   0.218E-01</ref><test>   0.219E-01</test><similarity>2.34</similarity><status>partial match</status></OM2.2><OM6.6><ref>   0.742E-01</ref><test>   0.742E-01</test><similarity>99</similarity><status>match</status></OM6.6><COV><ref>  0</ref><test>  0</test><similarity>99</similarity><status>match</status></COV><TH1><ref>   0.493E+00</ref><test>   0.493E+00</test><similarity>99</similarity><status>match</status></TH1><TH7><ref>   0.592E+00</ref><test>   0.591E+00</test><similarity>2.77</similarity><status>partial match</status></TH7><OM5.5><ref>   0.184E-01</ref><test>   0.184E-01</test><similarity>99</similarity><status>match</status></OM5.5><TH4><ref>   0.184E+02</ref><test>   0.184E+02</test><similarity>99</similarity><status>match</status></TH4><TH3><ref>   0.575E+01</ref><test>   0.575E+01</test><similarity>99</similarity><status>match</status></TH3><TH9><ref>   0.215E+01</ref><test>   0.215E+01</test><similarity>99</similarity><status>match</status></TH9><SG1.1><ref>   0.714E-01</ref><test>   0.714E-01</test><similarity>99</similarity><status>match</status></SG1.1></parameters></test_8></tests></runtest>
+<runtest><time><year>2010</year><month>02</month><day>01</day><hour>07</hour><minute>51</minute><second>08</second></time><script><name>runtest.pl</name><arguments><argument>3</argument></arguments></script><directory>/common/NONMEM/nm6osx6/test</directory><filename>/common/NONMEM/nm6osx6/test/runtest.2010.02.01.0751.08.xml</filename><username /><user>root</user><install_log>/common/NONMEM/nm6osx6/test/nmqual_install.2009.11.02.1048.xml</install_log><checksum><path name="nm">fb16aef4d90a363fc979e34a1e7a26c4</path><path name="pr">3e66c6847df4776fc37c0577ff2b5351</path><path name="tl">0b33f3fcfc3ae2a8a7a23cc542bd219c</path><path name="tr">f8da0860b6e4cfa8a272a026c1823721</path><path name="test/config.xml">247f6be5021856d55c43ae74bfe42a39</path><path name="test/runtest.pl">9ed002d0906001a25c4f02be6fe82e78</path><path name="test/nmqual.pm">d20ec821b65d33c5ba0484cff9a0582c</path><path name="test/nm6osx6.pl">ca45f198e6584fea9731d11c6e033ad8</path></checksum><tests><test_3><refFile>control3.ref.xml</refFile><testFile>control3.test.xml</testFile><streamFile>3.ctl</streamFile><outFile>3.lst</outFile><command>nm6osx6.pl</command><commandline>perl /common/NONMEM/nm6osx6/test/nm6osx6.pl /common/NONMEM/nm6osx6/test/3.ctl /common/NONMEM/nm6osx6/test/3.lst nochecksum</commandline><parameters><MIN><ref>  0</ref><test>  0</test><similarity>99</similarity><status>match</status></MIN><DESC><ref>3, THEOPHYLLINE SINGLE SUBJECT DATA                                                                 </ref><test>3, THEOPHYLLINE SINGLE SUBJECT DATA                                                                 </test><similarity>99</similarity><status>match</status></DESC><TH2><ref>   0.102E+00</ref><test>   0.102E+00</test><similarity>99</similarity><status>match</status></TH2><COV><ref>  0</ref><test>  0</test><similarity>99</similarity><status>match</status></COV><TH1><ref>   0.194E+01</ref><test>   0.194E+01</test><similarity>99</similarity><status>match</status></TH1><TH3><ref>   0.320E+02</ref><test>   0.320E+02</test><similarity>99</similarity><status>match</status></TH3><OFV><ref>   0.894E+01</ref><test>   0.894E+01</test><similarity>99</similarity><status>match</status></OFV><OM1.1><ref>   0.899E+00</ref><test>   0.899E+00</test><similarity>99</similarity><status>match</status></OM1.1></parameters></test_3></tests></runtest>
+</nonmem>

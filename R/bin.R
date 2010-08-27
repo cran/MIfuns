@@ -4,17 +4,18 @@ function(
 	population=x,
 	breaks=quantile(
 		population,
-		probs=c(0,0.25,0.5,0.75,1),
+		probs=probs,
 		...
 	),
+	probs=c(0,0.25,0.5,0.75,1),
+	include.lowest=TRUE,
 	...
 )table(
 	cut(
 		x,
 		breaks=breaks,
-		include.lowest=TRUE,
+		include.lowest=include.lowest,
 		...
-	),
-	...
+	)
 )
 

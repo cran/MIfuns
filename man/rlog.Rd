@@ -1,32 +1,62 @@
 \name{rlog}
 \alias{rlog}
-\title{ Generate a combined run log from multiple NONMEM runs }
+\title{Generate a Combined Run Log from Multiple NONMEM Runs}
 \description{
-  rlog will generate a combined run log for all run numbers
-  requested.  rlog will append to or overwrite any existing
-  combined run log depending on the user options specified 
-  in the call to rlog.
+  Generates a combined run log across specified runs.  Appends/overwrites 
+  existing file.  Attempts to purge certain files in run directory.  
 }
 \usage{
-rlog(b, boot, ProjectDir, runlog)
+rlog(
+	run, 
+	project = getwd(), 
+	boot = FALSE, 
+	append = TRUE,
+	tool = 'nm6',
+	file = filename(project,'CombRunLog.csv'),
+	rundir = filename(project, run, if(boot) '.boot' else ''),
+	nmlog = file.path(rundir,'NonmemRunLog.csv'),
+	nmout = filename(rundir,run,'.lst'),
+	pattern = if(boot)c('^F','^nonmem.exe','^P','^O','^Run') else '^FD',
+	test='FILE10',
+	...
+)
 }
 \arguments{
-  \item{b}{ Vector of control stream numbers to use to generate a combined run log.
-  Should be numeric with no placeholder zeros to left of number, i.e., "1" not "001".
-  Example: \code{b=c(1,2,5)} }
-  \item{boot}{ Flag to describe type of NONMEM run with (0)-normal, (1)-bootstrap, 
-  (2)-long runs, and (3)-bootstrap runs across entire cluster. 
-  Flag should be "0" on Windows. }
-  \item{ProjectDir}{System path to the directory containing the NONMEM control (*.ctl) streams. }
-  \item{runlog}{ Flag to describe process used to generate the combined run log with
-  (0)-no combined run log (0), (1)-generate combined run log of ctl streams in b by 
-  appending to existing combined run log, or (2)-generate combined run log of all ctl streams 
-  in b by overwriting existing combined run log. }
+  \item{run}{vector of run names (numbers)}
+  \item{project}{path to the directory containing run subdirectories}
+  \item{boot}{Were these runs in \file{.boot} directories?}
+  \item{append}{\code{TRUE}: append file; \code{FALSE}: overwrite file}
+  \item{tool}{\sQuote{nm6} or \sQuote{nm7}: controls methodology}
+  \item{file}{The run-generic output file to write. See details.}
+  \item{rundir}{path to run subdirectory}
+  \item{nmlog}{The run-specific input file to read (nm6 only). See details.}
+  \item{nmout}{The run-specific NONMEM output file to read (nm7 only). See details.}
+  \item{pattern}{search patterns for files to delete (regular expressions)}
+  \item{test}{the name of a file whose presence in the run directory indicates the run is still in progress}
+  \item{\dots}{passed to other functions}
 }
+
 \details{
- 
+	\code{rundir}, \code{nmlog}, and \code{nmout} can be vector; or scalar, in which case they may 
+	contain \sQuote{*}, to be replaced with run names on a per-run basis. 
+  
+	To suppress file deletion, supply a zero-length argument such as \code{NULL} for 
+	\code{pattern}.
+  
+	To suppress log creation on disk, supply a zero length argument for \code{file}.
+	
+	If \code{test} is present, rlog assumes the run is in progress and does not attempt file deletion.
 }
-\references{ MIfuns package available from Metrum Institute website (\code{http://metruminstitute.org/}). }
-\author{ Developed by Metrum Institute (Bill Knebel, Tim Bergsma, and others). }
-\examples{}
-\keyword{ manip }
+\value{
+  Combined runlog is returned invisibly in the unilog format.  Side effect: if
+  \code{file} is specified, runlog format is written to disk.
+}
+\references{\url{http://mifuns.googlecode.com}}
+\author{written by Bill Knebel; modified by Tim Bergsma.}
+\seealso{
+	\itemize{
+		\item{}{\code{\link{as.unilog.run}}}
+		\item{}{\code{\link{as.runlog.file}}}
+	}
+}
+\keyword{manip}

@@ -1,3 +1,5 @@
+`is.cwres.readable.file` <- function (filename) file.exists(filename)[1]
+
 `read.cwres.data` <-
 function (filename, old.file.convention = FALSE, est.tab.suffix = ".est", 
     deriv.tab.suffix = ".deriv", ...) 

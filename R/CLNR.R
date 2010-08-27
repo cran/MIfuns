@@ -1,10 +1,6 @@
 `CLNR` <-
-function (Dir, ProjectDir, note = "Files removed", test = TRUE) 
+function (Dir, project, note = "Files removed", test = TRUE) 
 {
-    Platform <- "Windows"
-    z<-regexpr("bsd",version$platform)
-    if (z>0){Platform <- "Nix"}else{
-         Platform <- "Windows"}
     FilesToRemove <- dir(path = Dir, full.names = TRUE, recursive = TRUE)
     FilesToRemoveComplete <- file.info(FilesToRemove)
     if (test == FALSE) {
@@ -13,7 +9,7 @@ function (Dir, ProjectDir, note = "Files removed", test = TRUE)
         if (answer == "y" | answer == "Y") {
             file.remove(FilesToRemove)
             FilesToRemove <- c(note, FilesToRemove)
-            FileNm <- paste(ProjectDir, "/", "FilesRemoved_", 
+            FileNm <- paste(project, "/", "FilesRemoved_", 
                 gsub("[[:space:]]|:", "_", date()), ".txt", sep = "")
             write.table(FilesToRemoveComplete, file = FileNm, 
                 sep = ",", quote = FALSE, row.names = TRUE, col.names = FALSE, 
@@ -21,13 +17,13 @@ function (Dir, ProjectDir, note = "Files removed", test = TRUE)
             answer2 <- readline(paste("Do you also want ", Dir, 
                 " and all it's subdirectories removed? ", sep = ""))
             if (answer2 == "y" | answer2 == "Y") {
-                setwd(ProjectDir)
-                if (Platform == "Windows") {
+                setwd(project)
+                if (win()) {
                   del.dir <- paste("cmd /C rmdir /S /Q ", "\"", 
                     Dir, "\"", sep = "")
                   system(del.dir)
                 }
-                else {
+                if (nix()){
                   deldir <- paste("rm -rf ", Dir, sep = "")
                   system(deldir)
                 }

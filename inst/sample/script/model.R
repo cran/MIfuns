@@ -1,0 +1,459 @@
+###################################################
+### chunk number 1: model
+###################################################
+getwd()
+library(MIfuns)
+command <- '/common/NONMEM/nm7_osx1/test/nm7_osx1.pl'
+cat.cov='SEX'
+cont.cov=c('HEIGHT','WEIGHT','AGE')
+par.list=c('CL','Q','KA','V','V2','V3')
+eta.list=paste('ETA',1:10,sep='')
+
+
+###################################################
+### chunk number 2: run
+###################################################
+if(!file.exists('../nonmem/1005/diagnostics.pdf'))NONR(
+     run=1005,
+     command=command,
+     project='../nonmem',
+     grid=TRUE,
+     nice=TRUE,
+     checkrunno=FALSE,
+     cont.cov=cont.cov,
+     cat.cov=cat.cov,
+     par.list=par.list,
+     eta.list=eta.list,
+     plotfile='../nonmem/*/diagnostics.pdf',
+     streams='../nonmem/ctl'
+)
+getwd()
+while(!file.exists('../nonmem/1005/diagnostics.pdf')){}
+
+
+###################################################
+### chunk number 3: predict
+###################################################
+t <- metaSub(
+     as.filename('../nonmem/ctl/1005.ctl'),
+     names=1105,
+     pattern=c(
+         '\\$THETA[^$]+',
+         '\\$OMEGA[^$]+',
+         '\\$SIGMA[^$]+',
+         '\\$EST[^$]+',
+         '\\$COV',
+         '\\$TABLE.*'
+     ),
+     replacement=c(
+         '$MSFI=../1005/1005.msf\n',
+         ';$OMEGA\n',
+         ';$SIGMA\n',
+         '$SIMULATION ONLYSIM (1968) SUBPROBLEMS=500\n',
+         ';$COV',
+         '$TABLE DV NOHEADER NOPRINT FILE=./*.tab FORWARD NOAPPEND\n'
+    ),
+    fixed=FALSE,
+    out='../nonmem/ctl',
+    suffix='.ctl'
+)
+
+
+###################################################
+### chunk number 4: sim
+###################################################
+if(!file.exists('../nonmem/1105/1105.lst'))NONR(
+     run=1105,
+     command=command,
+     project='../nonmem',
+     grid=TRUE,
+     nice=TRUE,
+     diag=FALSE,
+     streams='../nonmem/ctl'
+)
+getwd()
+while(!file.exists('../nonmem/1105/1105.lst')){}
+
+
+###################################################
+### chunk number 5: fetch
+###################################################
+phase1 <- read.csv('../data/derived/phase1.csv',na.strings='.')
+head(phase1)
+phase1 <- phase1[is.na(phase1$C),c('SUBJ','TIME','DV')]
+records <- nrow(phase1)
+records
+phase1 <- phase1[rep(1:records,500),]
+nrow(phase1)
+phase1$SIM <- rep(1:500,each=records)
+#head(phase1,300)
+with(phase1,DV[SIM==1 & SUBJ==12])
+with(phase1,DV[SIM==2 & SUBJ==12])
+
+
+###################################################
+### chunk number 6: preds
+###################################################
+pred <- scan('../nonmem/1105/1105.tab')
+nrow(phase1)
+length(pred)
+
+
+###################################################
+### chunk number 7: combine
+###################################################
+phase1$PRED <- pred
+head(phase1)
+phase1 <- phase1[!is.na(phase1$DV),]
+head(phase1)
+
+
+###################################################
+### chunk number 8: subject
+###################################################
+library(reshape)
+head(phase1)
+subject <- melt(phase1,measure.var=c('DV','PRED'))
+head(subject)
+
+
+###################################################
+### chunk number 9: metrics
+###################################################
+metrics <- function(x)list(min=min(x), med=median(x), max=max(x))
+
+
+###################################################
+### chunk number 10: cast
+###################################################
+subject <- data.frame(cast(subject, SUBJ + SIM + variable ~ .,fun=metrics))
+head(subject)
+
+
+###################################################
+### chunk number 11: metrics
+###################################################
+metr <- melt(subject,measure.var=c('min','med','max'),variable_name='metric')
+head(metr)
+
+
+###################################################
+### chunk number 12: acrossSubject
+###################################################
+head(metr)
+quants <- data.frame(cast(metr,SIM + metric + variable ~ .,fun=quantile,probs=c(0.05,0.50,0.95)))
+head(quants,10)
+
+
+###################################################
+### chunk number 13: logLogByMetric
+###################################################
+molten <- melt(quants, measure.var=c('X5.','X50.','X95.'),variable_name='quant')
+head(molten)
+frozen <- data.frame(cast(molten, SIM + metric + quant ~ variable))
+head(frozen)
+
+
+###################################################
+### chunk number 14: bivariate
+###################################################
+print(xyplot(
+	log(PRED)~log(DV)|metric,
+	frozen,
+	groups=quant,
+	layout=c(1,3),
+	auto.key=TRUE,
+	panel=function(...){
+		panel.xyplot(...)
+		panel.abline(a=0,b=1)
+	}
+))
+
+
+###################################################
+### chunk number 15: stripplot
+###################################################
+head(molten)
+molten$SIM <- NULL
+table(molten$variable)
+molten <- molten[!(duplicated(molten[,c('metric','variable','quant')]) & molten$variable=='DV'),]
+table(molten$variable)
+library(grid)
+print(stripplot(
+	~value|metric+quant,
+	molten,
+	groups=variable,
+	horizontal=TRUE,
+	auto.key=TRUE,
+	panel=panel.superpose,
+	alpha=0.5,
+	panel.groups=panel.stripplot
+))
+
+
+###################################################
+### chunk number 16: diamondBack
+###################################################
+print(stripplot(
+	quant~value|metric,
+	molten,
+	groups=variable,
+	auto.key=TRUE,
+	panel=panel.stratify,
+	alpha=0.5,
+	layout=c(1,3),
+	scales=list(relation='free'),
+	panel.levels = function(x,y,group.number,col,col.line,fill,font,...){
+		if(group.number==1)for(d in seq(length.out=length(x))) panel.polygon(
+			x=x[[d]]*c(0.8,1,1.25,1),
+			y=y[[d]] + c(0.25,0,0.25,0.5),
+			border=col.line,
+			col=fill,
+			...
+		)
+		else panel.densitystrip(x=x,y=y,col=fill,border=col.line,...)
+	}
+))
+
+
+###################################################
+### chunk number 17: bootstrap
+###################################################
+getwd()
+dir.create('../nonmem/1005.boot')
+dir.create('../nonmem/1005.boot/data')
+dir.create('../nonmem/1005.boot/ctl')
+
+
+###################################################
+### chunk number 18: control
+###################################################
+t <- metaSub(
+     clear(readLines('../nonmem/ctl/1005.ctl'),';.+',fixed=FALSE),
+     names=1:300,
+     pattern=c(
+         '1005',
+         '../../data/derived/phase1.csv',
+         '$COV',
+         '$TABLE'
+     ),
+     replacement=c(
+         '*',
+         '../data/*.csv',
+         ';$COV',
+         ';$TABLE'
+    ),
+    fixed=TRUE,
+    out='../nonmem/1005.boot/ctl',
+    suffix='.ctl'
+ )
+
+
+###################################################
+### chunk number 19: resample
+###################################################
+ bootset <- read.csv('../data/derived/phase1.csv')
+ r <- resample(
+ 	bootset,
+ 	names=1:300,
+ 	key='ID',
+ 	rekey=TRUE,
+ 	out='../nonmem/1005.boot/data',
+ 	stratify='SEX'
+ )
+
+
+###################################################
+### chunk number 20: boot
+###################################################
+if(!file.exists('../nonmem/1005.boot/CombRunLog.csv'))NONR(
+     run=1:300,
+     command=command,
+     project='../nonmem/1005.boot/',
+     boot=TRUE,
+     nice=TRUE,
+     streams='../nonmem/1005.boot/ctl'
+)
+getwd()  
+
+
+###################################################
+### chunk number 21: more
+###################################################
+#boot <- read.csv('../nonmem/1005.boot/log.csv',as.is=TRUE)
+#wait for bootstraps to finish
+while(!(all(file.exists(paste(sep='','../nonmem/1005.boot/',1:300,'.boot/',1:300,'.lst'))))){}
+if(file.exists('../nonmem/1005.boot/log.csv')){
+    boot <- read.csv('../nonmem/1005.boot/log.csv',as.is=TRUE)
+}else{
+    boot <- rlog(
+	run=1:300,
+	project='../nonmem/1005.boot',
+	boot=TRUE,
+	append=FALSE,
+	tool='nm7'
+    )
+    write.csv(boot, '../nonmem/1005.boot/log.csv')
+}
+head(boot)
+unique(boot$parameter)
+text2decimal(unique(boot$parameter))
+
+
+###################################################
+### chunk number 22: pars
+###################################################
+boot <- boot[!is.na(text2decimal(boot$parameter)),]
+head(boot)
+unique(boot$moment)
+unique(boot$value[boot$moment=='prse'])
+
+
+###################################################
+### chunk number 23: drop
+###################################################
+boot <- boot[boot$moment=='estimate',]
+boot$moment <- NULL
+unique(boot$tool)
+boot$tool <- NULL
+head(boot)
+unique(boot$value[boot$parameter %in% c('OMEGA2.1','OMEGA3.1','OMEGA3.2')])
+unique(boot$parameter[boot$value=='0'])
+
+
+###################################################
+### chunk number 24: off
+###################################################
+boot <- boot[!boot$value=='0',]
+any(is.na(as.numeric(boot$value)))
+boot$value <- as.numeric(boot$value)
+head(boot)
+
+
+###################################################
+### chunk number 25: clip
+###################################################
+boot$upper <- with(boot,reapply(value,INDEX=parameter,FUN=quantile,probs=0.975))
+boot$lower <- with(boot,reapply(value,INDEX=parameter,FUN=quantile,probs=0.025))
+nrow(boot)
+boot <- boot[with(boot, value < upper & value > lower),]
+nrow(boot)
+head(boot)
+boot$upper <- NULL
+boot$lower <- NULL
+head(boot)
+
+
+###################################################
+### chunk number 26: ctl2xml
+###################################################
+stream <- readLines('../nonmem/ctl/1005.ctl')
+tail(stream)
+doc <- ctl2xml(stream)
+doc
+params <- unique(boot[,'parameter',drop=FALSE])
+params$defs <- lookup(params$parameter,within=doc)
+params$labels <- lookup(params$parameter,within=doc,as='label')
+params
+boot$parameter <- lookup(boot$parameter,within=doc,as='label')
+head(boot)
+
+
+###################################################
+### chunk number 27: covs
+###################################################
+covariates <- read.csv('../data/derived/phase1.csv',na.strings='.')
+head(covariates)
+with(covariates,constant(WEIGHT,within=ID))
+covariates <- unique(covariates[,c('ID','WEIGHT')])
+head(covariates)
+covariates$WT <- as.numeric(covariates$WEIGHT)
+wt <- median(covariates$WT)
+wt
+range(covariates$WT)
+
+
+###################################################
+### chunk number 28: cuts
+###################################################
+head(boot) 
+unique(boot$parameter)
+clearance <- boot[boot$parameter %in% c('CL/F','WT.CL','Male.CL'),]
+head(clearance)
+frozen <- data.frame(cast(clearance,run~parameter),check.names=FALSE)
+head(frozen)
+frozen$WT.CL65 <- (65/70)**frozen$WT.CL
+frozen$WT.CL75 <- (75/70)**frozen$WT.CL
+frozen$WT.CL85 <- (85/70)**frozen$WT.CL
+
+
+###################################################
+### chunk number 29: key
+###################################################
+cl <- median(boot$value[boot$parameter=='CL/F'])
+cl
+head(frozen)
+frozen[['CL/F']] <- frozen[['CL/F']]/cl
+head(frozen)
+frozen$WT.CL <- NULL
+molten <- melt(frozen,id.var='run',na.rm=TRUE)
+head(molten)
+
+
+###################################################
+### chunk number 30: covplot
+###################################################
+levels(molten$variable)
+molten$variable <- factor(molten$variable,levels=rev(levels(molten$variable)))
+print(stripplot(variable~value,molten,panel=panel.covplot))
+
+
+###################################################
+### chunk number 31: params
+###################################################
+library(Hmisc)
+tab <- partab(1005,'../nonmem',tool='nm7',as=c('label','latex','model','estimate','unit','prse'))
+tab$estimate <- as.character(signif(as.numeric(tab$estimate),3))
+tab$estimate <- ifelse(is.na(tab$unit),tab$estimate,paste(tab$estimate, tab$unit))
+tab$unit <- NULL
+tab$label <- ifelse(is.na(tab$latex),tab$label,paste(tab$label, ' (',tab$latex,')',sep=''))
+tab$latex <- NULL
+names(tab)[names(tab)=='label'] <- 'parameter'
+tab$root <- signif(sqrt(exp(as.numeric(tab$estimate))-1),3)
+tab$estimate <- ifelse(contains('Omega|sigma',tab$parameter),paste(tab$estimate,' (\\%CV=',tab$root*100,')',sep=''),tab$estimate)
+tab$root <- NULL
+#offdiag <- contains('2.1',tab$parameter)
+#tab$estimate[offdiag] <- text2decimal(tab$estimate[offdiag])
+#omegablock <- text2decimal(tab$estimate[contains('Omega..(1|2)',tab$parameter)])
+#cor <- signif(half(cov2cor(as.matrix(as.halfmatrix(omegablock))))[[2]],3)
+#tab$estimate[offdiag] <- paste(sep='',tab$estimate[offdiag],' (COR=',cor,')')
+tab$model[is.na(tab$model)] <- ''
+#boot <- rlog(1:300,project='../nonmem/1005.boot',tool='nm7',boot=TRUE)
+boot <- read.csv('../nonmem/1005.boot/log.csv',as.is=TRUE)
+boot <- boot[boot$moment=='estimate',]
+boot <- data.frame(cast(boot,...~moment))
+boot[] <- lapply(boot,as.character)
+boot <- boot[contains('THETA|OMEGA|SIGMA',boot$parameter),c('parameter','estimate')]
+boot$estimate <- as.numeric(boot$estimate)
+boot <- data.frame(cast(boot,parameter~.,value='estimate',fun=function(x)list(lo=as.character(signif(quantile(x,probs=0.05),3)),hi=as.character(signif(quantile(x,probs=0.95),3)))))
+boot$CI <- with(boot, paste(sep='','(',lo,',',hi,')'))
+names(boot)[names(boot)=='parameter'] <- 'name'
+tab <- stableMerge(tab,boot[,c('name','CI')])
+tab$name <- NULL
+
+
+###################################################
+### chunk number 32: 
+###################################################
+latex(
+	tab,
+	file='',
+	rowname=NULL,
+	caption='Parameter Estimates from Population Pharmacokinetic Model Run 1005',
+	caption.lot='Model 10o5 Parameters',
+	label='p1005',
+	where='ht',
+	table.env=FALSE
+)
+
+

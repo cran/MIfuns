@@ -1,17 +1,18 @@
 \name{sqrtm}
 \alias{sqrtm}
-\title{ Called from compute.cwres to calculated CWRES. }
+\title{Help Calculate CWRES}
 \description{
-  A function called by \code{compte.cwres} to calculate CWRES. See
-  help file for \code{compute.cwres}.
+  This is a function called by \code{\link{compute.cwres}} to calculate CWRES. 
 }
 \usage{
 sqrtm(x)
 }
 \arguments{
-  \item{x}{ a matrix. }
+  \item{x}{a matrix.}
 }
-
-\seealso{\code{\link{CWRES}} }
-\examples{}
-\keyword{ manip }
+\seealso{
+	\itemize{
+		\item{}{\code{\link{compute.cwres}}}
+	}
+}
+\keyword{manip}

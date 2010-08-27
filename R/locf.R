@@ -7,4 +7,10 @@ function(x){
 	last.good.position[last.good.position==0] <- NA
 	x[last.good.position]
 }
+`forbak` <-
+function(x)nocb(locf(x))
+`bakfor` <-
+function(x)locf(nocb(x))
+`nocb` <-
+function(x)rev(locf(rev(x)))
 

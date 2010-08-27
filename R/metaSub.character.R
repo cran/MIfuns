@@ -1,3 +1,47 @@
+metaSub <- function(x,...)UseMethod("metaSub")
+
+metaSub.filename <- 
+function (x, names, pattern=NULL, replacement=NULL,...){
+       if(!length(x) %in% c(1,length(names)))stop("x must be scalar, or as long as 'names'")
+       if(!is.null(pattern))
+	       if(length(pattern)>0)
+		       for(i in 1:length(pattern))
+			       if(!length(pattern[[i]]) %in% c(1,length(names)))
+				       stop('pattern elements must be scalar or as long as "names"')
+       if(!is.null(replacement))
+	       if(length(replacement)>0)
+		       for(i in 1:length(replacement))
+			       if(!length(replacement[[i]]) %in% c(1,length(names)))
+				       stop('replacement elements must be scalar or as long as "names"')
+       choose <- function(set,i)if(length(set)==1)set else set[[i]]
+       invisible(lapply(
+       	   seq(length.out=length(names)),
+	   function(i,x,names,pattern,replacement,...)metaSub(
+	   	paste(
+			readLines(
+				choose(x,i)
+			),
+			collapse='\n'
+		),
+		names=choose(names,i),
+		pattern=if(is.null(pattern))NULL else lapply(pattern,choose,i),
+		replacement=if(is.null(replacement))NULL else lapply(replacement,choose,i),
+		...
+	  ),
+	  x=x,
+	  names=names,
+	  pattern=pattern,
+	  replacement=replacement,
+	  ...
+       ) )                                                                                                                                                 
+ }
+# metaSub(
+# 	as.filename(c('1001.ctl','1002.ctl')),
+#	names=c('a','b'),
+#	out='.',
+#	pattern=list(1001:1002),
+#	replacement=list(c('a','b'))
+#)
 `metaSub.character` <-
 function (x, names, pattern = NULL, replacement = NULL, out = NULL, 
     suffix = ".txt",fixed=TRUE,...) 
@@ -40,8 +84,9 @@ function (x, names, pattern = NULL, replacement = NULL, out = NULL,
         	)
         )
         replacement <- sapply(replacement, as.character)
-        replacement <- gsub(pattern = "\\*", replacement = name, 
-            x = replacement)
+        replacement <- gsub(pattern = "\\\\\\*", replacement = '_star_', x = replacement)
+        replacement <- gsub(pattern = "\\*", replacement = name, x = replacement)
+        replacement <- gsub(pattern = "_star_", replacement = '*', x = replacement)
         for (i in seq(pattern)) result <- do.call(
         	gsub,
         	c(

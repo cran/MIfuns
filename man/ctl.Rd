@@ -1,7 +1,7 @@
 \name{ctl}
 \alias{ctl}
 \docType{data}
-\title{A sample NONMEM(r) control stream}
+\title{A Sample NONMEM(r) Control Stream}
 \description{
   The control stream for running control test 8 of NMQual from Metrum Institute.
 }
@@ -12,11 +12,11 @@
 }
 \details{
   This control stream is stored here as a practice target for 
-  \code{resample.character()}.
+  \code{resample.character}.
 }
 \source{
   The file was borrowed from 8.ctl as distributed with NMQual from
-  http://metruminstitute.org/downloads/nmqual.
+  http://nmqual.googlecode.com.
 }
 \examples{
 data(ctl)

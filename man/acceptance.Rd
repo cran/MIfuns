@@ -1,36 +1,26 @@
 \name{acceptance}
 \alias{acceptance}
-\title{List the history of acceptance.}
+\title{List the History of Acceptance.}
 \description{
- This function reads "accept.xml" in .Library, if it exists, and prints it
+ This function reads \file{accept.xml} in \code{.Library}, if it exists, and prints it
  with the default method.
 }
 \usage{
 acceptance()
 }
 \details{
-  Data is displayed as xml markup.
+  Data is displayed as XML markup.
 }
 \value{
- an object of class XMLNode
-  ...
+ an object of class \code{XMLNode}
 }
-\references{http://metruminstitute.org}
+\references{\url{http://mifuns.googlecode.com}}
 \author{Tim Bergsma}
 \seealso{
-\code{\link{accept}},
-\code{\link{packageCheck}}}
-\examples{
-## The function is currently defined as
-function(){
-	library(XML)
-	filepath <- file.path(.Library,"accept.xml")
-	as.XMLNode <- function(x,...)UseMethod("as.XMLNode")
-	as.XMLNode.XMLDocument <- function(x,...)xmlTreeParse(x,...)$doc$children[[1]]
-	as.XMLNode.character <- function(x,...)xmlTreeParse(x,...)$doc$children[[1]]
-	if(file.exists(filepath))return(as.XMLNode.XMLDocument(filepath,asText=FALSE))
-	return(NULL)
-  }
+	\itemize{
+		\item{}{\code{\link{accept}}}
+		\item{}{\code{\link{packageCheck}}}
+	}
 }
-\keyword{ manip}
+\keyword{manip}
 

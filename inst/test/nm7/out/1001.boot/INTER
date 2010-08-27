@@ -1,0 +1,84 @@
+0ITERATION NO.:    0     OBJECTIVE VALUE:  0.899456526433380E+03
+
+ THETA - VECTOR OF FIXED EFFECTS PARAMETERS  *********
+
+            TH 1      TH 2
+        
+         1.30E+01  7.50E+01
+ 
+ OMEGA - COV MATRIX FOR RANDOM EFFECTS - ETAS  ********
+
+            ETA1      ETA2
+ 
+ ETA1
+         4.00E-02
+ 
+ ETA2
+         2.00E-02  4.00E-02
+ 
+ SIGMA - COV MATRIX FOR RANDOM EFFECTS - EPSILONS  ****
+
+            EPS1      EPS2
+ 
+ EPS1
+         4.00E-02
+ 
+ EPS2
+         0.00E+00  1.00E+00
+ 
+0ITERATION NO.:   10     OBJECTIVE VALUE:  0.609618641590958E+03
+
+ THETA - VECTOR OF FIXED EFFECTS PARAMETERS  *********
+
+            TH 1      TH 2
+        
+         1.17E+01  9.03E+01
+ 
+ OMEGA - COV MATRIX FOR RANDOM EFFECTS - ETAS  ********
+
+            ETA1      ETA2
+ 
+ ETA1
+         8.74E-02
+ 
+ ETA2
+         1.19E-02  3.37E-02
+ 
+ SIGMA - COV MATRIX FOR RANDOM EFFECTS - EPSILONS  ****
+
+            EPS1      EPS2
+ 
+ EPS1
+         5.56E-02
+ 
+ EPS2
+         0.00E+00  3.73E-02
+ 
+0ITERATION NO.:   20     OBJECTIVE VALUE:  0.602939982312962E+03
+
+ THETA - VECTOR OF FIXED EFFECTS PARAMETERS  *********
+
+            TH 1      TH 2
+        
+         1.14E+01  9.08E+01
+ 
+ OMEGA - COV MATRIX FOR RANDOM EFFECTS - ETAS  ********
+
+            ETA1      ETA2
+ 
+ ETA1
+         8.62E-02
+ 
+ ETA2
+         1.01E-02  3.68E-02
+ 
+ SIGMA - COV MATRIX FOR RANDOM EFFECTS - EPSILONS  ****
+
+            EPS1      EPS2
+ 
+ EPS1
+         4.72E-02
+ 
+ EPS2
+         0.00E+00  2.22E-02
+ 
