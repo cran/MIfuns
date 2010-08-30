@@ -7,7 +7,7 @@ handles each \sQuote{level} of data separately.  Typically, levels are the uniqu
 values of \code{y} (\code{horizontal==TRUE}) that result from a call to \code{stripplot} or \code{bwplot}.
   The default panel functions treat all levels simultaneously.  Plotting some 
   transformation of the data (e.g. density polygons for each level) is much easier if 
-  the levels are presented individually.
+  the levels are presented individually.  Package \pkg{lattice} required.
 }
 \usage{
 panel.stratify(

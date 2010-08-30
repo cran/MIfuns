@@ -30,10 +30,10 @@ This script runs NONMEM models and diagnostics for sample phase1 data.
 > library(MIfuns)
 \end{Sinput}
 \begin{Soutput}
-MIfuns 4.0.11 loaded
-Installing SIGCHLD signal handler...Done.
+MIfuns 4.0.17 
 \end{Soutput}
 \begin{Sinput}
+> library(lattice)
 > command <- '/common/NONMEM/nm7_osx1/test/nm7_osx1.pl'
 > cat.cov='SEX'
 > cont.cov=c('HEIGHT','WEIGHT','AGE')
@@ -76,21 +76,15 @@ Covariance succeeded on model 1005.
 > t <- metaSub(
 +      as.filename('../nonmem/ctl/1005.ctl'),
 +      names=1105,
-+      pattern=c(
-+          '\\$THETA[^$]+',
-+          '\\$OMEGA[^$]+',
-+          '\\$SIGMA[^$]+',
-+          '\\$EST[^$]+',
-+          '\\$COV',
-+          '\\$TABLE.*'
-+      ),
-+      replacement=c(
-+          '$MSFI=../1005/1005.msf\n',
-+          ';$OMEGA\n',
-+          ';$SIGMA\n',
-+          '$SIMULATION ONLYSIM (1968) SUBPROBLEMS=500\n',
++      pattern= '\\$THETA.*',
++      replacement=paste(
++          sep='\n',
++          '$MSFI=../1005/1005.msf',
++          ';$OMEGA',
++          ';$SIGMA',
++          '$SIMULATION ONLYSIM (1968) SUBPROBLEMS=500',
 +          ';$COV',
-+          '$TABLE DV NOHEADER NOPRINT FILE=./*.tab FORWARD NOAPPEND\n'
++          '$TABLE DV NOHEADER NOPRINT FILE=./*.tab FORWARD NOAPPEND'
 +     ),
 +     fixed=FALSE,
 +     out='../nonmem/ctl',
@@ -560,31 +554,31 @@ do not have time for bootstraps, use read.csv() on ../nonmem/1005.boot/log.csv.
   X tool run parameter   moment
 1 1  nm7   1      prob     text
 2 2  nm7   1       min   status
-3 3  nm7   1       ofv estimate
-4 4  nm7   1  OMEGA1.1 estimate
-5 5  nm7   1  OMEGA1.1     prse
-6 6  nm7   1  OMEGA2.1 estimate
+3 3  nm7   1       ofv  minimum
+4 4  nm7   1    THETA1 estimate
+5 5  nm7   1    THETA1     prse
+6 6  nm7   1    THETA2 estimate
                                              value
 1 1 phase1 2 CMT like 1004 but diff. initial on V3
 2                                                0
 3                                 2760.84241850239
-4                                         0.188595
+4                                          7.98893
 5                                             <NA>
-6                                                0
+6                                           19.892
 \end{Soutput}
 \begin{Sinput}
 > unique(boot$parameter)
 \end{Sinput}
 \begin{Soutput}
- [1] "prob"     "min"      "ofv"      "OMEGA1.1" "OMEGA2.1" "OMEGA2.2"
- [7] "OMEGA3.1" "OMEGA3.2" "OMEGA3.3" "SIGMA1.1" "THETA1"   "THETA2"  
-[13] "THETA3"   "THETA4"   "THETA5"   "THETA6"   "THETA7"  
+ [1] "prob"     "min"      "ofv"      "THETA1"   "THETA2"   "THETA3"  
+ [7] "THETA4"   "THETA5"   "THETA6"   "THETA7"   "OMEGA1.1" "OMEGA2.1"
+[13] "OMEGA2.2" "OMEGA3.1" "OMEGA3.2" "OMEGA3.3" "SIGMA1.1"
 \end{Soutput}
 \begin{Sinput}
 > text2decimal(unique(boot$parameter))
 \end{Sinput}
 \begin{Soutput}
- [1]  NA  NA  NA 1.1 2.1 2.2 3.1 3.2 3.3 1.1 1.0 2.0 3.0 4.0 5.0 6.0 7.0
+ [1]  NA  NA  NA 1.0 2.0 3.0 4.0 5.0 6.0 7.0 1.1 2.1 2.2 3.1 3.2 3.3 1.1
 \end{Soutput}
 \end{Schunk}
 It looks like we have 14 estimated parameters.  We will map them to the
@@ -595,13 +589,13 @@ original control stream.
 > head(boot)
 \end{Sinput}
 \begin{Soutput}
-  X tool run parameter   moment    value
-4 4  nm7   1  OMEGA1.1 estimate 0.188595
-5 5  nm7   1  OMEGA1.1     prse     <NA>
-6 6  nm7   1  OMEGA2.1 estimate        0
-7 7  nm7   1  OMEGA2.1     prse     <NA>
-8 8  nm7   1  OMEGA2.2 estimate 0.112992
-9 9  nm7   1  OMEGA2.2     prse     <NA>
+  X tool run parameter   moment     value
+4 4  nm7   1    THETA1 estimate   7.98893
+5 5  nm7   1    THETA1     prse      <NA>
+6 6  nm7   1    THETA2 estimate    19.892
+7 7  nm7   1    THETA2     prse      <NA>
+8 8  nm7   1    THETA3 estimate 0.0650249
+9 9  nm7   1    THETA3     prse      <NA>
 \end{Soutput}
 \begin{Sinput}
 > unique(boot$moment)
@@ -632,12 +626,12 @@ prse, and therefore moment, is noninformative for these bootstraps.
 \end{Sinput}
 \begin{Soutput}
     X run parameter     value
-4   4   1  OMEGA1.1  0.188595
-6   6   1  OMEGA2.1         0
-8   8   1  OMEGA2.2  0.112992
-10 10   1  OMEGA3.1         0
-12 12   1  OMEGA3.2         0
-14 14   1  OMEGA3.3 0.0854714
+4   4   1    THETA1   7.98893
+6   6   1    THETA2    19.892
+8   8   1    THETA3 0.0650249
+10 10   1    THETA4   3.35627
+12 12   1    THETA5   123.566
+14 14   1    THETA6   1.18258
 \end{Soutput}
 \begin{Sinput}
 > unique(boot$value[boot$parameter %in% c('OMEGA2.1','OMEGA3.1','OMEGA3.2')])
@@ -666,13 +660,13 @@ Off-diagonals (and only off-diagonals) are noninformative.
 > head(boot)
 \end{Sinput}
 \begin{Soutput}
-    X run parameter      value
-4   4   1  OMEGA1.1  0.1885950
-8   8   1  OMEGA2.2  0.1129920
-14 14   1  OMEGA3.3  0.0854714
-16 16   1  SIGMA1.1  0.0640717
-18 18   1    THETA1  7.9889300
-20 20   1    THETA2 19.8920000
+    X run parameter       value
+4   4   1    THETA1   7.9889300
+6   6   1    THETA2  19.8920000
+8   8   1    THETA3   0.0650249
+10 10   1    THETA4   3.3562700
+12 12   1    THETA5 123.5660000
+14 14   1    THETA6   1.1825800
 \end{Soutput}
 \end{Schunk}
 \subsection{Restrict data to 95 percentiles.}
@@ -700,13 +694,13 @@ scale independent.
 > head(boot)
 \end{Sinput}
 \begin{Soutput}
-    X run parameter      value       upper       lower
-4   4   1  OMEGA1.1  0.1885950  0.28599012  0.10657525
-8   8   1  OMEGA2.2  0.1129920  0.19930930  0.05290951
-14 14   1  OMEGA3.3  0.0854714  0.16658800  0.05277859
-16 16   1  SIGMA1.1  0.0640717  0.08328707  0.05422743
-18 18   1    THETA1  7.9889300 10.18006750  6.90182250
-20 20   1    THETA2 19.8920000 26.29300250 17.74395750
+    X run parameter       value        upper       lower
+4   4   1    THETA1   7.9889300  10.18006750  6.90182250
+6   6   1    THETA2  19.8920000  26.29300250 17.74395750
+8   8   1    THETA3   0.0650249   0.08202897  0.05760593
+10 10   1    THETA4   3.3562700   5.12041500  2.78587675
+12 12   1    THETA5 123.5660000 165.65365000 82.14751500
+14 14   1    THETA6   1.1825800   1.38279825  0.75346095
 \end{Soutput}
 \begin{Sinput}
 > boot$upper <- NULL
@@ -714,13 +708,13 @@ scale independent.
 > head(boot)
 \end{Sinput}
 \begin{Soutput}
-    X run parameter      value
-4   4   1  OMEGA1.1  0.1885950
-8   8   1  OMEGA2.2  0.1129920
-14 14   1  OMEGA3.3  0.0854714
-16 16   1  SIGMA1.1  0.0640717
-18 18   1    THETA1  7.9889300
-20 20   1    THETA2 19.8920000
+    X run parameter       value
+4   4   1    THETA1   7.9889300
+6   6   1    THETA2  19.8920000
+8   8   1    THETA3   0.0650249
+10 10   1    THETA4   3.3562700
+12 12   1    THETA5 123.5660000
+14 14   1    THETA6   1.1825800
 \end{Soutput}
 \end{Schunk}
 \subsection{Recover parameter metadata from a specially-marked control stream.}
@@ -766,30 +760,30 @@ stream.
 \end{Sinput}
 \begin{Soutput}
    parameter                                          defs              labels
-4   OMEGA1.1      interindividual variability on clearance $\\Omega^{1.1}CL/F$
-8   OMEGA2.2 interindividual variability on central volume $\\Omega^{2.2}Vc/F$
-14  OMEGA3.3             interindividual variability on Ka   $\\Omega^{3.3}Ka$
-16  SIGMA1.1                            proportional error $\\sigma^{1.1}prop$
-18    THETA1                                     clearance                CL/F
-20    THETA2                                central volume                Vc/F
-22    THETA3                           absorption constant                  Ka
-24    THETA4                  intercompartmental clearance                 Q/F
-26    THETA5                             peripheral volume                Vp/F
-28    THETA6                      male effect on clearance             Male.CL
-30    THETA7                    weight effect on clearance               WT.CL
+4     THETA1                                     clearance                CL/F
+6     THETA2                                central volume                Vc/F
+8     THETA3                           absorption constant                  Ka
+10    THETA4                  intercompartmental clearance                 Q/F
+12    THETA5                             peripheral volume                Vp/F
+14    THETA6                      male effect on clearance             Male.CL
+16    THETA7                    weight effect on clearance               WT.CL
+18  OMEGA1.1      interindividual variability on clearance $\\Omega^{1.1}CL/F$
+22  OMEGA2.2 interindividual variability on central volume $\\Omega^{2.2}Vc/F$
+28  OMEGA3.3             interindividual variability on Ka   $\\Omega^{3.3}Ka$
+30  SIGMA1.1                            proportional error $\\sigma^{1.1}prop$
 \end{Soutput}
 \begin{Sinput}
 > boot$parameter <- lookup(boot$parameter,within=doc,as='label')
 > head(boot)
 \end{Sinput}
 \begin{Soutput}
-    X run           parameter      value
-4   4   1 $\\Omega^{1.1}CL/F$  0.1885950
-8   8   1 $\\Omega^{2.2}Vc/F$  0.1129920
-14 14   1   $\\Omega^{3.3}Ka$  0.0854714
-16 16   1 $\\sigma^{1.1}prop$  0.0640717
-18 18   1                CL/F  7.9889300
-20 20   1                Vc/F 19.8920000
+    X run parameter       value
+4   4   1      CL/F   7.9889300
+6   6   1      Vc/F  19.8920000
+8   8   1        Ka   0.0650249
+10 10   1       Q/F   3.3562700
+12 12   1      Vp/F 123.5660000
+14 14   1   Male.CL   1.1825800
 \end{Soutput}
 \end{Schunk}
 \subsection{Create covariate plot.}
@@ -865,22 +859,22 @@ effectively reproducing the submodel from the control stream.
 > head(boot) 
 \end{Sinput}
 \begin{Soutput}
-    X run           parameter      value
-4   4   1 $\\Omega^{1.1}CL/F$  0.1885950
-8   8   1 $\\Omega^{2.2}Vc/F$  0.1129920
-14 14   1   $\\Omega^{3.3}Ka$  0.0854714
-16 16   1 $\\sigma^{1.1}prop$  0.0640717
-18 18   1                CL/F  7.9889300
-20 20   1                Vc/F 19.8920000
+    X run parameter       value
+4   4   1      CL/F   7.9889300
+6   6   1      Vc/F  19.8920000
+8   8   1        Ka   0.0650249
+10 10   1       Q/F   3.3562700
+12 12   1      Vp/F 123.5660000
+14 14   1   Male.CL   1.1825800
 \end{Soutput}
 \begin{Sinput}
 > unique(boot$parameter)
 \end{Sinput}
 \begin{Soutput}
- [1] "$\\Omega^{1.1}CL/F$" "$\\Omega^{2.2}Vc/F$" "$\\Omega^{3.3}Ka$"  
- [4] "$\\sigma^{1.1}prop$" "CL/F"                "Vc/F"               
- [7] "Ka"                  "Q/F"                 "Vp/F"               
-[10] "Male.CL"             "WT.CL"              
+ [1] "CL/F"                "Vc/F"                "Ka"                 
+ [4] "Q/F"                 "Vp/F"                "Male.CL"            
+ [7] "WT.CL"               "$\\Omega^{1.1}CL/F$" "$\\Omega^{2.2}Vc/F$"
+[10] "$\\Omega^{3.3}Ka$"   "$\\sigma^{1.1}prop$"
 \end{Soutput}
 \begin{Sinput}
 > clearance <- boot[boot$parameter %in% c('CL/F','WT.CL','Male.CL'),]
@@ -888,12 +882,12 @@ effectively reproducing the submodel from the control stream.
 \end{Sinput}
 \begin{Soutput}
     X run parameter    value
-18 18   1      CL/F 7.988930
-28 28   1   Male.CL 1.182580
-30 30   1     WT.CL 1.308790
-49 49   2      CL/F 7.636730
-59 59   2   Male.CL 0.956565
-61 61   2     WT.CL 2.369810
+4   4   1      CL/F 7.988930
+14 14   1   Male.CL 1.182580
+16 16   1     WT.CL 1.308790
+35 35   2      CL/F 7.636730
+45 45   2   Male.CL 0.956565
+47 47   2     WT.CL 2.369810
 \end{Soutput}
 \begin{Sinput}
 > frozen <- data.frame(cast(clearance,run~parameter),check.names=FALSE)

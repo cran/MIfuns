@@ -30,6 +30,7 @@ as.unilog.lst <- function(file,run,tool,...){
 	)
 }
 as.unilog.pxml <- function(x,run,tool='nm7',...){
+	library(XML)
 	if(is.null(x))return(unilog())
 	est <- paste(x,collapse='\n')
 	est <- gsub('\\(|\\)','',est)

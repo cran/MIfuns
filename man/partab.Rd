@@ -1,7 +1,7 @@
 \name{partab}
 \alias{partab}
 \title{Construct a Parameter Table}
-\description{Merges data from \code{rlog} and \code{lookup} to describe model run parameters.}
+\description{Merges data from \code{rlog} and \code{lookup} to describe model run parameters.  Requires \pkg{XML}.}
 \usage{
 partab(
 	run, 

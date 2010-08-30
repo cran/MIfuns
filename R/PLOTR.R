@@ -207,7 +207,7 @@ synthesis <- function(x,key=character(0),frames,...){
 	    frames[[1]] <- NULL
 	    z <- z[, union(key, intersect(x, names(z))),drop=FALSE]
         z <- z[!duplicated(z[, intersect(names(z), names(y))]),,drop=FALSE]
-        y <- stableMerge(y,z)
+        if(length(setdiff(names(z),names(y)))) y <- stableMerge(y,z)
 	    x <- setdiff(x,names(y))
     }
     y

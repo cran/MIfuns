@@ -4,7 +4,7 @@
 \alias{unitHist}
 \title{Plot Histograms Flexibly}
 \description{
-  \code{histogram} and \code{panel.histogram} in lattice are univariate.  Here,
+	\code{histogram} and \code{panel.histogram} in package \pkg{lattice} (expected) are univariate.  Here,
   we present a bivariate histogram panel function for use, e.g., with \code{stripplot}.
   \code{panel.bar} adds line segments, appropriate for reference lines in a histogram.
   \code{unitHist} calls \code{hist} but returns histogram specifications that have been

@@ -1,20 +1,14 @@
-.First.lib <-function(lib,pkg)
+.onLoad <-function(lib,pkg)
 {
-    ver <- as.character(
-    	read.dcf(
-		file.path(
-			lib, 
-			pkg, 
-			"DESCRIPTION"
-		), 
-		"Version"
-	)
+    methods::setClass(
+    	"nm.data", 
+    	methods::representation(
+    		data = "data.frame", 
+    		eta = "data.frame", 
+    		theta = "data.frame", 
+    		omega = "data.frame", 
+    		sigma = "data.frame"
+    	)
     )
-    cat("MIfuns", ver, "loaded\n")
-    if(.Platform$OS.type == 'unix'){
-	    library(fork)
-	    require(XML)
-	    handleSIGCLD()
-    }
-    library(MASS) 
+    cat('MIfuns',utils::packageDescription('MIfuns',fields='Version'),'\n')
 }

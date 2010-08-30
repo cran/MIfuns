@@ -82,6 +82,7 @@ qsub <- function(
 }
 config <- function(dir,...)file.path(dir,'config.xml')
 compiler <- function(config,pathsep='/',...){
+	library(XML)
 	tree <- xmlParse(config)
 	nmtran <- xmlValue(getNodeSet(tree,"//d:instruction[@id='nmtran']/text()",c(d='http://metruminstitute.org/nmqual/configuration'))[[1]])
 	nmtran <- sub('^ *','',nmtran)
@@ -89,6 +90,7 @@ compiler <- function(config,pathsep='/',...){
 	rev(strsplit(comp,pathsep)[[1]])[[1]]
 }
 nmVersion <- function(config,...){
+	library(XML)
 	tree <- xmlParse(config)
 	as.numeric(getNodeSet(tree,"//d:nonmem/@version",c(d='http://metruminstitute.org/nmqual/configuration'))[[1]])
 }

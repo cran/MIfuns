@@ -3,7 +3,8 @@
 \title{Generate a Combined Run Log from Multiple NONMEM Runs}
 \description{
   Generates a combined run log across specified runs.  Appends/overwrites 
-  existing file.  Attempts to purge certain files in run directory.  
+  existing file.  Attempts to purge certain files in run directory. Requires \pkg{XML} for
+  NONMEM 7.
 }
 \usage{
 rlog(

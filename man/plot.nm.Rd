@@ -3,7 +3,8 @@
 \title{Plot An Object of Class nm}
 \description{This specializes the generic \code{plot} for nm objects. 
 Standard arguments are derived and passed, together with extra arguments, 
-to a suite of diagnostic plots \code{nmPlots}.
+to a suite of diagnostic plots \code{nmPlots}.  Currently requires packages
+\pkg{lattice} and \pkg{reshape}.
 }
 \usage{
 \method{plot}{nm}(

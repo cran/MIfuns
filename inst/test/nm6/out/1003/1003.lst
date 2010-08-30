@@ -2,7 +2,7 @@
 <nonmem>
 <text><![CDATA[
 /Users/timb/project/metrum-mifuns/inst/test/nm6/script/../out/1003.lock/1003.lst
-2010.08.05.1605.50
+2010.08.30.1523.09
 $PROB RUN# 1003 ESTIMATE PK W/COVARIATE RELATIONSHIPS
 $INPUT C ID DV AMT II ADDL TIME RATE HT WT CLCR SEX AGE
 $DATA  ../../data/1003.csv IGNORE=C 
@@ -247,7 +247,7 @@ COM(4)=H21 IPRED MDV NOPRINT ONEHEADER FILE=./cwtab1.deriv
  EPS2
 +        0.00E+00  1.81E-02
  
-2010.08.05.1605.51
+2010.08.30.1523.11
 ........................................
 NONMEM run with /common/NONMEM/nm6osx6/test/nm6osx6.pl
 ........................................
@@ -844,7 +844,7 @@ implied by your target directory -->
 
 <!-- A field for arbitrary user content: can contain text or elements. -->
 <meta>Replace this text with any comments or data.</meta>
-</configuration><accepted><acceptor>billk</acceptor><time>2009.11.02.1055.16</time></accepted></nmqual><tests on="execution"><environment><variable name="SHELL">/bin/csh</variable><variable name="USER">timb</variable><variable name="PATH">/tmp/270533.1.all.q:/common/sge/bin/darwin-x86:/usr/local/bin:/usr/X11R6/bin:/bin:/sbin:/usr/bin:/bin:/usr/sbin:/sbin</variable></environment><system><test><command>perl -e "use POSIX; print join qq(,\n),uname"</command><result>Darwin,
+</configuration><accepted><acceptor>billk</acceptor><time>2009.11.02.1055.16</time></accepted></nmqual><tests on="execution"><environment><variable name="SHELL">/bin/csh</variable><variable name="USER">timb</variable><variable name="PATH">/tmp/279034.1.all.q:/common/sge/bin/darwin-x86:/usr/local/bin:/usr/X11R6/bin:/bin:/sbin:/usr/bin:/bin:/usr/sbin:/sbin</variable></environment><system><test><command>perl -e "use POSIX; print join qq(,\n),uname"</command><result>Darwin,
 metrum-host02.managed.contegix.com,
 9.8.0,
 Darwin Kernel Version 9.8.0: Wed Jul 15 16:55:01 PDT 2009; root:xnu-1228.15.4~1/RELEASE_I386,

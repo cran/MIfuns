@@ -9,8 +9,8 @@
   (http://nmqual.googlecode.com).  Execution on the Nix grid requires
   the installation of Sun Grid Engine v6.  Following a successful NONMEM
   run \code{NONR} can call \code{PLOTR} to create diagnostic plots (pdf format) and/or
-  run a user-written script.
- }
+  run a user-written script.    Requires \pkg{XML}.
+}
 \usage{
 NONR(
 	run, 
@@ -84,7 +84,7 @@ NONR(
   Should the runs represented by elements of \code{run} be run 
   concurrently as separate processes?  \code{TRUE} if \code{grid} is \code{TRUE},
   by default, since this is the primary advantage of using a grid.
-  Coerced to \code{FALSE} on Windows.
+  Coerced to \code{FALSE} on Windows.  Concurrency is implemented using the package \pkg{fork}.
  }
   
   \item{urgent}{

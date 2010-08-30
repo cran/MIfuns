@@ -17,6 +17,8 @@ function(
 	},
 	...
 ){
+	library(lattice)
+	library(reshape)
 	data <- data[data$ITERATION > -1000000002,]
 	y <- melt(data,id='ITERATION')
 	variable <- ''# to suppress R CMD check warning

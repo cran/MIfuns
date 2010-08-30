@@ -2,7 +2,7 @@
 <nonmem>
 <text><![CDATA[
 /Users/timb/project/metrum-mifuns/inst/test/nm6/script/../out/2/2.lst
-2010.08.05.1607.30
+2010.08.30.1519.39
 $PROB RUN# 2 Parent-Metabolite-Urine Model
 $DATA ../../data/2.csv IGNORE=C
 $INPUT C ID TIME AMT DV CRCL SEX WT AGE CMT EVID
@@ -1457,7 +1457,7 @@ IPRED MDV NOPRINT ONEHEADER FILE=./cwtab1.deriv
         -1.04E-10  7.90E-04  2.02E-03  1.93E-02  4.79E-02  8.19E-02  1.78E-01  2.24E-01  3.29E-01  3.91E-01  4.81E-01  5.80E-01
           8.61E-01  9.69E-01  1.52E+00  1.63E+00  2.11E+00  2.30E+00  2.40E+00  3.12E+00  3.76E+00
  
-2010.08.05.1608.17
+2010.08.30.1520.23
 ........................................
 NONMEM run with /common/NONMEM/nm6osx6/test/nm6osx6.pl
 ........................................

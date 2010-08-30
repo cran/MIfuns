@@ -3,6 +3,7 @@
 ###################################################
 getwd()
 library(MIfuns)
+library(lattice)
 command <- '/common/NONMEM/nm7_osx1/test/nm7_osx1.pl'
 cat.cov='SEX'
 cont.cov=c('HEIGHT','WEIGHT','AGE')
@@ -37,21 +38,15 @@ while(!file.exists('../nonmem/1005/diagnostics.pdf')){}
 t <- metaSub(
      as.filename('../nonmem/ctl/1005.ctl'),
      names=1105,
-     pattern=c(
-         '\\$THETA[^$]+',
-         '\\$OMEGA[^$]+',
-         '\\$SIGMA[^$]+',
-         '\\$EST[^$]+',
-         '\\$COV',
-         '\\$TABLE.*'
-     ),
-     replacement=c(
-         '$MSFI=../1005/1005.msf\n',
-         ';$OMEGA\n',
-         ';$SIGMA\n',
-         '$SIMULATION ONLYSIM (1968) SUBPROBLEMS=500\n',
+     pattern= '\\$THETA.*',
+     replacement=paste(
+         sep='\n',
+         '$MSFI=../1005/1005.msf',
+         ';$OMEGA',
+         ';$SIGMA',
+         '$SIMULATION ONLYSIM (1968) SUBPROBLEMS=500',
          ';$COV',
-         '$TABLE DV NOHEADER NOPRINT FILE=./*.tab FORWARD NOAPPEND\n'
+         '$TABLE DV NOHEADER NOPRINT FILE=./*.tab FORWARD NOAPPEND'
     ),
     fixed=FALSE,
     out='../nonmem/ctl',

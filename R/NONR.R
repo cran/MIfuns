@@ -64,6 +64,8 @@ function (
 		...
 	)
         if (concurrent){
+            library(fork)
+            suppressWarnings(handleSIGCLD())
             pid <- fork(NULL)
             if (pid == 0) {
                 do.call("runNonmem", args)

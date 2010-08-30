@@ -67,6 +67,8 @@ nmPlots <- list(
 		scales=list(x=list(relation='free')),
 		...
 	){
+	    library(lattice)
+	    library(reshape)
 	    formula <- as.formula(format(formula))
 	    if (!'ADDL' %in% names(data))data$ADDL <- NA
 	    if (!'II' %in% names(data))data$II <- NA
@@ -151,6 +153,8 @@ nmPlots <- list(
 		scales=list(y=list(relation='free')),
 		...
 	){
+	        library(lattice)
+	        library(reshape)
 		if(!length(continuous))return()
 		continuous <- continuous[
 			sapply(
@@ -192,6 +196,8 @@ nmPlots <- list(
 		type='l',
 		...
 	){
+	        library(lattice)
+	        library(reshape)
 		if(!length(continuous))return()
 		continuous <- continuous[
 			sapply(
@@ -270,6 +276,8 @@ nmPlots <- list(
 		as.table=TRUE,
 		...
 	){
+	        library(lattice)
+	        library(reshape)
 		if(!length(categorical))return()
 		categorical <- categorical[
 			sapply(
@@ -313,6 +321,8 @@ nmPlots <- list(
 		sets=1,
 		...
 	){
+	        library(lattice)
+	        library(reshape)
 		if(!length(categorical))return()
 		categorical <- categorical[
 			sapply(

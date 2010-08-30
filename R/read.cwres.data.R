@@ -121,9 +121,9 @@ function (filename, old.file.convention = FALSE, est.tab.suffix = ".est",
         }
     }
     if (tables.read) {
-        setClass("nm.data", representation(data = "data.frame", 
-            eta = "data.frame", theta = "data.frame", omega = "data.frame", 
-            sigma = "data.frame"))
+        #setClass("nm.data", representation(data = "data.frame", 
+        #    eta = "data.frame", theta = "data.frame", omega = "data.frame", 
+        #    sigma = "data.frame"))
         all.data <- vector("list", nsim)
         for (i in 1:nsim) {
             all.data[[i]] <- new("nm.data", data = data[data$iteration.number == 

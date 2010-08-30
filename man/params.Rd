@@ -2,7 +2,7 @@
 \alias{params}
 \title{List Documented Parameters}
 \description{Returns a vector of parameters available in a specially-formatted 
-XML document, preserving the order.}
+XML document, preserving the order.  Requires \pkg{XML}.}
 \usage{
 params(within, by = "name", type = "parameter", ...)
 }

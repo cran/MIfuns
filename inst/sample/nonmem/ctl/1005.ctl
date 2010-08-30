@@ -1,6 +1,6 @@
 $PROB 1005 phase1 2 CMT like 1004 but diff. initial on V3
 $INPUT C ID TIME SEQ=DROP EVID AMT DV SUBJ HOUR TAFD TAD LDOS MDV HEIGHT WT SEX AGE DOSE FED
-$DATA ../../data/ph1/derived/phase1.csv IGNORE=C
+$DATA ../../data/derived/phase1.csv IGNORE=C
 $SUBROUTINE ADVAN4 TRANS4
 $PK
  CL=THETA(1)*EXP(ETA(1)) * THETA(6)**SEX * (WT/70)**THETA(7)

@@ -24,6 +24,7 @@ function(nsim,theta,covar,omega,sigma,odf=NULL,sdf=NULL,digits=4,min=-Inf,max=In
   if(length(sdf)!=length(sigma))stop('length sdf differs from length sigma')
   if(any(odf < sapply(omega,length)))stop('odf[n] is less than number of elements in corresponding matrix')
   if(any(sdf < sapply(sigma,length)))stop('sdf[n] is less than number of elements in corresponding matrix')
+  library(MASS)
   mvr <- mvrnorm(nsim,theta,covar)
   omg <- lapply(1:length(odf),function(x)list(n=nsim,df=odf[[x]],cov=omega[[x]]))
   sig <- lapply(1:length(sdf),function(x)list(n=nsim,df=sdf[[x]],cov=sigma[[x]]))

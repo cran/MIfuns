@@ -176,7 +176,7 @@ function (
 	 args <- names(extras)
 	 lapply(
 	 	args,
-		function(x,extras)assign(x,extras[[x]]),
+		function(x,extras)assign(x,extras[[x]],envir=parent.frame()),
 		extras
 	)
 	try(source(script))

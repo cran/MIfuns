@@ -1,5 +1,6 @@
 params <-
 function(within,by='name',type='parameter',...){
+	library(XML)
 	if(length(by)!=1)stop('by must have length one')
 	if(is.na(by))return(NA)
 	tree <- xmlParse(within,asText=TRUE)
