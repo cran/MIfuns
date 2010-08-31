@@ -19,17 +19,16 @@
     
     #process data
     synthesis <- dataSynthesis(
-    	run,
-	project,
-	dvname,
-	logtrans,
-	grp,
-	grpnames,
-	cont.cov,
-	cat.cov,
-	par.list,
-	eta.list,
-	missing,
+    	run=run,
+	project=project,
+	logtrans=logtrans,
+	grp=grp,
+	grpnames=grpnames,
+	cont.cov=cont.cov,
+	cat.cov=cat.cov,
+	par.list=par.list,
+	eta.list=eta.list,
+	missing=missing,
 	rundir=rundir,
 	...
     )
@@ -230,7 +229,6 @@ dataFormat <- function(
 	tabfile,
 	covfile,
 	parfile,
-	dvname='DV',
 	logtrans=FALSE,
 	grp=NULL,
 	grpnames=NULL,
@@ -242,7 +240,7 @@ dataFormat <- function(
 	run,
 	...
 ){
-    if (logtrans) tabfile <- backtrans(tabfile,intersect(names(tabfile),c(dvname,'PRED','IPRE','IPRED')))    
+    if (logtrans) tabfile <- backtrans(tabfile,intersect(names(tabfile),c('DV','PRED','IPRE','IPRED')))    
     available <- unique(c(names(tabfile),names(covfile),names(parfile)))
     grp <- strain(grp,available)
     cont.cov <- strain(cont.cov,available)
@@ -268,7 +266,6 @@ dataFormat <- function(
 dataSynthesis <- function(
 	run, 
 	project=getwd(), 
-	dvname = 'DV',
 	logtrans = FALSE,
 	grp = NULL, 
 	grpnames = NULL,
@@ -299,7 +296,21 @@ dataSynthesis <- function(
     parfile <- getPars(parfile)
     
     #process data
-    synthesis <- dataFormat(tabfile,covfile,parfile,dvname,logtrans,grp,grpnames,cont.cov,cat.cov,par.list,eta.list,missing,run,...)
+    synthesis <- dataFormat(
+    	tabfile=tabfile,
+    	covfile=covfile,
+    	parfile=parfile,
+    	logtrans=logtrans,
+    	grp=grp,
+    	grpnames=grpnames,
+    	cont.cov=cont.cov,
+    	cat.cov=cat.cov,
+    	par.list=par.list,
+    	eta.list=eta.list,
+    	missing=missing,
+    	run=run,
+    	...
+    )
     synthesis
 }
 

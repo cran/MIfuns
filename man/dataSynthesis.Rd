@@ -17,7 +17,6 @@
   dataSynthesis(
 	run, 
 	project=getwd(), 
-	dvname = 'DV',
 	logtrans = FALSE,
 	grp = NULL, 
 	grpnames = NULL,
@@ -38,8 +37,6 @@
   \item{run}{a control stream name, typically integer}
  
   \item{project}{the directory containing the NONMEM run directories}
-
-  \item{dvname}{name of the dependent variable to use as a label for the diagnostic plots; Default: DV}
 
   \item{logtrans}{whether to transform the NONMEM output variables DV, PRED, and IPRED. Default: \code{FALSE}.}
 

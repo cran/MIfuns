@@ -10,7 +10,6 @@ dataFormat(
 	tabfile, 
 	covfile, 
 	parfile, 
-	dvname = 'DV', 
 	logtrans = FALSE, 
 	grp = NULL, 
 	grpnames = NULL, 
@@ -28,7 +27,6 @@ dataFormat(
 	\item{tabfile}{data.frame for \file{*.TAB}}
   \item{covfile}{data.frame for underlying dataset,one record per ID}
   \item{parfile}{data.frame for \file{*par.TAB}}
-  \item{dvname}{see \code{PLOTR}}
   \item{logtrans}{see \code{PLOTR}}
   \item{grp}{see \code{PLOTR}}
   \item{grpnames}{see \code{PLOTR}}
