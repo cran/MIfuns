@@ -9,34 +9,33 @@ function (Dir, project, note = "Files removed", test = TRUE)
         if (answer == "y" | answer == "Y") {
             file.remove(FilesToRemove)
             FilesToRemove <- c(note, FilesToRemove)
-            FileNm <- paste(project, "/", "FilesRemoved_", 
-                gsub("[[:space:]]|:", "_", date()), ".txt", sep = "")
+            FileNm <- glue(project, "/", "FilesRemoved_", 
+                gsub("[[:space:]]|:", "_", date()), ".txt")
             write.table(FilesToRemoveComplete, file = FileNm, 
                 sep = ",", quote = FALSE, row.names = TRUE, col.names = FALSE, 
                 append = FALSE)
-            answer2 <- readline(paste("Do you also want ", Dir, 
-                " and all it's subdirectories removed? ", sep = ""))
+            answer2 <- readline(glue("Do you also want ", Dir, 
+                " and all it's subdirectories removed? "))
             if (answer2 == "y" | answer2 == "Y") {
                 setwd(project)
                 if (win()) {
-                  del.dir <- paste("cmd /C rmdir /S /Q ", "\"", 
-                    Dir, "\"", sep = "")
+                  del.dir <- glue("cmd /C rmdir /S /Q ", "\"", 
+                    Dir, "\"")
                   system(del.dir)
                 }
                 if (nix()){
-                  deldir <- paste("rm -rf ", Dir, sep = "")
+                  deldir <- glue("rm -rf ", Dir)
                   system(deldir)
                 }
             }
-            else cat(paste("Files removed but ", Dir, " not removed", 
-                "\n", sep = ""))
+            else cat(glue("Files removed but ", Dir, " not removed", 
+                "\n"))
         }
-        else cat(paste("Removal of files aborted by user", "\n", 
-            sep = ""))
+        else cat(glue("Removal of files aborted by user", "\n"))
     }
     else {
-        cat(paste("Files that would have been deleted if test=TRUE", 
-            "\n", sep = ""))
+        cat(glue("Files that would have been deleted if test=TRUE", 
+            "\n"))
         dir(path = Dir, full.names = TRUE, recursive = TRUE)
     }
 }

@@ -6,10 +6,10 @@ function (filename, old.file.convention = FALSE, est.tab.suffix = ".est",
 {
     tables.read <- FALSE
     if (old.file.convention) {
-        if ((is.cwres.readable.file(paste(filename, ".50", sep = ""))) && 
-            (is.cwres.readable.file(paste(filename, ".52", sep = ""))) && 
-            (is.cwres.readable.file(paste(filename, ".54", sep = ""))) && 
-            (is.cwres.readable.file(paste(filename, ".56", sep = ""))) && 
+        if ((is.cwres.readable.file(glue(filename, ".50"))) && 
+            (is.cwres.readable.file(glue(filename, ".52"))) && 
+            (is.cwres.readable.file(glue(filename, ".54"))) && 
+            (is.cwres.readable.file(glue(filename, ".56"))) && 
             (is.cwres.readable.file(filename))) {
             nsim <- 1
             num.fields <- count.fields(filename, skip = 1)
@@ -35,16 +35,16 @@ function (filename, old.file.convention = FALSE, est.tab.suffix = ".est",
             theta <- vector("list", nsim)
             omega <- vector("list", nsim)
             sigma <- vector("list", nsim)
-            eta[[1]] <- read.table(paste(filename, ".50", sep = ""))
-            theta[[1]] <- read.table(paste(filename, ".52", sep = ""))
-            omega[[1]] <- read.table(paste(filename, ".54", sep = ""))
-            sigma[[1]] <- read.table(paste(filename, ".56", sep = ""))
+            eta[[1]] <- read.table(glue(filename, ".50"))
+            theta[[1]] <- read.table(glue(filename, ".52"))
+            omega[[1]] <- read.table(glue(filename, ".54"))
+            sigma[[1]] <- read.table(glue(filename, ".56"))
             tables.read <- TRUE
         }
     }
     else {
-        est.file <- paste(filename, est.tab.suffix, sep = "")
-        deriv.file <- paste(filename, deriv.tab.suffix, sep = "")
+        est.file <- glue(filename, est.tab.suffix)
+        deriv.file <- glue(filename, deriv.tab.suffix)
         if ((is.cwres.readable.file(est.file)) && (is.cwres.readable.file(deriv.file))) {
             nsim <- 1
             num.fields <- count.fields(deriv.file, skip = 1)
@@ -55,7 +55,7 @@ function (filename, old.file.convention = FALSE, est.tab.suffix = ".est",
                 if (length(inds) != 1) {
                   inds <- inds[c(2:length(inds))]
                   inds2 <- inds + 1
-                  tempfile <- paste(deriv.file, ".xptmp", sep = "")
+                  tempfile <- glue(deriv.file, ".xptmp")
                   write.table(tmp[-c(inds, inds2)], file = tempfile, 
                     row.names = FALSE, quote = FALSE)
                   data <- read.table(tempfile, skip = 2, h = TRUE)

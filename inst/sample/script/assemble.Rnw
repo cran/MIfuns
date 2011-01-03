@@ -102,6 +102,10 @@ We create a file using write.nm to format NAs specially, etc.
 <<write>>=
 write.nm(dat,file='../data/derived/phase1.csv')
 @
+We create a summary of which columns were hidden for which reasons.
+<<hidden>>=
+summary(hidden(dat))
+@
 \end{document}
 
 

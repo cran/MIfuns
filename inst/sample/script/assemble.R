@@ -84,3 +84,9 @@ head(dat)
 write.nm(dat,file='../data/derived/phase1.csv')
 
 
+###################################################
+### chunk number 11: hidden
+###################################################
+summary(hidden(dat))
+
+

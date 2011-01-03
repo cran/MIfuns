@@ -14,9 +14,20 @@
 \usage{
 	\method{as.csv.filename}{character}(x, ...)
 	\method{resample}{csv.filename}(x, ...)
-	\method{resample}{data.frame}(x, names, key = NULL, rekey =
-      FALSE, out = NULL, stratify = NULL, seed = 0,ext='.csv',
-      row.names=FALSE, quote=FALSE, sep=',',replace=TRUE,...)
+	\method{resample}{data.frame}(
+	x, 
+	names, 
+	key = NULL, 
+	rekey =FALSE, 
+	out = NULL, 
+	stratify = NULL, 
+	ext='.csv',
+	row.names=FALSE, 
+	quote=FALSE, 
+	sep=',',
+	replace=TRUE,
+	...
+)
 }
 
 \arguments{
@@ -30,7 +41,6 @@
   \item{stratify}{A list of factors, the interactions of which will be the levels of 
   	  stratification.  Each factor must have the same length as \code{nrow(x)}.  Or a character vector
   of names in \code{names(x)}.}
-  \item{seed}{a number to use as the seed for the random number generator}
   \item{ext}{a file extension}
   \item{row.names}{passed to \code{write.table}}
   \item{quote}{passed to \code{write.table}}

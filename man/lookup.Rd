@@ -9,7 +9,7 @@
   they are being used in a NONMEM control stream, an R plot, a latex table,
   etc.  The functions described here form a generalized interface for interconverting 
   these forms, given some xml-encoded data in a file, typically a control
-  stream.  Requires \pkg{XML}.
+  stream.  
 }
 \usage{
 lookup(    x, within, by = 'name', as = NULL, type = 'parameter', ...)

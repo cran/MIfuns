@@ -68,10 +68,16 @@ function (
             suppressWarnings(handleSIGCLD())
             pid <- fork(NULL)
             if (pid == 0) {
-                do.call("runNonmem", args)
+                tryCatch(
+                	do.call("runNonmem", args),
+                	error=function(e)warning(e$message,call.=FALSE,immediate.=TRUE)
+                )
                 exit()
             }
-        } else do.call('runNonmem', args)
+        } else tryCatch(
+        		do.call('runNonmem', args),
+        		error=function(e)warning(e$message,call.=FALSE,immediate.=TRUE)
+        	)
     }
     message("NONR complete.")
 }

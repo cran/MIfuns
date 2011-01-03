@@ -1,8 +1,7 @@
 `as.xml` <-
 function(x,...)UseMethod('as.xml')
 `as.xml.character` <-
-function(x,tag,...)paste(
-	sep='',
+function(x,tag,...)glue(
 	bracket(tag,...),
 	x,
 	bracket(tag,close=TRUE)

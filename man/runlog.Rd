@@ -19,7 +19,7 @@ unilog()
 as.runlog.file(file, ...)
 as.unilog.lst(file, run, tool, ...)
 as.unilog.pxml(x, run, tool = 'nm7', ...)
-as.unilog.runlog(x, tool = 'nm7', ...)
+as.unilog.runlog(x, tool = 'nm6', ...)
 as.runlog.unilog(x, ...)
 as.file.runlog(x, file = 'NonmemRunLog.csv', header = FALSE, quote = FALSE, na = '.', ...)
 }

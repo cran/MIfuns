@@ -8,7 +8,6 @@ function (
 	...
 ) 
 {
-    library(lattice)
     plots <- list()
     data <- data[!duplicated(data$ID),]
     #Covariate SPLOM
@@ -156,7 +155,6 @@ function (
 	...
 ) 
 {
-    library(lattice)
     plots <- list()
     #CWRES
     #CWRES vs. Categoricals

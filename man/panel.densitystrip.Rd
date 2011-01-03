@@ -13,7 +13,7 @@
   each distribution (unique \code{y}) falling within specified limits.
   \code{panel.ref} shades a swath of the panel between specified limits of the 
   primary axis.  \code{covplot} uses the other panel functions to assemble 
-  a sample display of covariate data.  Package \pkg{lattice} expected.
+  a sample display of covariate data.
 }
 \usage{
 panel.densitystrip(
@@ -181,7 +181,6 @@ boot <- boot[
 ]
 
 #plot using panel.covplot().
-library(lattice)
 stripplot(
 	variable~value,
 	boot,
@@ -198,7 +197,6 @@ stripplot(
 )
 
 #variations
-library(MASS)
 data(crabs)
 soup <- melt(crabs,id.var=c('sp','sex','index'))
 soup$relative <- with(soup,value/mean(value[variable=='CL']))

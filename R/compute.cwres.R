@@ -61,7 +61,7 @@ function (run.number=1, tab.prefix = "cwtab", sim.suffix = "",
     est.tab.suffix = ".est", deriv.tab.suffix = ".deriv", old.file.convention = FALSE, 
     id = "ALL", printToOutfile = TRUE, onlyNonZero = TRUE, ...) 
 {
-    out.file = paste(tab.prefix, run.number, sim.suffix, sep = "")
+    out.file = glue(tab.prefix, run.number, sim.suffix)
     full.dataset <- read.cwres.data(out.file, old.file.convention = old.file.convention, 
         est.tab.suffix = est.tab.suffix, deriv.tab.suffix = deriv.tab.suffix, 
         ...)
@@ -81,13 +81,13 @@ function (run.number=1, tab.prefix = "cwtab", sim.suffix = "",
         H.names = c()
         i = 1
         while (i < (length(dataset@sigma) + 1)) {
-            H.names = c(H.names, paste("H", i, "1", sep = ""))
+            H.names = c(H.names, glue("H", i, "1"))
             i = i + 1
         }
         G.names = c()
         i = 1
         while (i < (length(dataset@omega) + 1)) {
-            G.names = c(G.names, paste("G", i, "1", sep = ""))
+            G.names = c(G.names, glue("G", i, "1"))
             i = i + 1
         }
         if (id == "ALL") {
@@ -105,7 +105,7 @@ function (run.number=1, tab.prefix = "cwtab", sim.suffix = "",
             CWRES <- as.matrix(CWRES)
             if (printToOutfile == TRUE) {
                 if (old.file.convention) {
-                  filename <- paste(out.file, ".cwres", sep = "")
+                  filename <- glue(out.file, ".cwres")
                 }
                 else {
                   filename <- out.file
@@ -119,8 +119,8 @@ function (run.number=1, tab.prefix = "cwtab", sim.suffix = "",
           #tmp <- installed.packages(priority = "NA")
           #      if (length(grep("xpose4", tmp)) > 0) {
           #        xpose.version <- tmp["xpose4", "Version"]
-          #        xpose.text <- paste("from Xpose version", xpose.version, 
-          #          sep = " ")
+          #        xpose.text <- glue("from Xpose version", xpose.version) 
+          #          
           #      }
           #      else {
                   xpose.text <- "from Xpose 4.0-6.1"

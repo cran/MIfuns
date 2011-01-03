@@ -52,7 +52,7 @@ By default, each element in  \code{odf} and \code{sdf} will be the length
 apply to all parameters (as do the defaults).  Alternatively, the first \eqn{n} limits
 may be specified as a vector, in which case the remaining (if any) will be the default.
 If any simulated parameter does not fall between its limits, inclusive, the entire
-parameter set (row) is dropped from the result.
+parameter set (row) is dropped from the result, with warning.
 }
 \value{
 matrix, with column names indicating parameters, and row names indicating set
@@ -66,7 +66,7 @@ number before filtering by \code{min} and \code{max}.
 	}
 }
 \examples{
-set.seed(10)
+set.seed(100)
 simpar(
     nsim=10,
     theta=c(13,75,1),
@@ -80,6 +80,34 @@ simpar(
     sdf=c(99,99),
     min=rep(0,3),
     max=rep(90,3)
+)
+simpar(
+    nsim=1,
+    theta=c(13,75,1),
+    covar=matrix(c(10,7,2,7,30,1,2,1,0.5),ncol=3,nrow=3),
+    omega=list(
+	0.1,
+	matrix(c(0.04,0.02,0.02,0.04),ncol=2,nrow=2)
+    ),
+    odf=c(50,20),
+    sigma=list(0.04,1),
+    sdf=c(99,99),
+    min=rep(0,3),
+    max=rep(90,3)
+)
+simpar(
+    nsim=1,
+    theta=c(13,75,1),
+    covar=matrix(c(10,7,2,7,30,1,2,1,0.5),ncol=3,nrow=3),
+    omega=list(
+	0.1,
+	matrix(c(0.04,0.02,0.02,0.04),ncol=2,nrow=2)
+    ),
+    odf=c(50,20),
+    sigma=list(0.04,1),
+    sdf=c(99,99),
+    min=Inf,
+    max=-1
 )
 }
 \keyword{manip}

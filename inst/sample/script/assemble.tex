@@ -32,7 +32,7 @@ Load the MIfuns package.
 > library(MIfuns)
 \end{Sinput}
 \begin{Soutput}
-MIfuns 4.0.17 
+MIfuns 4.1.0 
 \end{Soutput}
 \end{Schunk}
 Groom the dose data
@@ -316,6 +316,17 @@ We create a file using write.nm to format NAs specially, etc.
 \begin{Sinput}
 > write.nm(dat,file='../data/derived/phase1.csv')
 \end{Sinput}
+\end{Schunk}
+We create a summary of which columns were hidden for which reasons.
+\begin{Schunk}
+\begin{Sinput}
+> summary(hidden(dat))
+\end{Sinput}
+\begin{Soutput}
+       predose zerodv
+total       40     25
+unique      25     10
+\end{Soutput}
 \end{Schunk}
 \end{document}
 

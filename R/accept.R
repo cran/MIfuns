@@ -33,7 +33,6 @@ function(
 	),
 	installMissing=TRUE
 ){
-	library(XML)
 	check <- NULL
 	if(!is.null(contingencies)){
 		if(!inherits(contingencies,"character"))stop("contingencies must be a character vector of package names, or NULL")
@@ -70,7 +69,6 @@ function(
 }
 `acceptance` <-
 function(){
-	library(XML)
 	filepath <- file.path(.Library,"accept.xml")
 	as.XMLNode <- function(x,...)UseMethod("as.XMLNode")
 	as.XMLNode.XMLDocument <- function(x,...)xmlTreeParse(x,...)$doc$children[[1]]

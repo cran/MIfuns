@@ -26,6 +26,7 @@
 \item \link{as.character.comment} convert comment to character
 \item \link{as.character.flag} convert flag to character
 \item \link{as.character.miTemporal} convert miTemporal to character
+\item \link{as.character.nmctl} convert nmctl to character
 \item \link{as.chartime} convert to time (generic, internal)
 \item \link{as.chartime.numeric} convert numeric to time
 \item \link{as.comment} convert to comment
@@ -47,6 +48,7 @@
 \item \link{as.halfmatrix.halfmatrix} preserve halfmatrix
 \item \link{as.keyed} convert to keyed
 \item \link{as.keyed.data.frame} convert data frame to keyed
+\item \link{as.list.nmctl} convert nmctl to list
 \item \link{as.matrix.halfmatrix} convert a vector to a symmetric matrix
 \item \link{as.miDate} convert to miDate
 \item \link{as.miDate.character} convert character to miDate
@@ -70,6 +72,8 @@
 \item \link{as.moot} convert to moot
 \item \link{as.nm} convert to nm (NMTRAN-ready NONMEM data set)
 \item \link{as.nm.data.frame} convert data frame to nm
+\item \link{as.nmctl} convert to nmctl
+\item \link{as.nmctl.character} convert character to nmctl
 \item \link{as.numeric.chartime} convert chartime to numeric
 \item \link{as.pxml.ext} convert a param file to XML
 \item \link{as.rigged} convert to rigged
@@ -152,19 +156,26 @@
 \item \link{format.miDate} format miDate
 \item \link{format.miDateTime} format miDateTime
 \item \link{format.miTime} format miTime
+\item \link{format.nmctl} format nmctl
 \item \link{getCovs} return non-commented non-duplicated rows of a NONMEM data set (internal)
 \item \link{getCwres} return the conditional weighted residuals pertinent to a given run (internal, expects cwtab1.deriv)
 \item \link{getdname} extract the path and file from the DATA block in the control stream associated with filename (internal)
 \item \link{getPars} return the non-duplicated (ID) rows corresponding to the specified filename (internal)
 \item \link{getTabs} return the observation rows (EVID==0) corresponding to the specified filename (internal)
+\item \link{glue} paste with no separator
 \item \link{groupnames} construct a single vector of group names from possibly multiple indicies to the plotting data set (internal)
 \item \link{half} generic
 \item \link{half.matrix} vectorize the lower triangular portion of a symmetric matrix
 \item \link{hash} prepend a character to each line of output
 \item \link{hide} generic
 \item \link{hide.data.frame} comment out the specified rows of a data frame, appending a flag that suggests the reason
+\item \link{hidden} generic
+\item \link{hidden.data.frame} show commented rows of a data frame
 \item \link{ibw} calculate ideal body weight
+\item \link{iterations} retrieve iteration statistics from NONMEM output file
 \item \link{ind.cwres} compute conditional weighted residuals (internal)
+\item \link{inner} generic
+\item \link{inner.data.frame} reduce columns to inner quantiles by imputing NA
 \item \link{is.cwres.readable.file} compute conditional weighted residuals (internal)
 \item \link{is.square} generic
 \item \link{is.square.matrix} test whether a matrix is square
@@ -178,6 +189,7 @@
 \item \link{locf} impute NA using last observation carried forward
 \item \link{lookup} translate among parameter attributes (vector)
 \item \link{lookup.one} translate among parameter attributes (scalar)
+\item \link{map} map one set of values to another
 \item \link{maxChar} return the number of printed characters for the widest element of x
 \item \link{merge.keyed} merge keyed data frames, preserving attributes
 \item \link{merge.nm} merge nm objects
@@ -202,6 +214,10 @@
 \item \link{noPk} generic
 \item \link{noPk.nm} rows where EVID is never 0 within SUBJ
 \item \link{nth} repeat, for each element, the \eqn{n^{th}}{n^th} element where a condition is \code{TRUE}  (usually, within levels of an index)
+\item \link{offdiag} generic
+\item \link{offdiag.halfmatrix} select just the off-diagonal elements of a halfmatrix
+\item \link{omegacor} convert omega covariance in NONMEM output to correlation matrix
+\item \link{only} repeat, for each element, the only element where a condition is \code{TRUE} (usually, within levels of an index)
 \item \link{Ops.keyed} use concise syntax to join data frames
 \item \link{ord} generic
 \item \link{ord.halfmatrix} compute the order of a half matrix
@@ -232,11 +248,13 @@
 \item \link{print.keyed.summary} print keyed summary
 \item \link{print.miTemporal} print miTemporal
 \item \link{print.nm.summary} print nm summary
+\item \link{print.nmctl} print nmctl
 \item \link{purge.dir} purge a directory (internal)
 \item \link{purge.files} purge files (internal)
 \item \link{qsub} prepare commandlines for qsub
 \item \link{read.cwres.data} compute conditional weighted residuals (internal)
 \item \link{read.nm} read a csv file and try to transform to nm
+\item \link{read.nmctl} read a NONMEM control stream, converting to modifiable object
 \item \link{reapply} apply a function across cells of an indexed vector, giving an identically-indexed result
 \item \link{rep.comment} repeat comment
 \item \link{rep.flag} repeat flag
@@ -256,6 +274,7 @@
 \item \link{runhead} determine whether each element is the start of a run
 \item \link{runlog} create a zero-row runlog
 \item \link{runNonmem} process a request for NONMEM invocation
+\item \link{runstate} determine the status of a run
 \item \link{safe.call} call a function, passing only those extra arguments that the function accepts
 \item \link{scavenge} find an expression in lines of text
 \item \link{seq.miTemporal} generate miTemporal sequence
@@ -270,6 +289,7 @@
 \item \link{star} replace asterisk in x with y (internal)
 \item \link{strain} reduce x to those elements that occur in options (internal)
 \item \link{summary.keyed} summarize a keyed data frame
+\item \link{summary.hidden.data.frame} summarize hidden rows of a data frame
 \item \link{summary.nm} summarize an nm object
 \item \link{synthesis} sequentially left-join an arbitrary number of data frames, picking up novel columns (internal)
 \item \link{tabfile} extract tabfile specification from a control stream
@@ -288,6 +308,7 @@
 \item \link{variants} locate variants of a file in distinctive subdirectories
 \item \link{win} identify Windows platforms (internal)
 \item \link{write.nm} write an nm object to file
+\item \link{write.nmctl} write an nmctl object to file
 \item \link{xtfrm.comment} produce a numeric vector that sorts in the same order as comment
 \item \link{xtfrm.flag} produce a numeric vector that sorts in the same order as flag
 \item \link{xtfrm.miTemporal} produce a numeric vector that sorts in the same order as miTemporal

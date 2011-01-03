@@ -64,7 +64,7 @@
 }
 xtfrm.comment <- function(x)as.numeric(x)
 
-
+`hide` <- function(x,...)UseMethod("hide")
 `hide.data.frame` <- function(x,where,why,...){
 	if(!"C" %in% names(x))x$C <- as.comment(FALSE)
 	where <- as.logical(where)
@@ -75,8 +75,82 @@ xtfrm.comment <- function(x)as.numeric(x)
 		x[[why]] <- as.flag(x[[why]])
 	}
 	x[[why]][where] <- as.flag(1)
-	x[,c("C",setdiff(names(x),"C"))]
+	class(x[[why]]) <- c('hide',class(x[[why]]))
+	x <- shuffle(x,'C')
+	x
 }
 
-`hide` <- function(x,...)UseMethod("hide")
+`hidden` <- function(x,...)UseMethod("hidden")
+
+`hidden.data.frame` <- function(x,...){
+	hideflags <- x[
+		,
+		sapply(
+			x,
+			function(col)all(
+				inherits(
+					col,
+					what=c('hide','flag'),
+					which=TRUE
+				)
+			)
+		),
+		drop=FALSE
+	]
+	class(x) <- c('hidden.data.frame',class(x))
+	if(!'C' %in% names(x)) return(x[character(0),])
+	if(!inherits(x$C,'comment')) {
+		warning('C column not of class "comment"')
+		return(x[character(0),])
+	}
+	if(ncol(hideflags) > 0 )if(!(all(x$C==as.logical(rowSums(as.matrix(hideflags))))))warning('mismatch between C column and hide flags')
+	y <- x[x$C,]
+	y		
+}
+summary.hidden.data.frame <- function(object,...){
+	x <- object
+	if('hidden.scope' %in% names(x))stop('hidden.scope is a reserved column name')
+	hideflags <- x[
+		,
+		sapply(
+			x,
+			function(col)all(
+				inherits(
+					col,
+					what=c('hide','flag'),
+					which=TRUE
+				)
+			)
+		),
+		drop=FALSE
+	]
+	if(ncol(hideflags)==0)return(data.frame(ncol=0))
+	if(nrow(hideflags)==0)return(data.frame(nrow=0))
+	unique <- hideflags[rowSums(hideflags)==1,,drop=FALSE]
+	hideflags$hidden.scope <- 'total'
+	if(nrow(unique))unique$hidden.scope <- 'unique'
+	else unique <- NULL
+	molten <- melt(rbind(hideflags,unique),id.var='hidden.scope')
+	y <- data.frame(cast(molten,fun=sum))
+	rownames(y) <- y$hidden.scope
+	y$hidden.scope <- NULL
+	y
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 

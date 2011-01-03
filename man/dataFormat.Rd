@@ -7,9 +7,9 @@
 }
 \usage{
 dataFormat(
-	tabfile, 
-	covfile, 
-	parfile, 
+	tabdata, 
+	covdata, 
+	pardata, 
 	logtrans = FALSE, 
 	grp = NULL, 
 	grpnames = NULL, 
@@ -24,9 +24,9 @@ dataFormat(
 }
 
 \arguments{
-	\item{tabfile}{data.frame for \file{*.TAB}}
-  \item{covfile}{data.frame for underlying dataset,one record per ID}
-  \item{parfile}{data.frame for \file{*par.TAB}}
+	\item{tabdata}{data.frame for \file{*.TAB}}
+  \item{covdata}{data.frame for underlying dataset,one record per ID}
+  \item{pardata}{data.frame for \file{*par.TAB}}
   \item{logtrans}{see \code{PLOTR}}
   \item{grp}{see \code{PLOTR}}
   \item{grpnames}{see \code{PLOTR}}

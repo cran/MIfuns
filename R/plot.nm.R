@@ -55,20 +55,18 @@ plot.nm <- function(
 }
 nmPlots <- list(
 	kinetics = function(
-		formula=value~TIME|ID,
+		formula=value~TIME|factor(SUBJ),
 		data,
 		dvname,
 		ivname,
 		by,
 		id.var=c('C','ID','TIME','SUBJ','SEQ'),
-		layout=NULL,
+		layout=c(3,5),
 		as.table=TRUE,
 		model='IPRE',
 		scales=list(x=list(relation='free')),
 		...
 	){
-	    library(lattice)
-	    library(reshape)
 	    formula <- as.formula(format(formula))
 	    if (!'ADDL' %in% names(data))data$ADDL <- NA
 	    if (!'II' %in% names(data))data$II <- NA
@@ -153,8 +151,6 @@ nmPlots <- list(
 		scales=list(y=list(relation='free')),
 		...
 	){
-	        library(lattice)
-	        library(reshape)
 		if(!length(continuous))return()
 		continuous <- continuous[
 			sapply(
@@ -196,8 +192,6 @@ nmPlots <- list(
 		type='l',
 		...
 	){
-	        library(lattice)
-	        library(reshape)
 		if(!length(continuous))return()
 		continuous <- continuous[
 			sapply(
@@ -276,8 +270,6 @@ nmPlots <- list(
 		as.table=TRUE,
 		...
 	){
-	        library(lattice)
-	        library(reshape)
 		if(!length(categorical))return()
 		categorical <- categorical[
 			sapply(
@@ -321,8 +313,6 @@ nmPlots <- list(
 		sets=1,
 		...
 	){
-	        library(lattice)
-	        library(reshape)
 		if(!length(categorical))return()
 		categorical <- categorical[
 			sapply(

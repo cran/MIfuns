@@ -8,7 +8,6 @@ function(
 	rekey=FALSE, 
 	out=NULL, 
 	stratify=NULL, 
-	seed=0,
 	ext='.csv',
 	row.names=FALSE,
 	quote=FALSE,
@@ -16,7 +15,6 @@ function(
 	replace=TRUE,
 	...
 ){
-set.seed(seed)
 dat <- x
 if(!is.null(out))out <- sub("/$","",out)
 if(is.null(key))dat$resample.rownames <- rownames(dat)
@@ -47,8 +45,8 @@ doName <- function(name,replace,...) {
         sample.dataset$resample.rownames <- NULL
         if (is.null(out)) 
             return(sample.dataset)
-        write.table(sample.dataset, file = paste(out, "/", name, 
-            ext, sep = ""), row.names = row.names, quote = quote, sep=sep,...)
+        write.table(sample.dataset, file = glue(out, "/", name, 
+            ext), row.names = row.names, quote = quote, sep=sep,...)
         return(nrow(sample.dataset))
 }
 invisible(lapply(as.list(as.character(names)), doName, replace=replace,...))

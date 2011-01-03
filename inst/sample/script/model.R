@@ -3,7 +3,6 @@
 ###################################################
 getwd()
 library(MIfuns)
-library(lattice)
 command <- '/common/NONMEM/nm7_osx1/test/nm7_osx1.pl'
 cat.cov='SEX'
 cont.cov=c('HEIGHT','WEIGHT','AGE')
@@ -35,27 +34,37 @@ while(!file.exists('../nonmem/1005/diagnostics.pdf')){}
 ###################################################
 ### chunk number 3: predict
 ###################################################
-t <- metaSub(
-     as.filename('../nonmem/ctl/1005.ctl'),
-     names=1105,
-     pattern= '\\$THETA.*',
-     replacement=paste(
-         sep='\n',
-         '$MSFI=../1005/1005.msf',
-         ';$OMEGA',
-         ';$SIGMA',
-         '$SIMULATION ONLYSIM (1968) SUBPROBLEMS=500',
-         ';$COV',
-         '$TABLE DV NOHEADER NOPRINT FILE=./*.tab FORWARD NOAPPEND'
-    ),
-    fixed=FALSE,
-    out='../nonmem/ctl',
-    suffix='.ctl'
-)
+ctl <- read.nmcontrol('../nonmem/ctl/1005.ctl')
 
 
 ###################################################
-### chunk number 4: sim
+### chunk number 4: strip
+###################################################
+ctl[] <- lapply(ctl,function(rec)sub(' *;.*','',rec))
+ctl
+
+
+###################################################
+### chunk number 5: fix
+###################################################
+ctl$prob
+ctl$prob <- sub('1005','1105',ctl$prob)
+names(ctl)
+names(ctl)[names(ctl)=='theta'] <- 'msfi'
+ctl$msfi <- '=../1005/1005/msf'
+ctl$omega <- NULL
+ctl$sigma <- NULL
+names(ctl)[names(ctl)=='estimation'] <- 'simulation'
+ctl$simulation <- 'ONLYSIM (1968) SUBPROBLEMS=500'
+ctl$cov <- NULL
+ctl$table <- NULL
+ctl$table <- NULL
+ctl$table <- 'DV NOHEADER NOPRINT FILE=./1105.tab FORWARD NOAPPEND'
+write.nmcontrol('../nonmem/ctl/1105.ctl')
+
+
+###################################################
+### chunk number 6: sim
 ###################################################
 if(!file.exists('../nonmem/1105/1105.lst'))NONR(
      run=1105,
@@ -71,7 +80,7 @@ while(!file.exists('../nonmem/1105/1105.lst')){}
 
 
 ###################################################
-### chunk number 5: fetch
+### chunk number 7: fetch
 ###################################################
 phase1 <- read.csv('../data/derived/phase1.csv',na.strings='.')
 head(phase1)
@@ -87,7 +96,7 @@ with(phase1,DV[SIM==2 & SUBJ==12])
 
 
 ###################################################
-### chunk number 6: preds
+### chunk number 8: preds
 ###################################################
 pred <- scan('../nonmem/1105/1105.tab')
 nrow(phase1)
@@ -95,7 +104,7 @@ length(pred)
 
 
 ###################################################
-### chunk number 7: combine
+### chunk number 9: combine
 ###################################################
 phase1$PRED <- pred
 head(phase1)
@@ -104,111 +113,125 @@ head(phase1)
 
 
 ###################################################
-### chunk number 8: subject
+### chunk number 10: subject
 ###################################################
-library(reshape)
 head(phase1)
 subject <- melt(phase1,measure.var=c('DV','PRED'))
 head(subject)
 
 
 ###################################################
-### chunk number 9: metrics
+### chunk number 11: metrics
 ###################################################
 metrics <- function(x)list(min=min(x), med=median(x), max=max(x))
 
 
 ###################################################
-### chunk number 10: cast
+### chunk number 12: cast
 ###################################################
 subject <- data.frame(cast(subject, SUBJ + SIM + variable ~ .,fun=metrics))
 head(subject)
 
 
 ###################################################
-### chunk number 11: metrics
+### chunk number 13: metrics
 ###################################################
 metr <- melt(subject,measure.var=c('min','med','max'),variable_name='metric')
 head(metr)
-
-
-###################################################
-### chunk number 12: acrossSubject
-###################################################
+metr$value <- reapply(
+	metr$value,
+	INDEX=metr[,c('SIM','variable','metric')],
+	FUN=sort,
+	na.last=FALSE
+)
+metr <- data.frame(cast(metr))
 head(metr)
-quants <- data.frame(cast(metr,SIM + metric + variable ~ .,fun=quantile,probs=c(0.05,0.50,0.95)))
-head(quants,10)
+nrow(metr)
+metr <- metr[!is.na(metr$DV),]#maybe no NA
+nrow(metr)
 
 
 ###################################################
-### chunk number 13: logLogByMetric
+### chunk number 14: qq
 ###################################################
-molten <- melt(quants, measure.var=c('X5.','X50.','X95.'),variable_name='quant')
-head(molten)
-frozen <- data.frame(cast(molten, SIM + metric + quant ~ variable))
-head(frozen)
+print(
+	xyplot(
+		PRED~DV|metric,
+		metr,
+		groups=SIM,
+		scales=list(relation='free'),
+		type='l',
+		panel=function(...){
+			panel.superpose(...)
+			panel.abline(0,1,col='white',lwd=2)
+		}
+	)
+)
 
 
 ###################################################
-### chunk number 14: bivariate
+### chunk number 15: qqdetail
 ###################################################
-print(xyplot(
-	log(PRED)~log(DV)|metric,
-	frozen,
-	groups=quant,
-	layout=c(1,3),
-	auto.key=TRUE,
-	panel=function(...){
-		panel.xyplot(...)
-		panel.abline(a=0,b=1)
-	}
-))
+med <- metr[metr$metric=='med',]
+med$metric <- NULL
+head(med)
+trim <- inner(med, id.var=c('SIM'),measure.var=c('PRED','DV'))
+head(trim)
+nrow(trim)
+trim <- trim[!is.na(trim$DV),]
+nrow(trim)
+head(trim)
+print(
+	xyplot(
+		PRED~DV,
+		trim,
+		groups=SIM,
+		type='l',
+		panel=function(x,y,...){
+			panel.xyplot(x=x,y=y,...)
+			panel.abline(0,1,col='white',lwd=2)
+			panel.abline(
+				v=quantile(x,probs=c(0.25,0.5,0.75)),
+				col='grey',
+				lty=2
+			)
+		}
+	)
+)
 
 
 ###################################################
-### chunk number 15: stripplot
+### chunk number 16: qqdensity
 ###################################################
-head(molten)
-molten$SIM <- NULL
-table(molten$variable)
-molten <- molten[!(duplicated(molten[,c('metric','variable','quant')]) & molten$variable=='DV'),]
-table(molten$variable)
-library(grid)
-print(stripplot(
-	~value|metric+quant,
-	molten,
-	groups=variable,
-	horizontal=TRUE,
-	auto.key=TRUE,
-	panel=panel.superpose,
-	alpha=0.5,
-	panel.groups=panel.stripplot
-))
-
-
-###################################################
-### chunk number 16: diamondBack
-###################################################
-print(stripplot(
-	quant~value|metric,
-	molten,
-	groups=variable,
-	auto.key=TRUE,
-	panel=panel.stratify,
-	alpha=0.5,
-	layout=c(1,3),
-	scales=list(relation='free'),
-	panel.levels = function(x,y,group.number,col,col.line,fill,font,...){
-		if(group.number==1)for(d in seq(length.out=length(x))) panel.polygon(
-			x=x[[d]]*c(0.8,1,1.25,1),
-			y=y[[d]] + c(0.25,0,0.25,0.5),
-			border=col.line,
-			col=fill,
-			...
-		)
-		else panel.densitystrip(x=x,y=y,col=fill,border=col.line,...)
-	}
-))
+head(trim)
+quantile(trim$DV)
+molt <- melt(trim, id.var='SIM')
+head(molt)
+quart <- data.frame(cast(molt,SIM+variable~.,fun=quantile,probs=c(0.25,0.5,0.75)))
+head(quart)
+molt <- melt(quart,id.var='variable',measure.var=c('X25.','X50.','X75.'),variable_name='quartile')
+head(molt)
+levels(molt$quartile)
+levels(molt$quartile) <- c('first quartile','second quartile','third quartile')
+head(molt)
+levels(molt$variable)
+molt$variable <- factor(molt$variable,levels=c('PRED','DV'))
+print(
+	densityplot(
+		~value|quartile,
+		molt,
+		groups=variable,
+		layout=c(3,1),
+		scales=list(relation='free'),
+		aspect=1,
+		panel=panel.superpose,
+		panel.groups=function(x,...,group.number){
+			if(group.number==1)panel.densityplot(x,...)
+			if(group.number==2)panel.abline(v=unique(x),...)
+		},
+		auto.key=TRUE
+	)
+)
 
 
 ###################################################
@@ -275,9 +298,8 @@ getwd()
 ###################################################
 ### chunk number 21: more
 ###################################################
-#boot <- read.csv('../nonmem/1005.boot/log.csv',as.is=TRUE)
 #wait for bootstraps to finish
-while(!(all(file.exists(paste(sep='','../nonmem/1005.boot/',1:300,'.boot/',1:300,'.lst'))))){}
+#while(!(all(file.exists(paste(sep='','../nonmem/1005.boot/',1:300,'.boot/',1:300,'.lst'))))){}
 if(file.exists('../nonmem/1005.boot/log.csv')){
     boot <- read.csv('../nonmem/1005.boot/log.csv',as.is=TRUE)
 }else{
@@ -293,6 +315,7 @@ if(file.exists('../nonmem/1005.boot/log.csv')){
 head(boot)
 unique(boot$parameter)
 text2decimal(unique(boot$parameter))
+boot$X <- NULL
 
 
 ###################################################
@@ -328,15 +351,15 @@ head(boot)
 ###################################################
 ### chunk number 25: clip
 ###################################################
-boot$upper <- with(boot,reapply(value,INDEX=parameter,FUN=quantile,probs=0.975))
-boot$lower <- with(boot,reapply(value,INDEX=parameter,FUN=quantile,probs=0.025))
-nrow(boot)
-boot <- boot[with(boot, value < upper & value > lower),]
-nrow(boot)
+boot <- inner(
+	boot, 
+	preserve='run',
+	id.var='parameter',
+	measure.var='value'
+)
 head(boot)
-boot$upper <- NULL
-boot$lower <- NULL
-head(boot)
+any(is.na(boot$value))
+boot <- boot[!is.na(boot$value),]
 
 
 ###################################################
@@ -407,7 +430,7 @@ print(stripplot(variable~value,molten,panel=panel.covplot))
 ### chunk number 31: params
 ###################################################
 library(Hmisc)
-tab <- partab(1005,'../nonmem',tool='nm7',as=c('label','latex','model','estimate','unit','prse'))
+tab <- partab(1005,'../nonmem',tool='nm7',as=c('label','latex','model','estimate','unit','prse','se'))
 tab$estimate <- as.character(signif(as.numeric(tab$estimate),3))
 tab$estimate <- ifelse(is.na(tab$unit),tab$estimate,paste(tab$estimate, tab$unit))
 tab$unit <- NULL
@@ -435,6 +458,7 @@ boot$CI <- with(boot, paste(sep='','(',lo,',',hi,')'))
 names(boot)[names(boot)=='parameter'] <- 'name'
 tab <- stableMerge(tab,boot[,c('name','CI')])
 tab$name <- NULL
+tab$se <- NULL
 
 
 ###################################################
@@ -445,7 +469,7 @@ latex(
 	file='',
 	rowname=NULL,
 	caption='Parameter Estimates from Population Pharmacokinetic Model Run 1005',
-	caption.lot='Model 10o5 Parameters',
+	caption.lot='Model 1005 Parameters',
 	label='p1005',
 	where='ht',
 	table.env=FALSE

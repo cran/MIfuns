@@ -51,7 +51,7 @@
   \item{out}{(path and) directory in which to write the resulting 
   control streams}
 
-  \item{suffix}{file extension for filenames, if \code{out} is suppied}
+  \item{suffix}{file extension for filenames, if \code{out} is supplied}
 
   \item{fixed}{passed to \code{gsub}: use \code{FALSE} if \code{pattern} contains 
   regular expressions. Scalar, or same length as \code{pattern}.}

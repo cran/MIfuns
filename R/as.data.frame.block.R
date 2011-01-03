@@ -1,8 +1,11 @@
 `as.data.frame.block` <-
 function(x,...){
 	con <- textConnection(x)
-	dat <- read.table(con,header=TRUE,as.is=TRUE,check.names=FALSE,...)
-	close(con)
+	dat <- tryCatch(
+		read.table(con,header=TRUE,as.is=TRUE,check.names=FALSE,...),
+		error=function(e)stop('cannot process block',call.=FALSE),
+		finally=close(con)
+	)
 	dat
 }
 

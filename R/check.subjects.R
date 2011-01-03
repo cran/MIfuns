@@ -13,12 +13,12 @@ function(x,subject){
           print(paste(columnName,": ",nsubNA, " (",round(100*nsubNA/nsub,1),
              "%) of subjects have only missing values",sep=""))
        }else{
-        print(paste(columnName,": ",nsubAll-nsubNA," (",
-                 round(100*(nsubAll-nsubNA)/nsubAll,1),"%) of subjects have all x;",sep=""))
-        print(paste("       ",nsubAll-nsub," (",round(100*(nsubAll-nsub)/nsubAll,1),
-             "%) of subjects have only missing values;",sep=""))
-        print(paste("       ",nsubNA+nsub -nsubAll," (",round(100*(nsubNA+nsub -nsubAll)/nsubAll,1),
-                 "%) of subjects have some missing values",sep=""))
+        print(glue(columnName,": ",nsubAll-nsubNA," (",
+                 round(100*(nsubAll-nsubNA)/nsubAll,1),"%) of subjects have all x;"))
+        print(glue("       ",nsubAll-nsub," (",round(100*(nsubAll-nsub)/nsubAll,1),
+             "%) of subjects have only missing values;"))
+        print(glue("       ",nsubNA+nsub -nsubAll," (",round(100*(nsubNA+nsub -nsubAll)/nsubAll,1),
+                 "%) of subjects have some missing values"))
        }  
      }
    }

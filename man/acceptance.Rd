@@ -3,7 +3,7 @@
 \title{List the History of Acceptance.}
 \description{
  This function reads \file{accept.xml} in \code{.Library}, if it exists, and prints it
- with the default method.  Requires \pkg{XML}.
+ with the default method. 
 }
 \usage{
 acceptance()

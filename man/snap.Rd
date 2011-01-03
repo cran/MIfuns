@@ -34,7 +34,6 @@ Tim Bergsma
 \examples{
 snap(c(0.0, 1.0, 1.2, 2.0, 2.9, 3))
 snap(-10:10, 0.3)
-library(lattice)
 xyplot(conc~Time,data=Theoph,groups=Subject)
 times <- c(0,.25,.5,1,2,4,5,7,9,12,24)
 xyplot(conc~snap(Time,times),data=Theoph,groups=Subject)

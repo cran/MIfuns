@@ -8,7 +8,7 @@ as.chartime.numeric <- function(x,format,mark=TRUE,...){
 		s <- !is.na(x) & is.finite(x) & x%%60!=0
 		z[s] <- '+'
 	}
-	y <- paste(y,z,sep='')
+	y <- glue(y,z)
 	y[is.na(x)] <- NA
 	y
 }

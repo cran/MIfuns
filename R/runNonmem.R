@@ -43,13 +43,26 @@ function (
   rundir <- star(rundir,run)
   ctlfile <- star(ctlfile,run)
   outfile <- star(outfile,run)
-  if(!file.exists(ctlfile))message(paste(ctlfile,'was not found'))
-  if(!file.exists(ctlfile))return()
-  control <- explicitPath(readLines(ctlfile))
-  if (checkrunno) writeLines(control <- fixFile(fixProblem(control,run),run),con=ctlfile)
-  tabfile <- tabfile(control,dir=final(rundir),...)
-  parfile <- parfile(control,dir=final(rundir),...)
-  msffile <- msffile(control,dir=final(rundir),...)
+  if(!file.exists(ctlfile))stop(ctlfile,' not found')
+  control <- read.nmctl(ctlfile)
+  outputdomain <- names(control) =='table' | contains('est',names(control))
+  control[outputdomain] <- lapply(control[outputdomain],explicitPath)
+  if (checkrunno) {
+  	  problemdomain <- contains('prob',names(control))
+  	  control[problemdomain] <- lapply(control[problemdomain],fixProblem,run=run)
+  	  control[outputdomain] <- lapply(control[outputdomain],fixFile,run=run)
+  	  write.nmctl(control,file=ctlfile)
+  }
+  tabfile <- ''
+  parfile <- ''
+  msffile <- ''
+  control <- as.character(control[outputdomain])
+  tryCatch(tabfile <- tabfile(control,dir=final(rundir),...),error=function(e)warning('cannot locate *.tab in control stream for run ',run,call.=FALSE,immediate.=TRUE))
+  tryCatch(parfile <- parfile(control,dir=final(rundir),...),error=function(e)warning('cannot locate *par.tab in control stream for run ', run,call.=FALSE,immediate.=TRUE))
+  tryCatch(msffile <- msffile(control,dir=final(rundir),...),error=function(e)warning('cannot locate *.msf in control stream for run ',run,call.=FALSE,immediate.=TRUE))
+  #tabfile <- tabfile(control,dir=final(rundir),...)
+  #parfile <- parfile(control,dir=final(rundir),...)
+  #msffile <- msffile(control,dir=final(rundir),...)
   script <- NULL
   epimatch <- try(match.fun(epilog),silent=TRUE)
   if(is.function(epimatch))epilog <- epimatch
@@ -59,7 +72,7 @@ function (
   }
   
   #Prepare the file environment.
-  if(compile){
+  if(command!='')if(compile){
   	  if(file.exists(plotfile))file.remove(plotfile)
 	  if(file.exists(outfile))file.remove(outfile)
 	  if(file.exists(tabfile))file.remove(tabfile)
@@ -69,14 +82,13 @@ function (
 	  if(rundir!=final(rundir))purge.dir(rundir)
 	  dir.create(rundir, showWarnings = FALSE)
 	  dname <- getdname(ctlfile)
-	  if(!file.exists(resolve(dname,rundir))){
-		  warning(paste(dname,'not visible from',rundir),call.=FALSE,immediate.=TRUE)
-		  return()
-	  }
+	  #The next error trap is redundant: prevents identical trap in getCovs()
+	  if(!file.exists(resolve(dname,rundir)))stop(dname,' not visible from ',rundir,call.=FALSE)
 	  file.copy(ctlfile, file.path(rundir,basename(ctlfile)), overwrite = TRUE)
   }
   #Run NONMEM.
-  runCommand(
+  if(command=='')message('skipping command')
+  else runCommand(
   	command=command,
 	run=run,
 	rdir=rundir,
@@ -105,12 +117,18 @@ function (
 	  }
 	
 	  #Diagnostics
-	  #try(runlog(run=run,outfile=outfile,...))
 	  if(!udef)
-	   if(nmVersion(config(dirname(command))) < 7)
-	    try(setCwres(cwres=getCwres(directory=final(rundir)),file=tabfile))
-	   #else(try(runlog(run=run,outfile=outfile,...)))
-	  if(diag)try(
+	   if(command!='')if(nmVersion(config(dirname(command))) < 7)
+	    tryCatch(
+    		setCwres(
+    			cwres=getCwres(
+    				directory=final(rundir)
+    			),
+    			file=tabfile
+    		),
+    		error=function(e)warning(e$message,call.=FALSE,immediate.=TRUE)
+    	    )
+	  if(diag)tryCatch(
 		PLOTR(
 			run=run,
 			project=project,
@@ -128,9 +146,10 @@ function (
 			rundir=final(rundir),
 			plotfile=plotfile,
 			...
-		)
+		),
+		error=function(e)warning(e$message,call.=FALSE,immediate.=TRUE)
 	  )
-	  if (!is.null(epilog))if(is.function(epilog))try(
+	  if (!is.null(epilog))if(is.function(epilog))tryCatch(
 		  epilog(
 			run=run,
 			project=project,
@@ -148,10 +167,10 @@ function (
 			rundir=final(rundir),
 			...,
 			script=script
-		)
+		),
+		error=function(e)warning(e$message,call.=FALSE,immediate.=TRUE)
 	  )
-	
-	  message(paste("Run ", run, " complete.", sep = ""))
+	  message("Run ", run, " complete.")
   }
 }
 
@@ -181,12 +200,12 @@ function (
 	)
 	try(source(script))
   }
-  fixProblem <- function(x,run)sub('(^\\$PROB(LEM)? +(RUN#? *)?)([^ ]+)(.*$)',paste(sep='','\\1',run,'\\5'),x,ignore.case=TRUE)
+  fixProblem <- function(x,run)sub('(^ *(RUN#? *)?)([^ ]+)(.*$)',glue('\\1',run,'\\4'),x,ignore.case=TRUE)
   fixFile <- function(x,run){
         x <- explicitPath(x)
 	risk <- grep('\\bTAB\\b|\\bMSF\\b',x,ignore.case=TRUE)
-        except <- grep('\\bMSFI\\b',x,ignore.case=TRUE)
-        risk <- setdiff(risk,except)
+        #except <- grep('\\bMSFI\\b',x,ignore.case=TRUE)
+        #risk <- setdiff(risk,except)
         dir <- dirname(x)
 	base <- basename(x)
 	base <- sub('^[^.(par)]+',run,base)
@@ -204,12 +223,27 @@ function (
   resolve <- function(file,dir)ifelse(contains('^\\.',file),file.path(dir,file),file)
   scavenge <- function(expr,lines){
 	  x <- lines[grep(expr,lines,ignore.case=TRUE, perl=TRUE)]
-	  if(length(x))return(x[[1]]) else return('')
+	  if(!length(x))stop('expression ',expr,' not found',call.=FALSE)
+	  x[[1]]
   }
-  extfile <- function(ctlfile,dir,extreg,...)resolve(extractPath(scavenge(extreg,ctlfile)),dir)  
-  tabfile <- function(ctlfile,dir,tabreg='(?<!par)\\.tab',...)extfile(ctlfile,dir,extreg=tabreg,...)
-  parfile <- function(ctlfile,dir,parreg='par\\.tab',...)extfile(ctlfile,dir,extreg=parreg,...)
-  msffile <- function(ctlfile,dir,msfreg='^(?!\\$MSFI).*\\.msf',...)extfile(ctlfile,dir,extreg=msfreg,...)
+  extfile <- function(ctlfile,dir,extreg,...){
+  	  x <- scavenge(extreg,ctlfile)
+  	  x <- extractPath(x)
+  	  x <- resolve(x,dir)
+  	  x
+  }
+  tabfile <- function(ctlfile,dir,tabreg='(?<!par)\\.tab',...)tryCatch(
+  	extfile(ctlfile,dir,extreg=tabreg,...),
+  	error=function(e)stop('cannot locate *.tab in control stream for ',dir,call.=FALSE)
+  ) 
+  parfile <- function(ctlfile,dir,parreg='par\\.tab',...)tryCatch(
+  	extfile(ctlfile,dir,extreg=parreg,...),
+  	error=function(e)stop('cannot locate *par.tab in control stream for ',dir,call.=FALSE)
+  )
+  msffile <- function(ctlfile,dir,msfreg='^(?!\\$MSFI).*\\.msf',...)tryCatch(
+  	extfile(ctlfile,dir,extreg=msfreg,...),
+  	error=function(e)stop('cannot locate *.msf in control stream for ',dir,call.=FALSE)
+  )
 	  
 	  
 	  

@@ -44,7 +44,7 @@ cwresPlots(
 }
 \details{
 	\code{PLOTR} passes the result of \code{dataSynthesis} to these functions and prints the
-	resulting lists (of trellis objects) on the open device. Currently implemented using package \pkg{lattice}; also requires \pkg{reshape}.
+	resulting lists (of trellis objects) on the open device. 
 }
 \value{
 a list of trellis objects

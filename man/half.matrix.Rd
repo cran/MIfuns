@@ -5,6 +5,8 @@
 \alias{as.halfmatrix}
 \alias{as.halfmatrix.halfmatrix}
 \alias{as.halfmatrix.default}
+\alias{offdiag}
+\alias{offdiag.halfmatrix}
 \alias{half}
 \title{Interconvert Between a Symmetric Matrix and a Triangular Matrix}
 \description{
@@ -12,13 +14,16 @@ Given a symmetric matrix, \code{half.matrix} converts the corresponding lower (u
 matrix to a vector in row- (column-) major order.  The vector 
 is named using the convention \code{row.column} (for the lower interpretation)
 and is classed as \code{halfmatrix}.  The function \code{as.matrix.halfmatrix}
-converts a halfmatrix-like vector to a symmetric matrix.
+converts a halfmatrix-like vector to a symmetric matrix. The \code{halfmatrix} 
+method for generic \code{offdiag} selects just the off-diagonal elements from 
+the (named) vector of the corresponding class.
 }
 \usage{
 \method{half}{matrix}(x,...)
 \method{as.matrix}{halfmatrix}(x,...)
 \method{as.halfmatrix}{halfmatrix}(x,...)
 \method{as.halfmatrix}{default}(x,...)
+\method{offdiag}{halfmatrix}(x,...)
 }
 \arguments{
   \item{x}{symmetric matrix (half) or halfmatrix equivalent (as.matrix)}
@@ -49,6 +54,7 @@ as.matrix(half(diag(3)))
 as.matrix.halfmatrix(1:15)
 as.matrix(as.halfmatrix(1:15))
 as.halfmatrix(1:10)
+offdiag(as.halfmatrix(1:10))
 }
 \keyword{manip}
 

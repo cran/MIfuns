@@ -6,6 +6,7 @@
 \alias{before}
 \alias{at}
 \alias{after}
+\alias{only}
 
 \title{Identify Elements Within Cells Meeting Some Instance of a Condition}
 \description{
@@ -13,16 +14,17 @@
 	\code{where} is \code{TRUE}, and repeat it at all positions in the level.
 }
 \usage{
-first(x,where=rep(TRUE,length(x)),within=rep(1,length(x)),...)
-last (x,where=rep(TRUE,length(x)),within=rep(1,length(x)),n=-1,...)
-nth  (x,where=rep(TRUE,length(x)),within=rep(1,length(x)),n=1,...)
-distance(where,within=rep(1,length(where)),n=1,...)
-before(  where,within=rep(1,length(where)),n=1,...)
-at(      where,within=rep(1,length(where)),n=1,...)
-after(   where,within=rep(1,length(where)),n=1,...)
+nth  (x,where,within,n=1,...)
+first(x,where,within,...)
+last (x,where,within,...)
+only (x,where,within,...)
+distance(where,within,n=1,...)
+before(  where,within,n=1,...)
+at(      where,within,n=1,...)
+after(   where,within,n=1,...)
 }
 \arguments{
-  \item{x}{vector}
+  \item{x}{vector (possibly factor)}
   \item{where}{vector, coerced to logical}
   \item{within}{a vector or list of vectors serving as an index}
   \item{n}{an integer giving the instance of interest}
@@ -30,27 +32,28 @@ after(   where,within=rep(1,length(where)),n=1,...)
 
 }
 \details{
-  \code{first} returns, for each position in \code{x}, the element corresponding to 
-  the first instance of \code{TRUE} in \code{where}, optionally nested within the index (\code{within}).
+  \code{nth} returns, for each postion in \code{x}, the \eqn{n^{th}}{n^th} element of \code{x}, optionally
+  limiting candidate elements by \code{where}, and optionally repeating the evaluation within subsets
+  as specified by \code{within}.  \code{n} can be 0, returning all \code{NA}, or negative,
+  which counts instances of from the end of the vector or subsets.  If \code{n} is NA, all elements are 
+  returned.
   
-  \code{nth} is a generalization operating on the \eqn{n^{th}}{n^th} instance, rather than the first.  
-  \code{n} can be 0, returning all \code{NA}, or negative,
-  which counts instances of \code{TRUE} from the end of \code{where}.
+  All of \code{x} \code{where}, and \code{within} are optional. The \sQuote{scale} of the function
+  is set to the longest of the three (member-wise for \code{within} if it is a list).  
+  Missing \code{x} is replaced with position indicies.  
+  Missing \code{where} and \code{within} are replaced with TRUE, repeated as long as scale.
+  No warnings are given if \code{within} has NA, or list members with different lengths.
   
-  One of \code{x} or \code{where} must be specified.  If \code{x} is missing, positions of 
-  elements in \code{where} are used as \code{x}.  \code{where} by default is an all-\code{TRUE} vector as long
-  as \code{x}.  If \code{where} is shorter than \code{x}, it is replicated to length of \code{x} with
-  warning.
+  \code{first} and \code{last} are convenience wrappers for \code{nth} that set \code{n} to 1 
+  and -1, respectively.  \code{only} is like \code{first}, but returns NA if a second instance exists.
   
-  \code{last} is a convenience wrapper for \code{nth} that silently coerces \code{n} to -1.
-  
-  \code{distance} merely subtracts, from positions in \code{where}, the positions corresponding to \eqn{n^{th}}{n^th} \code{TRUE} 
-  (optionally within levels of \code{within}). \code{before}, \code{at}, and \code{after} test
+  \code{distance} returns all position indices less the nth indicies, optionally considering 
+  \code{where} and \code{within}. \code{before}, \code{at}, and \code{after} test
   whether distance is less than, equal to, or greater than zero.
 }
 \value{
-	vector of same class as \code{x}, if supplied, else of class integer (or logical for \code{before},
-	\code{at}, and \code{after}).
+	vector of same class as \code{x}, if supplied, else of class integer. Logical for \code{before},
+	\code{at}, and \code{after}.
 }
 \references{\url{http://mifuns.googlecode.com}}
 \author{Tim Bergsma}
@@ -86,6 +89,12 @@ test
 # 8   2    3    1          8       10       FALSE    2
 # 9   2    4    0          8       10       FALSE    3
 # 10  2    5    1          8       10       FALSE    4
+only(
+	1:9,
+	where= c(0,1,0,  1,0,1,  0,0,0),
+	within=c(1,1,1,  2,2,2,  3,3,3)
+)
+#[1]  2  2  2 NA NA NA NA NA NA
 }
 \keyword{manip}
 

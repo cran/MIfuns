@@ -22,7 +22,6 @@ This script runs NONMEM models and diagnostics for sample phase1 data.
 <<model>>=
 getwd()
 library(MIfuns)
-library(lattice)
 command <- '/common/NONMEM/nm7_osx1/test/nm7_osx1.pl'
 cat.cov='SEX'
 cont.cov=c('HEIGHT','WEIGHT','AGE')
@@ -52,24 +51,31 @@ while(!file.exists('../nonmem/1005/diagnostics.pdf')){}
 Covariance succeeded on model 1005.
 \section{Predictive Check}
 \subsection{Create a simulation control stream.}
+Convert control stream to R object.
 <<predict>>=
-t <- metaSub(
-     as.filename('../nonmem/ctl/1005.ctl'),
-     names=1105,
-     pattern= '\\$THETA.*',
-     replacement=paste(
-         sep='\n',
-         '$MSFI=../1005/1005.msf',
-         ';$OMEGA',
-         ';$SIGMA',
-         '$SIMULATION ONLYSIM (1968) SUBPROBLEMS=500',
-         ';$COV',
-         '$TABLE DV NOHEADER NOPRINT FILE=./*.tab FORWARD NOAPPEND'
-    ),
-    fixed=FALSE,
-    out='../nonmem/ctl',
-    suffix='.ctl'
-)
+ctl <- read.nmcontrol('../nonmem/ctl/1005.ctl')
+@
+Strip comments and view.
+<<strip>>=
+ctl[] <- lapply(ctl,function(rec)sub(' *;.*','',rec))
+ctl
+@
+Fix records of interest.
+<<fix>>=
+ctl$prob
+ctl$prob <- sub('1005','1105',ctl$prob)
+names(ctl)
+names(ctl)[names(ctl)=='theta'] <- 'msfi'
+ctl$msfi <- '=../1005/1005/msf'
+ctl$omega <- NULL
+ctl$sigma <- NULL
+names(ctl)[names(ctl)=='estimation'] <- 'simulation'
+ctl$simulation <- 'ONLYSIM (1968) SUBPROBLEMS=500'
+ctl$cov <- NULL
+ctl$table <- NULL
+ctl$table <- NULL
+ctl$table <- 'DV NOHEADER NOPRINT FILE=./1105.tab FORWARD NOAPPEND'
+write.nmcontrol('../nonmem/ctl/1105.ctl')
 @
 \subsection{Run the simulation.}
 This run makes the predictions (simulations).
@@ -121,7 +127,6 @@ be useful to look at predictions from a subject-centric perspective.
 Therefore, we wish to calculate summary statistics for each subject, 
 (observed and predicted) and then make obspred comparisons therewith.
 <<subject>>=
-library(reshape)
 head(phase1)
 subject <- melt(phase1,measure.var=c('DV','PRED'))
 head(subject)
@@ -143,93 +148,97 @@ Now we melt the metrics.
 <<metrics>>=
 metr <- melt(subject,measure.var=c('min','med','max'),variable_name='metric')
 head(metr)
-@
-\subsubsection{Aggregate data across subjects, within simulations.}
-Our predictions have central tendencies, which can vary by SIM.
-Thus, our metrics as well have central tendencies that vary by SIM.
-We want to represent the variability across SIMS by aggregating within SIM.
-That means aggregating across subjects, within SIMS.  
-There are many aggregation strategies, but we choose quantiles for a non-parametric 
-result. Quantiles that 'clip' the tails of the distribution offer robustness against
-number of SIMS (i.e., results less dependent on number of sims).  
-Within each SIM, let's find for each metric the 5th, 50th, and 95th percentile.
-We also want to do this for the original data set (requires some minor rearrangement).
-<<acrossSubject>>=
+metr$value <- reapply(
+	metr$value,
+	INDEX=metr[,c('SIM','variable','metric')],
+	FUN=sort,
+	na.last=FALSE
+)
+metr <- data.frame(cast(metr))
 head(metr)
-quants <- data.frame(cast(metr,SIM + metric + variable ~ .,fun=quantile,probs=c(0.05,0.50,0.95)))
-head(quants,10)
+nrow(metr)
+metr <- metr[!is.na(metr$DV),]#maybe no NA
+nrow(metr)
 @
-Note, again, that DV quantiles are invariant across SIMS.
-\subsubsection{Reformat data for bivariate display.}
-We now have a lot of display options.  The simplest is to plot DV~PRED for each quantile and metric.
-Requires slight rearrangement.
-<<logLogByMetric>>=
-molten <- melt(quants, measure.var=c('X5.','X50.','X95.'),variable_name='quant')
-head(molten)
-frozen <- data.frame(cast(molten, SIM + metric + quant ~ variable))
-head(frozen)
+We plot using lattice.
+<<qq,fig=TRUE>>=
+print(
+	xyplot(
+		PRED~DV|metric,
+		metr,
+		groups=SIM,
+		scales=list(relation='free'),
+		type='l',
+		panel=function(...){
+			panel.superpose(...)
+			panel.abline(0,1,col='white',lwd=2)
+		}
+	)
+)
 @
-\subsubsection{Bivariate display of within-simulation aggregate metrics.}
-<<bivariate,fig=TRUE>>=
-print(xyplot(
-	log(PRED)~log(DV)|metric,
-	frozen,
-	groups=quant,
-	layout=c(1,3),
-	auto.key=TRUE,
-	panel=function(...){
-		panel.xyplot(...)
-		panel.abline(a=0,b=1)
-	}
-))
+
+For detail, we show one endpoint, tossing the outer 5 percent of values, and 
+indicating quartiles.
+<<qqdetail,fig=TRUE>>=
+med <- metr[metr$metric=='med',]
+med$metric <- NULL
+head(med)
+trim <- inner(med, id.var=c('SIM'),measure.var=c('PRED','DV'))
+head(trim)
+nrow(trim)
+trim <- trim[!is.na(trim$DV),]
+nrow(trim)
+head(trim)
+print(
+	xyplot(
+		PRED~DV,
+		trim,
+		groups=SIM,
+		type='l',
+		panel=function(x,y,...){
+			panel.xyplot(x=x,y=y,...)
+			panel.abline(0,1,col='white',lwd=2)
+			panel.abline(
+				v=quantile(x,probs=c(0.25,0.5,0.75)),
+				col='grey',
+				lty=2
+			)
+		}
+	)
+)
 @
-\subsubsection{Univariate displays.}
-For a better view of the distributions, however, we can work with single-axis plot functions,
-using the molten data.  For faster and clearer plotting, we remove duplicates of DV.
-\subsubsection{Classic stripplot}
-<<stripplot,fig=TRUE>>=
-head(molten)
-molten$SIM <- NULL
-table(molten$variable)
-molten <- molten[!(duplicated(molten[,c('metric','variable','quant')]) & molten$variable=='DV'),]
-table(molten$variable)
-library(grid)
-print(stripplot(
-	~value|metric+quant,
-	molten,
-	groups=variable,
-	horizontal=TRUE,
-	auto.key=TRUE,
-	panel=panel.superpose,
-	alpha=0.5,
-	panel.groups=panel.stripplot
-))
-@
-\subsubsection{Diamondback: reference regions on density strips}
-Here we show the distribution data as density strips, and indicate reference 
-regions around the point estimates. Here is one option. Also try swapping `quant' and 
-`metric'.
-<<diamondBack,fig=TRUE>>=
-print(stripplot(
-	quant~value|metric,
-	molten,
-	groups=variable,
-	auto.key=TRUE,
-	panel=panel.stratify,
-	alpha=0.5,
-	layout=c(1,3),
-	scales=list(relation='free'),
-	panel.levels = function(x,y,group.number,col,col.line,fill,font,...){
-		if(group.number==1)for(d in seq(length.out=length(x))) panel.polygon(
-			x=x[[d]]*c(0.8,1,1.25,1),
-			y=y[[d]] + c(0.25,0,0.25,0.5),
-			border=col.line,
-			col=fill,
-			...
-		)
-		else panel.densitystrip(x=x,y=y,col=fill,border=col.line,...)
-	}
-))
+
+We also show densityplots of predictions at those quartiles.
+<<qqdensity,fig=TRUE>>=
+head(trim)
+quantile(trim$DV)
+molt <- melt(trim, id.var='SIM')
+head(molt)
+quart <- data.frame(cast(molt,SIM+variable~.,fun=quantile,probs=c(0.25,0.5,0.75)))
+head(quart)
+molt <- melt(quart,id.var='variable',measure.var=c('X25.','X50.','X75.'),variable_name='quartile')
+head(molt)
+levels(molt$quartile)
+levels(molt$quartile) <- c('first quartile','second quartile','third quartile')
+head(molt)
+levels(molt$variable)
+molt$variable <- factor(molt$variable,levels=c('PRED','DV'))
+print(
+	densityplot(
+		~value|quartile,
+		molt,
+		groups=variable,
+		layout=c(3,1),
+		scales=list(relation='free'),
+		aspect=1,
+		panel=panel.superpose,
+		panel.groups=function(x,...,group.number){
+			if(group.number==1)panel.densityplot(x,...)
+			if(group.number==2)panel.abline(v=unique(x),...)
+		},
+		auto.key=TRUE
+	)
+)
 @
 \section{Bootstrap Estimates of Parameter Uncertainty}
 \subsection{Create directories.}
@@ -290,9 +299,8 @@ getwd()
 When the bootstraps are complete, we return here and summarize. If you 
 do not have time for bootstraps, use read.csv() on ../nonmem/1005.boot/log.csv.
 <<more>>= 
-#boot <- read.csv('../nonmem/1005.boot/log.csv',as.is=TRUE)
 #wait for bootstraps to finish
-while(!(all(file.exists(paste(sep='','../nonmem/1005.boot/',1:300,'.boot/',1:300,'.lst'))))){}
+#while(!(all(file.exists(paste(sep='','../nonmem/1005.boot/',1:300,'.boot/',1:300,'.lst'))))){}
 if(file.exists('../nonmem/1005.boot/log.csv')){
     boot <- read.csv('../nonmem/1005.boot/log.csv',as.is=TRUE)
 }else{
@@ -308,6 +316,7 @@ if(file.exists('../nonmem/1005.boot/log.csv')){
 head(boot)
 unique(boot$parameter)
 text2decimal(unique(boot$parameter))
+boot$X <- NULL
 @
 It looks like we have 14 estimated parameters.  We will map them to the
 original control stream.
@@ -340,15 +349,15 @@ with an unbounded distribution, (almost) any value is possible with enough sampl
 We clip to the 95 percentiles, to give distributions that are somewhat more
 scale independent.
 <<clip>>=
-boot$upper <- with(boot,reapply(value,INDEX=parameter,FUN=quantile,probs=0.975))
-boot$lower <- with(boot,reapply(value,INDEX=parameter,FUN=quantile,probs=0.025))
-nrow(boot)
-boot <- boot[with(boot, value < upper & value > lower),]
-nrow(boot)
+boot <- inner(
+	boot, 
+	preserve='run',
+	id.var='parameter',
+	measure.var='value'
+)
 head(boot)
-boot$upper <- NULL
-boot$lower <- NULL
-head(boot)
+any(is.na(boot$value))
+boot <- boot[!is.na(boot$value),]
 @
 \subsection{Recover parameter metadata from a specially-marked control stream.}
 We want meaningful names for our parameters.  Harvest these from a reviewed control
@@ -428,7 +437,7 @@ person.
 \section{Parameter Table}
 <<params>>=
 library(Hmisc)
-tab <- partab(1005,'../nonmem',tool='nm7',as=c('label','latex','model','estimate','unit','prse'))
+tab <- partab(1005,'../nonmem',tool='nm7',as=c('label','latex','model','estimate','unit','prse','se'))
 tab$estimate <- as.character(signif(as.numeric(tab$estimate),3))
 tab$estimate <- ifelse(is.na(tab$unit),tab$estimate,paste(tab$estimate, tab$unit))
 tab$unit <- NULL
@@ -456,6 +465,7 @@ boot$CI <- with(boot, paste(sep='','(',lo,',',hi,')'))
 names(boot)[names(boot)=='parameter'] <- 'name'
 tab <- stableMerge(tab,boot[,c('name','CI')])
 tab$name <- NULL
+tab$se <- NULL
 @ 
 <<results=tex,echo=FALSE>>=
 latex(
@@ -463,7 +473,7 @@ latex(
 	file='',
 	rowname=NULL,
 	caption='Parameter Estimates from Population Pharmacokinetic Model Run 1005',
-	caption.lot='Model 10o5 Parameters',
+	caption.lot='Model 1005 Parameters',
 	label='p1005',
 	where='ht',
 	table.env=FALSE

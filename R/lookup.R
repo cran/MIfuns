@@ -8,15 +8,14 @@ ctl2xml <- function(x,...){
 	doc[doc!='']
 }
 lookup.one <- function(x,within,by='name',as=NULL,type='parameter',...){
-	library(XML)
 	stopifnot(length(x)==1,length(by)==1,length(as)<=1)
 	if(length(x) !=1)stop('x must have length one')
 	if(is.na(x))return(NA)
 	if(length(by)!=1)stop('by must have length one')
 	if(is.na(by))return(NA)
 	tree <- xmlParse(within,asText=TRUE)
-	dpath <- paste('//',type,'[@',by,'="',x,'"]/text()',sep='')
-	apath <- paste('//',type,'[@',by,'="',x,'"]/@',as,sep='')
+	dpath <- glue('//',type,'[@',by,'="',x,'"]/text()')
+	apath <- glue('//',type,'[@',by,'="',x,'"]/@',as)
 	result <- if(is.null(as))xpathSApply(tree,dpath,fun=xmlValue) else xpathSApply(tree,apath)
 	free(tree)
 	if(!length(result))return(as.character(NA))

@@ -43,15 +43,15 @@ msffile(ctlfile,dir,msfreg='^(?!\\\\$MSFI).*\\\\.msf',...)
 }
 \details{
 \code{fixProblem} tries to substitute the run name in the NONMEM \$PROBLEM statement
-with the current run name.  It looks for PROB or PROBLEM, and then RUN or RUN\# 
+with the current run name.  It looks for any number of leading spaces, and then RUN or RUN\# 
 (optional).  The next space delimited word is replaced.
 
-\code{fixFiles} tries to replace the run name in filenames ending in \file{.msf}, \file{par.tab},
+\code{fixFile} tries to replace the run name in filenames ending in \file{.msf}, \file{par.tab},
 or \file{.tab}.  Currently it relies on \code{dirname} and \code{basename}, which use 
 the same file separator on 'Nix and Windows.  \code{basename} fails if there is no 
-path separator, e.g., \code{FILE=40.tab}.  \code{fixFiles} pre-processes its argument with
-\code{explicitPath}, as a work-around.  Lines containing \sQuote{MSFI} will be coerced using explicit
-paths, but will not otherwise be substituted.
+path separator, e.g., \code{FILE=40.tab}.  \code{fixFile} pre-processes its argument with
+\code{explicitPath}, as a work-around.  Lines containing \sQuote{MSFI} formerly were coerced using explicit
+paths, but are now ignored.
 
 \code{explicitPath} finds lines that contain \file{.tab} or \file{.msf} but not \sQuote{/}.  It tries to 
 place \sQuote{./} before \file{run.msf} or \file{run.tab}.
@@ -78,11 +78,11 @@ arguments, relying on \code{extfile} as the common engine.
 }
 \examples{
 prob <- c(
-	'$PROBLEM  1000 desc',
-	'$PROB  1000 desc',
-	'$PROBLEM  RUN1000 desc',
-	'$PROB  RUN#1000 desc',
-	'$PROB  RUN# 1000 desc'
+	'$  1000 desc',
+	'$1000 desc',
+	'$RUN1000 desc',
+	'$ RUN#1000 desc',
+	'$ RUN# 1000 desc'
 )
 fixProblem(prob,2000)
 msf <- c(
@@ -125,17 +125,9 @@ resolve('./file.ext',dir='project/pk')
 resolve('../file.ext',dir='project/pk/')
 scavenge('.tab',lines=c('text file.TAB','text file.csv'))
 ctlfile <- c('text file=../100.tab etc','text file=../100par.tab etc','text file=../100.msf etc')
-f <- textConnection(ctlfile)
-tabfile(f,dir='projectdir/100')
-close(f)
-
-f <- textConnection(ctlfile)
-parfile(f,dir='projectdir/100')
-close(f)
-
-f <- textConnection(ctlfile)
-msffile(f,dir='projectdir/100')
-close(f)
+tabfile(ctlfile,dir='projectdir/100')
+parfile(ctlfile,dir='projectdir/100')
+msffile(ctlfile,dir='projectdir/100')
 }		
 \keyword{manip}
 

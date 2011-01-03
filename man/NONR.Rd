@@ -9,7 +9,7 @@
   (http://nmqual.googlecode.com).  Execution on the Nix grid requires
   the installation of Sun Grid Engine v6.  Following a successful NONMEM
   run \code{NONR} can call \code{PLOTR} to create diagnostic plots (pdf format) and/or
-  run a user-written script.    Requires \pkg{XML}.
+  run a user-written script. 
 }
 \usage{
 NONR(

@@ -30,10 +30,9 @@ This script runs NONMEM models and diagnostics for sample phase1 data.
 > library(MIfuns)
 \end{Sinput}
 \begin{Soutput}
-MIfuns 4.0.17 
+MIfuns 4.1.0 
 \end{Soutput}
 \begin{Sinput}
-> library(lattice)
 > command <- '/common/NONMEM/nm7_osx1/test/nm7_osx1.pl'
 > cat.cov='SEX'
 > cont.cov=c('HEIGHT','WEIGHT','AGE')
@@ -71,25 +70,86 @@ To force a re-run of this model, delete 1005/diagnostics.pdf.
 Covariance succeeded on model 1005.
 \section{Predictive Check}
 \subsection{Create a simulation control stream.}
+Convert control stream to R object.
 \begin{Schunk}
 \begin{Sinput}
-> t <- metaSub(
-+      as.filename('../nonmem/ctl/1005.ctl'),
-+      names=1105,
-+      pattern= '\\$THETA.*',
-+      replacement=paste(
-+          sep='\n',
-+          '$MSFI=../1005/1005.msf',
-+          ';$OMEGA',
-+          ';$SIGMA',
-+          '$SIMULATION ONLYSIM (1968) SUBPROBLEMS=500',
-+          ';$COV',
-+          '$TABLE DV NOHEADER NOPRINT FILE=./*.tab FORWARD NOAPPEND'
-+     ),
-+     fixed=FALSE,
-+     out='../nonmem/ctl',
-+     suffix='.ctl'
-+ )
+> ctl <- read.nmcontrol('../nonmem/ctl/1005.ctl')
+\end{Sinput}
+\end{Schunk}
+Strip comments and view.
+\begin{Schunk}
+\begin{Sinput}
+> ctl[] <- lapply(ctl,function(rec)sub(' *;.*','',rec))
+> ctl
+\end{Sinput}
+\begin{Soutput}
+ [1] "$PROB 1005 phase1 2 CMT like 1004 but diff. initial on V3"                                   
+ [2] "$INPUT C ID TIME SEQ=DROP EVID AMT DV SUBJ HOUR TAFD TAD LDOS MDV HEIGHT WT SEX AGE DOSE FED"
+ [3] "$DATA ../../data/derived/phase1.csv IGNORE=C"                                                
+ [4] "$SUBROUTINE ADVAN4 TRANS4"                                                                   
+ [5] "$PK  CL=THETA(1)*EXP(ETA(1)) * THETA(6)**SEX * (WT/70)**THETA(7)"                            
+ [6] " V2 =THETA(2)*EXP(ETA(2))"                                                                   
+ [7] " KA=THETA(3)*EXP(ETA(3))"                                                                    
+ [8] " Q  =THETA(4)"                                                                               
+ [9] " V3=THETA(5)"                                                                                
+[10] " S2=V2"                                                                                      
+[11] " "                                                                                           
+[12] "$ERROR  Y=F*EXP(ERR(1))"                                                                     
+[13] " IPRE=F"                                                                                     
+[14] ""                                                                                            
+[15] "$THETA (0,10,50)"                                                                            
+[16] "(0,10,100)"                                                                                  
+[17] "(0,0.2, 5)"                                                                                  
+[18] "(0,10,50)"                                                                                   
+[19] "(0,100,1000)"                                                                                
+[20] "(0,1,2)"                                                                                     
+[21] "(0,0.75,3)"                                                                                  
+[22] ""                                                                                            
+[23] "$OMEGA 0.09 0.09 0.09 "                                                                      
+[24] ""                                                                                            
+[25] ""                                                                                            
+[26] ""                                                                                            
+[27] ""                                                                                            
+[28] ""                                                                                            
+[29] "$SIGMA 0.09"                                                                                 
+[30] ""                                                                                            
+[31] ""                                                                                            
+[32] ""                                                                                            
+[33] "$ESTIMATION MAXEVAL=9999 PRINT=5 NOABORT METHOD=1 INTER MSFO=./1005.msf"                     
+[34] "$COV PRINT=E"                                                                                
+[35] "$TABLE NOPRINT FILE=./1005.tab ONEHEADER ID AMT TIME EVID PRED IPRE CWRES"                   
+[36] "$TABLE NOPRINT FILE=./1005par.tab ONEHEADER ID TIME CL Q V2 V3 KA ETA1 ETA2 ETA3"            
+\end{Soutput}
+\end{Schunk}
+Fix records of interest.
+\begin{Schunk}
+\begin{Sinput}
+> ctl$prob
+\end{Sinput}
+\begin{Soutput}
+[1] "1005 phase1 2 CMT like 1004 but diff. initial on V3"
+\end{Soutput}
+\begin{Sinput}
+> ctl$prob <- sub('1005','1105',ctl$prob)
+> names(ctl)
+\end{Sinput}
+\begin{Soutput}
+ [1] "prob"       "input"      "data"       "subroutine" "pk"        
+ [6] "error"      "theta"      "omega"      "sigma"      "estimation"
+[11] "cov"        "table"      "table"     
+\end{Soutput}
+\begin{Sinput}
+> names(ctl)[names(ctl)=='theta'] <- 'msfi'
+> ctl$msfi <- '=../1005/1005/msf'
+> ctl$omega <- NULL
+> ctl$sigma <- NULL
+> names(ctl)[names(ctl)=='estimation'] <- 'simulation'
+> ctl$simulation <- 'ONLYSIM (1968) SUBPROBLEMS=500'
+> ctl$cov <- NULL
+> ctl$table <- NULL
+> ctl$table <- NULL
+> ctl$table <- 'DV NOHEADER NOPRINT FILE=./1105.tab FORWARD NOAPPEND'
+> write.nmcontrol('../nonmem/ctl/1105.ctl')
 \end{Sinput}
 \end{Schunk}
 \subsection{Run the simulation.}
@@ -222,7 +282,6 @@ Therefore, we wish to calculate summary statistics for each subject,
 (observed and predicted) and then make obspred comparisons therewith.
 \begin{Schunk}
 \begin{Sinput}
-> library(reshape)
 > head(phase1)
 \end{Sinput}
 \begin{Soutput}
@@ -289,174 +348,242 @@ Now we melt the metrics.
 5    1   3       DV    min 0.363000
 6    1   3     PRED    min 0.450430
 \end{Soutput}
-\end{Schunk}
-\subsubsection{Aggregate data across subjects, within simulations.}
-Our predictions have central tendencies, which can vary by SIM.
-Thus, our metrics as well have central tendencies that vary by SIM.
-We want to represent the variability across SIMS by aggregating within SIM.
-That means aggregating across subjects, within SIMS.  
-There are many aggregation strategies, but we choose quantiles for a non-parametric 
-result. Quantiles that 'clip' the tails of the distribution offer robustness against
-number of SIMS (i.e., results less dependent on number of sims).  
-Within each SIM, let's find for each metric the 5th, 50th, and 95th percentile.
-We also want to do this for the original data set (requires some minor rearrangement).
-\begin{Schunk}
 \begin{Sinput}
+> metr$value <- reapply(
++ 	metr$value,
++ 	INDEX=metr[,c('SIM','variable','metric')],
++ 	FUN=sort,
++ 	na.last=FALSE
++ )
+> metr <- data.frame(cast(metr))
 > head(metr)
 \end{Sinput}
 \begin{Soutput}
-  SUBJ SIM variable metric    value
-1    1   1       DV    min 0.363000
-2    1   1     PRED    min 0.179320
-3    1   2       DV    min 0.363000
-4    1   2     PRED    min 0.096462
-5    1   3       DV    min 0.363000
-6    1   3     PRED    min 0.450430
+  SUBJ SIM metric    DV     PRED
+1    1   1    min 0.139 0.064213
+2    1   1    med 1.025 1.943600
+3    1   1    max 2.530 3.945400
+4    1   2    min 0.139 0.016162
+5    1   2    med 1.025 1.476300
+6    1   2    max 2.530 3.463200
 \end{Soutput}
 \begin{Sinput}
-> quants <- data.frame(cast(metr,SIM + metric + variable ~ .,fun=quantile,probs=c(0.05,0.50,0.95)))
-> head(quants,10)
+> nrow(metr)
 \end{Sinput}
 \begin{Soutput}
-   SIM metric variable       X5.    X50.     X95.
-1    1    min       DV 0.3054500  2.1450  36.0750
-2    1    min     PRED 0.0976828  2.3129  29.6127
-3    1    med       DV 1.5860000 20.2500 290.2000
-4    1    med     PRED 2.2552400 22.8675 304.0180
-5    1    max       DV 3.0855000 40.7000 634.2500
-6    1    max     PRED 4.4729900 47.2865 579.6585
-7    2    min       DV 0.3054500  2.1450  36.0750
-8    2    min     PRED 0.0949232  2.8080  32.3266
-9    2    med       DV 1.5860000 20.2500 290.2000
-10   2    med     PRED 1.6609825 23.4225 263.8535
+[1] 60000
+\end{Soutput}
+\begin{Sinput}
+> metr <- metr[!is.na(metr$DV),]#maybe no NA
+> nrow(metr)
+\end{Sinput}
+\begin{Soutput}
+[1] 60000
 \end{Soutput}
 \end{Schunk}
-Note, again, that DV quantiles are invariant across SIMS.
-\subsubsection{Reformat data for bivariate display.}
-We now have a lot of display options.  The simplest is to plot DV~PRED for each quantile and metric.
-Requires slight rearrangement.
+We plot using lattice.
 \begin{Schunk}
 \begin{Sinput}
-> molten <- melt(quants, measure.var=c('X5.','X50.','X95.'),variable_name='quant')
-> head(molten)
+> print(
++ 	xyplot(
++ 		PRED~DV|metric,
++ 		metr,
++ 		groups=SIM,
++ 		scales=list(relation='free'),
++ 		type='l',
++ 		panel=function(...){
++ 			panel.superpose(...)
++ 			panel.abline(0,1,col='white',lwd=2)
++ 		}
++ 	)
++ )
 \end{Sinput}
-\begin{Soutput}
-  SIM metric variable quant     value
-1   1    min       DV   X5. 0.3054500
-2   1    min     PRED   X5. 0.0976828
-3   1    med       DV   X5. 1.5860000
-4   1    med     PRED   X5. 2.2552400
-5   1    max       DV   X5. 3.0855000
-6   1    max     PRED   X5. 4.4729900
-\end{Soutput}
-\begin{Sinput}
-> frozen <- data.frame(cast(molten, SIM + metric + quant ~ variable))
-> head(frozen)
-\end{Sinput}
-\begin{Soutput}
-  SIM metric quant        DV        PRED
-1   1    min   X5.   0.30545   0.0976828
-2   1    min  X50.   2.14500   2.3129000
-3   1    min  X95.  36.07500  29.6127000
-4   1    med   X5.   1.58600   2.2552400
-5   1    med  X50.  20.25000  22.8675000
-6   1    med  X95. 290.20000 304.0180000
-\end{Soutput}
 \end{Schunk}
-\subsubsection{Bivariate display of within-simulation aggregate metrics.}
+\includegraphics{model-qq}
+
+For detail, we show one endpoint, tossing the outer 5 percent of values, and 
+indicating quartiles.
 \begin{Schunk}
 \begin{Sinput}
-> print(xyplot(
-+ 	log(PRED)~log(DV)|metric,
-+ 	frozen,
-+ 	groups=quant,
-+ 	layout=c(1,3),
-+ 	auto.key=TRUE,
-+ 	panel=function(...){
-+ 		panel.xyplot(...)
-+ 		panel.abline(a=0,b=1)
-+ 	}
-+ ))
+> med <- metr[metr$metric=='med',]
+> med$metric <- NULL
+> head(med)
+\end{Sinput}
+\begin{Soutput}
+   SUBJ SIM    DV     PRED
+2     1   1 1.025 1.943600
+5     1   2 1.025 1.476300
+8     1   3 1.025 1.466300
+11    1   4 1.025 1.342400
+14    1   5 1.025 1.362350
+17    1   6 1.025 0.625815
+\end{Soutput}
+\begin{Sinput}
+> trim <- inner(med, id.var=c('SIM'),measure.var=c('PRED','DV'))
+> head(trim)
+\end{Sinput}
+\begin{Soutput}
+  SIM DV PRED
+1   1 NA   NA
+2   2 NA   NA
+3   3 NA   NA
+4   4 NA   NA
+5   5 NA   NA
+6   6 NA   NA
+\end{Soutput}
+\begin{Sinput}
+> nrow(trim)
+\end{Sinput}
+\begin{Soutput}
+[1] 20000
+\end{Soutput}
+\begin{Sinput}
+> trim <- trim[!is.na(trim$DV),]
+> nrow(trim)
+\end{Sinput}
+\begin{Soutput}
+[1] 19000
+\end{Soutput}
+\begin{Sinput}
+> head(trim)
+\end{Sinput}
+\begin{Soutput}
+    SIM   DV   PRED
+501   1 1.13 1.9653
+502   2 1.13 1.5989
+503   3 1.13 1.4754
+504   4 1.13 1.4074
+505   5 1.13 1.3787
+506   6 1.13 1.4753
+\end{Soutput}
+\begin{Sinput}
+> print(
++ 	xyplot(
++ 		PRED~DV,
++ 		trim,
++ 		groups=SIM,
++ 		type='l',
++ 		panel=function(x,y,...){
++ 			panel.xyplot(x=x,y=y,...)
++ 			panel.abline(0,1,col='white',lwd=2)
++ 			panel.abline(
++ 				v=quantile(x,probs=c(0.25,0.5,0.75)),
++ 				col='grey',
++ 				lty=2
++ 			)
++ 		}
++ 	)
++ )
 \end{Sinput}
 \end{Schunk}
-\includegraphics{model-bivariate}
-\subsubsection{Univariate displays.}
-For a better view of the distributions, however, we can work with single-axis plot functions,
-using the molten data.  For faster and clearer plotting, we remove duplicates of DV.
-\subsubsection{Classic stripplot}
+\includegraphics{model-qqdetail}
+
+We also show densityplots of predictions at those quartiles.
 \begin{Schunk}
 \begin{Sinput}
-> head(molten)
+> head(trim)
 \end{Sinput}
 \begin{Soutput}
-  SIM metric variable quant     value
-1   1    min       DV   X5. 0.3054500
-2   1    min     PRED   X5. 0.0976828
-3   1    med       DV   X5. 1.5860000
-4   1    med     PRED   X5. 2.2552400
-5   1    max       DV   X5. 3.0855000
-6   1    max     PRED   X5. 4.4729900
+    SIM   DV   PRED
+501   1 1.13 1.9653
+502   2 1.13 1.5989
+503   3 1.13 1.4754
+504   4 1.13 1.4074
+505   5 1.13 1.3787
+506   6 1.13 1.4753
 \end{Soutput}
 \begin{Sinput}
-> molten$SIM <- NULL
-> table(molten$variable)
+> quantile(trim$DV)
 \end{Sinput}
 \begin{Soutput}
-  DV PRED 
-4500 4500 
+    0%    25%    50%    75%   100% 
+  1.13   7.69  20.25 104.00 332.00 
 \end{Soutput}
 \begin{Sinput}
-> molten <- molten[!(duplicated(molten[,c('metric','variable','quant')]) & molten$variable=='DV'),]
-> table(molten$variable)
+> molt <- melt(trim, id.var='SIM')
+> head(molt)
 \end{Sinput}
 \begin{Soutput}
-  DV PRED 
-   9 4500 
+  SIM variable value
+1   1       DV  1.13
+2   2       DV  1.13
+3   3       DV  1.13
+4   4       DV  1.13
+5   5       DV  1.13
+6   6       DV  1.13
 \end{Soutput}
 \begin{Sinput}
-> library(grid)
-> print(stripplot(
-+ 	~value|metric+quant,
-+ 	molten,
-+ 	groups=variable,
-+ 	horizontal=TRUE,
-+ 	auto.key=TRUE,
-+ 	panel=panel.superpose,
-+ 	alpha=0.5,
-+ 	panel.groups=panel.stripplot
-+ ))
+> quart <- data.frame(cast(molt,SIM+variable~.,fun=quantile,probs=c(0.25,0.5,0.75)))
+> head(quart)
+\end{Sinput}
+\begin{Soutput}
+  SIM variable      X25.    X50.      X75.
+1   1       DV  7.950000 20.2500 100.10000
+2   1     PRED 10.329750 22.8675  91.61825
+3   2       DV  7.950000 20.2500 100.10000
+4   2     PRED 10.241500 23.4225  97.26175
+5   3       DV  7.950000 20.2500 100.10000
+6   3     PRED  8.081437 20.0330 106.59750
+\end{Soutput}
+\begin{Sinput}
+> molt <- melt(quart,id.var='variable',measure.var=c('X25.','X50.','X75.'),variable_name='quartile')
+> head(molt)
+\end{Sinput}
+\begin{Soutput}
+  variable quartile     value
+1       DV     X25.  7.950000
+2     PRED     X25. 10.329750
+3       DV     X25.  7.950000
+4     PRED     X25. 10.241500
+5       DV     X25.  7.950000
+6     PRED     X25.  8.081437
+\end{Soutput}
+\begin{Sinput}
+> levels(molt$quartile)
+\end{Sinput}
+\begin{Soutput}
+[1] "X25." "X50." "X75."
+\end{Soutput}
+\begin{Sinput}
+> levels(molt$quartile) <- c('first quartile','second quartile','third quartile')
+> head(molt)
+\end{Sinput}
+\begin{Soutput}
+  variable       quartile     value
+1       DV first quartile  7.950000
+2     PRED first quartile 10.329750
+3       DV first quartile  7.950000
+4     PRED first quartile 10.241500
+5       DV first quartile  7.950000
+6     PRED first quartile  8.081437
+\end{Soutput}
+\begin{Sinput}
+> levels(molt$variable)
+\end{Sinput}
+\begin{Soutput}
+[1] "DV"   "PRED"
+\end{Soutput}
+\begin{Sinput}
+> molt$variable <- factor(molt$variable,levels=c('PRED','DV'))
+> print(
++ 	densityplot(
++ 		~value|quartile,
++ 		molt,
++ 		groups=variable,
++ 		layout=c(3,1),
++ 		scales=list(relation='free'),
++ 		aspect=1,
++ 		panel=panel.superpose,
++ 		panel.groups=function(x,...,group.number){
++ 			if(group.number==1)panel.densityplot(x,...)
++ 			if(group.number==2)panel.abline(v=unique(x),...)
++ 		},
++ 		auto.key=TRUE
++ 	)
++ )
 \end{Sinput}
 \end{Schunk}
-\includegraphics{model-stripplot}
-\subsubsection{Diamondback: reference regions on density strips}
-Here we show the distribution data as density strips, and indicate reference 
-regions around the point estimates. Here is one option. Also try swapping `quant' and 
-`metric'.
-\begin{Schunk}
-\begin{Sinput}
-> print(stripplot(
-+ 	quant~value|metric,
-+ 	molten,
-+ 	groups=variable,
-+ 	auto.key=TRUE,
-+ 	panel=panel.stratify,
-+ 	alpha=0.5,
-+ 	layout=c(1,3),
-+ 	scales=list(relation='free'),
-+ 	panel.levels = function(x,y,group.number,col,col.line,fill,font,...){
-+ 		if(group.number==1)for(d in seq(length.out=length(x))) panel.polygon(
-+ 			x=x[[d]]*c(0.8,1,1.25,1),
-+ 			y=y[[d]] + c(0.25,0,0.25,0.5),
-+ 			border=col.line,
-+ 			col=fill,
-+ 			...
-+ 		)
-+ 		else panel.densitystrip(x=x,y=y,col=fill,border=col.line,...)
-+ 	}
-+ ))
-\end{Sinput}
-\end{Schunk}
-\includegraphics{model-diamondBack}
+\includegraphics{model-qqdensity}
 \section{Bootstrap Estimates of Parameter Uncertainty}
 \subsection{Create directories.}
 \begin{Schunk}
@@ -533,9 +660,8 @@ When the bootstraps are complete, we return here and summarize. If you
 do not have time for bootstraps, use read.csv() on ../nonmem/1005.boot/log.csv.
 \begin{Schunk}
 \begin{Sinput}
-> #boot <- read.csv('../nonmem/1005.boot/log.csv',as.is=TRUE)
 > #wait for bootstraps to finish
-> while(!(all(file.exists(paste(sep='','../nonmem/1005.boot/',1:300,'.boot/',1:300,'.lst'))))){}
+> #while(!(all(file.exists(paste(sep='','../nonmem/1005.boot/',1:300,'.boot/',1:300,'.lst'))))){}
 > if(file.exists('../nonmem/1005.boot/log.csv')){
 +     boot <- read.csv('../nonmem/1005.boot/log.csv',as.is=TRUE)
 + }else{
@@ -580,6 +706,9 @@ do not have time for bootstraps, use read.csv() on ../nonmem/1005.boot/log.csv.
 \begin{Soutput}
  [1]  NA  NA  NA 1.0 2.0 3.0 4.0 5.0 6.0 7.0 1.1 2.1 2.2 3.1 3.2 3.3 1.1
 \end{Soutput}
+\begin{Sinput}
+> boot$X <- NULL
+\end{Sinput}
 \end{Schunk}
 It looks like we have 14 estimated parameters.  We will map them to the
 original control stream.
@@ -589,13 +718,13 @@ original control stream.
 > head(boot)
 \end{Sinput}
 \begin{Soutput}
-  X tool run parameter   moment     value
-4 4  nm7   1    THETA1 estimate   7.98893
-5 5  nm7   1    THETA1     prse      <NA>
-6 6  nm7   1    THETA2 estimate    19.892
-7 7  nm7   1    THETA2     prse      <NA>
-8 8  nm7   1    THETA3 estimate 0.0650249
-9 9  nm7   1    THETA3     prse      <NA>
+  tool run parameter   moment     value
+4  nm7   1    THETA1 estimate   7.98893
+5  nm7   1    THETA1     prse      <NA>
+6  nm7   1    THETA2 estimate    19.892
+7  nm7   1    THETA2     prse      <NA>
+8  nm7   1    THETA3 estimate 0.0650249
+9  nm7   1    THETA3     prse      <NA>
 \end{Soutput}
 \begin{Sinput}
 > unique(boot$moment)
@@ -625,13 +754,13 @@ prse, and therefore moment, is noninformative for these bootstraps.
 > head(boot)
 \end{Sinput}
 \begin{Soutput}
-    X run parameter     value
-4   4   1    THETA1   7.98893
-6   6   1    THETA2    19.892
-8   8   1    THETA3 0.0650249
-10 10   1    THETA4   3.35627
-12 12   1    THETA5   123.566
-14 14   1    THETA6   1.18258
+   run parameter     value
+4    1    THETA1   7.98893
+6    1    THETA2    19.892
+8    1    THETA3 0.0650249
+10   1    THETA4   3.35627
+12   1    THETA5   123.566
+14   1    THETA6   1.18258
 \end{Soutput}
 \begin{Sinput}
 > unique(boot$value[boot$parameter %in% c('OMEGA2.1','OMEGA3.1','OMEGA3.2')])
@@ -660,13 +789,13 @@ Off-diagonals (and only off-diagonals) are noninformative.
 > head(boot)
 \end{Sinput}
 \begin{Soutput}
-    X run parameter       value
-4   4   1    THETA1   7.9889300
-6   6   1    THETA2  19.8920000
-8   8   1    THETA3   0.0650249
-10 10   1    THETA4   3.3562700
-12 12   1    THETA5 123.5660000
-14 14   1    THETA6   1.1825800
+   run parameter       value
+4    1    THETA1   7.9889300
+6    1    THETA2  19.8920000
+8    1    THETA3   0.0650249
+10   1    THETA4   3.3562700
+12   1    THETA5 123.5660000
+14   1    THETA6   1.1825800
 \end{Soutput}
 \end{Schunk}
 \subsection{Restrict data to 95 percentiles.}
@@ -676,46 +805,32 @@ We clip to the 95 percentiles, to give distributions that are somewhat more
 scale independent.
 \begin{Schunk}
 \begin{Sinput}
-> boot$upper <- with(boot,reapply(value,INDEX=parameter,FUN=quantile,probs=0.975))
-> boot$lower <- with(boot,reapply(value,INDEX=parameter,FUN=quantile,probs=0.025))
-> nrow(boot)
-\end{Sinput}
-\begin{Soutput}
-[1] 3300
-\end{Soutput}
-\begin{Sinput}
-> boot <- boot[with(boot, value < upper & value > lower),]
-> nrow(boot)
-\end{Sinput}
-\begin{Soutput}
-[1] 3124
-\end{Soutput}
-\begin{Sinput}
+> boot <- inner(
++ 	boot, 
++ 	preserve='run',
++ 	id.var='parameter',
++ 	measure.var='value'
++ )
 > head(boot)
 \end{Sinput}
 \begin{Soutput}
-    X run parameter       value        upper       lower
-4   4   1    THETA1   7.9889300  10.18006750  6.90182250
-6   6   1    THETA2  19.8920000  26.29300250 17.74395750
-8   8   1    THETA3   0.0650249   0.08202897  0.05760593
-10 10   1    THETA4   3.3562700   5.12041500  2.78587675
-12 12   1    THETA5 123.5660000 165.65365000 82.14751500
-14 14   1    THETA6   1.1825800   1.38279825  0.75346095
+  run parameter       value
+1   1    THETA1   7.9889300
+2   1    THETA2  19.8920000
+3   1    THETA3   0.0650249
+4   1    THETA4   3.3562700
+5   1    THETA5 123.5660000
+6   1    THETA6   1.1825800
 \end{Soutput}
 \begin{Sinput}
-> boot$upper <- NULL
-> boot$lower <- NULL
-> head(boot)
+> any(is.na(boot$value))
 \end{Sinput}
 \begin{Soutput}
-    X run parameter       value
-4   4   1    THETA1   7.9889300
-6   6   1    THETA2  19.8920000
-8   8   1    THETA3   0.0650249
-10 10   1    THETA4   3.3562700
-12 12   1    THETA5 123.5660000
-14 14   1    THETA6   1.1825800
+[1] TRUE
 \end{Soutput}
+\begin{Sinput}
+> boot <- boot[!is.na(boot$value),]
+\end{Sinput}
 \end{Schunk}
 \subsection{Recover parameter metadata from a specially-marked control stream.}
 We want meaningful names for our parameters.  Harvest these from a reviewed control
@@ -760,30 +875,30 @@ stream.
 \end{Sinput}
 \begin{Soutput}
    parameter                                          defs              labels
-4     THETA1                                     clearance                CL/F
-6     THETA2                                central volume                Vc/F
-8     THETA3                           absorption constant                  Ka
-10    THETA4                  intercompartmental clearance                 Q/F
-12    THETA5                             peripheral volume                Vp/F
-14    THETA6                      male effect on clearance             Male.CL
-16    THETA7                    weight effect on clearance               WT.CL
-18  OMEGA1.1      interindividual variability on clearance $\\Omega^{1.1}CL/F$
-22  OMEGA2.2 interindividual variability on central volume $\\Omega^{2.2}Vc/F$
-28  OMEGA3.3             interindividual variability on Ka   $\\Omega^{3.3}Ka$
-30  SIGMA1.1                            proportional error $\\sigma^{1.1}prop$
+1     THETA1                                     clearance                CL/F
+2     THETA2                                central volume                Vc/F
+3     THETA3                           absorption constant                  Ka
+4     THETA4                  intercompartmental clearance                 Q/F
+5     THETA5                             peripheral volume                Vp/F
+6     THETA6                      male effect on clearance             Male.CL
+7     THETA7                    weight effect on clearance               WT.CL
+8   OMEGA1.1      interindividual variability on clearance $\\Omega^{1.1}CL/F$
+9   OMEGA2.2 interindividual variability on central volume $\\Omega^{2.2}Vc/F$
+10  OMEGA3.3             interindividual variability on Ka   $\\Omega^{3.3}Ka$
+11  SIGMA1.1                            proportional error $\\sigma^{1.1}prop$
 \end{Soutput}
 \begin{Sinput}
 > boot$parameter <- lookup(boot$parameter,within=doc,as='label')
 > head(boot)
 \end{Sinput}
 \begin{Soutput}
-    X run parameter       value
-4   4   1      CL/F   7.9889300
-6   6   1      Vc/F  19.8920000
-8   8   1        Ka   0.0650249
-10 10   1       Q/F   3.3562700
-12 12   1      Vp/F 123.5660000
-14 14   1   Male.CL   1.1825800
+  run parameter       value
+1   1      CL/F   7.9889300
+2   1      Vc/F  19.8920000
+3   1        Ka   0.0650249
+4   1       Q/F   3.3562700
+5   1      Vp/F 123.5660000
+6   1   Male.CL   1.1825800
 \end{Soutput}
 \end{Schunk}
 \subsection{Create covariate plot.}
@@ -859,13 +974,13 @@ effectively reproducing the submodel from the control stream.
 > head(boot) 
 \end{Sinput}
 \begin{Soutput}
-    X run parameter       value
-4   4   1      CL/F   7.9889300
-6   6   1      Vc/F  19.8920000
-8   8   1        Ka   0.0650249
-10 10   1       Q/F   3.3562700
-12 12   1      Vp/F 123.5660000
-14 14   1   Male.CL   1.1825800
+  run parameter       value
+1   1      CL/F   7.9889300
+2   1      Vc/F  19.8920000
+3   1        Ka   0.0650249
+4   1       Q/F   3.3562700
+5   1      Vp/F 123.5660000
+6   1   Male.CL   1.1825800
 \end{Soutput}
 \begin{Sinput}
 > unique(boot$parameter)
@@ -881,13 +996,13 @@ effectively reproducing the submodel from the control stream.
 > head(clearance)
 \end{Sinput}
 \begin{Soutput}
-    X run parameter    value
-4   4   1      CL/F 7.988930
-14 14   1   Male.CL 1.182580
-16 16   1     WT.CL 1.308790
-35 35   2      CL/F 7.636730
-45 45   2   Male.CL 0.956565
-47 47   2     WT.CL 2.369810
+   run parameter    value
+1    1      CL/F 7.988930
+6    1   Male.CL 1.182580
+7    1     WT.CL 1.308790
+12   2      CL/F 7.636730
+17   2   Male.CL 0.956565
+18   2     WT.CL 2.369810
 \end{Soutput}
 \begin{Sinput}
 > frozen <- data.frame(cast(clearance,run~parameter),check.names=FALSE)
@@ -983,7 +1098,7 @@ person.
 \begin{Schunk}
 \begin{Sinput}
 > library(Hmisc)
-> tab <- partab(1005,'../nonmem',tool='nm7',as=c('label','latex','model','estimate','unit','prse'))
+> tab <- partab(1005,'../nonmem',tool='nm7',as=c('label','latex','model','estimate','unit','prse','se'))
 > tab$estimate <- as.character(signif(as.numeric(tab$estimate),3))
 > tab$estimate <- ifelse(is.na(tab$unit),tab$estimate,paste(tab$estimate, tab$unit))
 > tab$unit <- NULL
@@ -1011,12 +1126,13 @@ person.
 > names(boot)[names(boot)=='parameter'] <- 'name'
 > tab <- stableMerge(tab,boot[,c('name','CI')])
 > tab$name <- NULL
+> tab$se <- NULL
 \end{Sinput}
 \end{Schunk}
-% latex.default(tab, file = "", rowname = NULL, caption = "Parameter Estimates from Population Pharmacokinetic Model Run 1005",      caption.lot = "Model 10o5 Parameters", label = "p1005", where = "ht",      table.env = FALSE) 
+% latex.default(tab, file = "", rowname = NULL, caption = "Parameter Estimates from Population Pharmacokinetic Model Run 1005",      caption.lot = "Model 1005 Parameters", label = "p1005", where = "ht",      table.env = FALSE) 
 %
 \begin{table}[ht]
- \caption[Model 10o5 Parameters]{Parameter Estimates from Population Pharmacokinetic Model Run 1005\label{p1005}} 
+ \caption[Model 1005 Parameters]{Parameter Estimates from Population Pharmacokinetic Model Run 1005\label{p1005}} 
  \begin{center}
  \begin{tabular}{lllll}\hline\hline
 \multicolumn{1}{c}{parameter}&\multicolumn{1}{c}{model}&\multicolumn{1}{c}{estimate}&\multicolumn{1}{c}{prse}&\multicolumn{1}{c}{CI}\tabularnewline

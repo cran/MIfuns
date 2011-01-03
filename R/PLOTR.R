@@ -14,11 +14,12 @@
 	par.list = NULL, 
 	eta.list = NULL, 
 	missing = -99,
+	estimated = NULL,
 	...
 ){
     
     #process data
-    synthesis <- dataSynthesis(
+    data <- dataSynthesis(
     	run=run,
 	project=project,
 	logtrans=logtrans,
@@ -32,27 +33,52 @@
 	rundir=rundir,
 	...
     )
-    write.csv(synthesis,filename(rundir,ext='_syn.csv'),row.names=FALSE)
-    available <- names(synthesis)
+    write.csv(data,filename(rundir,ext='_syn.csv'),row.names=FALSE)
+    available <- names(data)
     cont.cov <- strain(cont.cov,available)
     cat.cov <- strain(cat.cov,available)
     par.list <- strain(par.list,available)
     eta.list <- strain(eta.list,available)
     
+    listfilename <- file.path(rundir,paste(sep='',run,'.lst'))
+    listfile <- readLines(listfilename)
+    iterations <- try(iterations(listfile))
+    it.dat <- NULL
+    if(inherits(iterations,'data.frame'))try(it.dat <- melt(iterations,measure.var=names(iterations)[contains('X',names(iterations))]))
+    estimated <- list(...)$estimated
+    if(!is.null(estimated))try(levels(it.dat$variable) <- estimated)
     
     #open device
     plotfile <- star(plotfile,run)
     safe.call(pdf,file=plotfile,onefile=onefile,...)
 
     #make plots
-    lapply(diagnosticPlots(synthesis, dvname=dvname, group='grpnames', model= paste('Model',run),...),print)
-    lapply(covariatePlots(synthesis,cont.cov,cat.cov,par.list,eta.list,...),print)
-    lapply(cwresPlots(synthesis,cont.cov,cat.cov,...),print)
-    
+    lapply(diagnosticPlots(data, dvname=dvname, group='grpnames', model= paste('Model',run),...),print)
+    lapply(covariatePlots(data,cont.cov,cat.cov,par.list,eta.list,...),print)
+    lapply(cwresPlots(data,cont.cov,cat.cov,...),print)
+    if(!is.null(it.dat))try(print(xyplot(value~iteration|variable,it.dat[it.dat$course=='parameter',],main= paste('Model',run,'parameter search'),type='l',ylab='scaled parameter',as.table=TRUE,scales=list(y=list(relation='free')))))
+    if(!is.null(it.dat))try(
+    	print(
+		xyplot(
+			value~iteration|variable,
+			it.dat[it.dat$course=='gradient',] ,
+			main= paste('Model',run,'gradient search'),
+			type='l',
+			ylab='gradient',
+			as.table=TRUE,
+			scales=list(y=list(relation='free')),
+			panel=function(...){
+				panel.abline(h=0)
+				panel.xyplot(...)
+			}
+		)
+	)
+)
+
     #cleanup
     dev.off()
     unlink(filename(rundir,ext='_syn.csv'))
-    message(paste('Plotting for run ', run, ' complete.', sep = ''))
+    message('Plotting for run ', run, ' complete.')
     
     #try epilog
     script <- NULL
@@ -91,14 +117,13 @@ safe.call <- function(what,...){
 }
 
 #creates a filepath from dir,run, and extension
-filename <- function(dir,run=NULL,ext=NULL)file.path(dir,paste(run,ext,sep=''))
+filename <- function(dir,run=NULL,ext=NULL)file.path(dir,glue(run,ext))
 
 #calculates a vector of cwres
 getCwres <- function(directory){
     	cwrtab1 <- filename(directory, NULL, 'cwtab1.deriv')
-        if (!file.exists(cwrtab1)) message(paste(cwrtab1,'does not exist.'))
-        if (!file.exists(cwrtab1)) return(NULL)
-	tab.prefix <- filename(directory,NULL, '/cwtab')
+        if (!file.exists(cwrtab1)) stop(cwrtab1,' does not exist.',call.=FALSE)
+        tab.prefix <- filename(directory,NULL, '/cwtab')
 	cwres.all<-compute.cwres(
 		run.number=1,
 		tab.prefix=tab.prefix,
@@ -113,18 +138,14 @@ getCwres <- function(directory){
 }
 
 #loads non-null cwres onto tab file
-setCwres <- function(
-	cwres,
-	file
-){
-	if(is.null(cwres))return(NULL)
+setCwres <- function(cwres,file){
 	cwres <- c('CWRES',cwres)
-	tabfile <- readLines(file)[-1]
-	if(length(tabfile)!=length(cwres))stop()
+	tabdata<- readLines(file)[-1]
+	if(length(tabdata)!=length(cwres))stop('cwres-tabfile length mismatch',call.=FALSE)
 	msg <- paste('CWRES added', format(Sys.time(), '%a %b %d, %X, %Y'))
-	tabfile <- paste(tabfile,cwres)
-	tabfile <- c(msg,tabfile)
-	writeLines(tabfile,con = file)
+	tabdata <- paste(tabdata,cwres)
+	tabdata <- c(msg,tabdata)
+	writeLines(tabdata,con = file)
 }
 
 
@@ -132,39 +153,48 @@ setCwres <- function(
 getCovs <- function(file,dir){
 	    here <- getwd()
 	    setwd(dir)
-	    covfile <- NULL
-	    try(covfile <- read.table(file = file, header = TRUE, as.is = TRUE, sep = ','))
-	    setwd(here)
-	    if(is.null(covfile))return(covfile)
-	    covfile <- covfile[covfile$C != 'C',]
-	    covfile <- covfile[!duplicated(covfile$ID),]
-	    return(covfile)
+	    tryCatch( 
+	    	suppressWarnings(
+	    		covdata <- read.table(file = file, header = TRUE, as.is = TRUE, sep = ',')
+	    	),
+	    	error=function(e)stop(file,' not visible from ',dir,call.=FALSE),
+	    	finally=setwd(here)
+	    )	    
+	    if('C' %in% names(covdata))covdata <- covdata[covdata$C != 'C',]
+	    if(!'ID' %in% names(covdata))stop('ID not a column in ',file,call.=FALSE)
+	    covdata <- covdata[!duplicated(covdata$ID),]
+	    if(!nrow(covdata))stop(file,' has no rows',call.=FALSE)
+	    return(covdata)
 }
 
 #returns the parameter file
-getPars <- function(file){ 
-	    if (!file.exists(file))warning(paste(filename,'does not exist.'))
-	    if (!file.exists(file))return(NULL)
-	    file <- read.table(file = file, header = TRUE, skip = 1)
-            file <- file[!duplicated(file$ID),]
-	    return(file)
+getPars <- function(file){
+	    if (!file.exists(file))stop(file,' does not exist.',call.=FALSE)
+	    f <- read.table(file = file, header = TRUE, skip = 1)
+	    if(!'ID' %in% names(f))stop('ID not a column in ',file,call.=FALSE)
+            f <- f[!duplicated(f$ID),]
+    	    if(!nrow(f))stop(file,' has no rows',call.=FALSE)
+	    return(f)
 }  
 
 #scavenges the data set name/path from the control stream
 getdname <- function(filename){
-	    datamod <- '^\\$DATA +([^ ]+).*$'
-	    control <- scan(file = filename, what = '', comment.char = '', allowEscapes = TRUE, sep = '\n', quiet = TRUE)
-	    dablock <- grep('\\$DATA', control, value = TRUE)
-	    datfile <- sub(datamod, '\\1', dablock)
-	    return(datfile)
+	    if(!file.exists(filename))stop(filename,' not found',call.=FALSE)
+	    control <- read.nmctl(filename)
+            if(!'data' %in% names(control))stop('data record not found in control stream')
+            control$data <- sub('^ +','',control$data)#remove any leading spaces
+            control$data <- control$data[!control$data=='']#remove any blank lines
+            sub('^([^ ]+).*$','\\1',control$data[[1]])#take first line up to first space
 }
 
 #finds the tab file and reduces it to observation rows
 getTabs <- function(file){
-	    tabfile <- read.table(file = file, header = TRUE, as.is = TRUE, skip = 1, comment.char = '')
-	    #tabfile$ID <- as.character(tabfile$ID)
-	    tabfile <- tabfile[tabfile$EVID == 0, ]
-	    tabfile
+	    if (!file.exists(file))stop(file,' does not exist.',call.=FALSE)
+	    tabdata <- read.table(file = file, header = TRUE, as.is = TRUE, skip = 1, comment.char = '')
+	    if(!'EVID' %in% names(tabdata))stop('EVID not a column in ',file,call.=FALSE)
+	    tabdata <- tabdata[tabdata$EVID == 0, ]
+	    if(!nrow(tabdata))stop(file,' has no rows',call.=FALSE)
+	    tabdata
 }   
 
 #melds the grpnames columns into one, renaming levels conditionally
@@ -180,17 +210,7 @@ groupnames <- function(data,grp,grpnames=NULL,run){
 		)
 	   nlevs <- length(levels(result))
 	   if(!is.null(grpnames))if(length(grpnames)==nlevs)levels(result) <- grpnames
-	   if(!is.null(grpnames))if(length(grpnames)!=nlevs)warning(
-		   paste(
-  			"Run", 
-			run, 
-			"has",
-			nlevs,
-			"grouping levels but",
-			length(grpnames),
-			"grpnames (ignored)." 
-		)
-	  )
+	   if(!is.null(grpnames))if(length(grpnames)!=nlevs)warning(call.=FALSE,immediate.=TRUE,'Run ',run,' has ',nlevs,' grouping levels but ',length(grpnames),' grpnames (ignored).' )
 	  result
 }
 
@@ -226,9 +246,9 @@ backtrans <- function(x,cols){
 
 #generates the plotting data set, given actual data frames, etc.
 dataFormat <- function(
-	tabfile,
-	covfile,
-	parfile,
+	tabdata,
+	covdata,
+	pardata,
 	logtrans=FALSE,
 	grp=NULL,
 	grpnames=NULL,
@@ -240,26 +260,24 @@ dataFormat <- function(
 	run,
 	...
 ){
-    if (logtrans) tabfile <- backtrans(tabfile,intersect(names(tabfile),c('DV','PRED','IPRE','IPRED')))    
-    available <- unique(c(names(tabfile),names(covfile),names(parfile)))
+    if (logtrans) tabdata <- backtrans(tabdata,intersect(names(tabdata),c('DV','PRED','IPRE','IPRED')))    
+    available <- unique(c(names(tabdata),names(covdata),names(pardata)))
     grp <- strain(grp,available)
     cont.cov <- strain(cont.cov,available)
     cat.cov <- strain(cat.cov,available)
     par.list <- strain(par.list,available)
     eta.list <- strain(eta.list,available)
-    #requests <- c(grp,cont.cov,cat.cov,par.list,eta.list)
     findAnywhere <- c(grp,cont.cov,cat.cov)
     findInOutput <- c(par.list,eta.list)
-    #synthesis <- synthesis(requests, key='ID',frames=list(tabfile,covfile,parfile),...)
-    synthesis <- synthesis(findAnywhere, key='ID',frames=list(tabfile,parfile,covfile),...)
-    synthesis <- synthesis(findInOutput, key='ID',frames=list(synthesis,tabfile,parfile),...)
+    data <- synthesis(findAnywhere, key='ID',frames=list(tabdata,pardata,covdata),...)
+    data <- synthesis(findInOutput, key='ID',frames=list(data,tabdata,pardata),...)
     missing <- as.numeric(as.character(missing))
-    for(col in cont.cov) synthesis[[col]] <- as.numeric(as.character(synthesis[[col]]))
-    for(col in cont.cov) synthesis[[col]][!is.na(synthesis[[col]]) & synthesis[[col]]==missing] <- NA
-    if(is.null(grp))synthesis$grpnames <- 'all'
+    for(col in cont.cov) data[[col]] <- as.numeric(as.character(data[[col]]))
+    for(col in cont.cov) data[[col]][!is.na(data[[col]]) & data[[col]]==missing] <- NA
+    if(is.null(grp))data$grpnames <- 'all'
     if(is.null(grp))grp <- 'grpnames'
-    synthesis$grpnames <- groupnames(synthesis,grp,grpnames,run)
-    synthesis
+    data$grpnames <- groupnames(data,grp,grpnames,run)
+    data
 }
 
 #generates the plotting data set, given project, run, etc.
@@ -282,24 +300,23 @@ dataSynthesis <- function(
 ){
     #cleanup arguments
     force(datfile)
-    if (!file.exists(outfile)) stop(paste(outfile,'does not exist.'))
-    if (!file.exists(ctlfile)) stop(paste(ctlfile,'does not exist.'))
-    ctlfile <- readLines(ctlfile)#switch from file name to file content
-    tabfile <- tabfile(ctlfile,dir=rundir,...)
-    parfile <- parfile(ctlfile,dir=rundir,...)
-    if (!file.exists(tabfile)) stop(paste(tabfile,'does not exist.'))
-    if (!file.exists(parfile)) stop(paste(parfile,'does not exist.'))
-
+    if (!file.exists(outfile))stop(outfile,' does not exist.',call.=FALSE)
+    if (!file.exists(ctlfile))stop(ctlfile,'does not exist.',.call.=FALSE)
+    ctlfile <- read.nmctl(ctlfile)#switch from file name to file content
+    outputrecords <- as.character(ctlfile[names(ctlfile)=='table'])
+    tabfile <- tryCatch(tabfile(outputrecords,dir=rundir,...),error=function(e)stop('cannot locate *.tab in control stream for run ',run,call.=FALSE))
+    parfile <- tryCatch(parfile(outputrecords,dir=rundir,...),error=function(e)stop('cannot locate *par.tab in control stream for run ',run,call.=FALSE))
+    
     #acquire data
-    tabfile <- getTabs(tabfile)    
-    covfile <- getCovs(datfile,rundir)
-    parfile <- getPars(parfile)
+    tabdata <- getTabs(tabfile)  
+    covdata <- getCovs(datfile,rundir)
+    pardata <- getPars(parfile)
     
     #process data
-    synthesis <- dataFormat(
-    	tabfile=tabfile,
-    	covfile=covfile,
-    	parfile=parfile,
+    data <- dataFormat(
+    	tabdata=tabdata,
+    	covdata=covdata,
+    	pardata=pardata,
     	logtrans=logtrans,
     	grp=grp,
     	grpnames=grpnames,
@@ -311,7 +328,7 @@ dataSynthesis <- function(
     	run=run,
     	...
     )
-    synthesis
+    data
 }
 
 star <- function(x,y)gsub('*', y, x, fixed=TRUE)
@@ -325,12 +342,11 @@ plotfilename=function(
 	...
 )filename(
 	dir,
-	paste(
+	glue(
 		stem,
 		paste(grp,collapse=''),
 		'_',
-		run,
-		sep=''
+		run
 	),
 	pext
 )

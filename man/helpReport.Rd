@@ -12,5 +12,7 @@ I want to ....
 \item \link[=lookup]{lookup} some other form of parameter names
 \item \link[=rlog]{generate} a combined run log from multiple NONMEM runs
 \item \link[=partab]{create} a model parameter table
+\item \link[=iterations]{list} the iteration statistics in the NONMEM output
+\item \link[=omegacor]{convert} the NONMEM output omega covariance matrix to correlations
 }
 }

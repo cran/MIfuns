@@ -11,17 +11,19 @@
 \usage{
 as.unilog.run(
 	run,
+	logfile='NonmemRunLog.csv',
 	outfile=paste(run,'lst',sep='.'),
 	extfile=file.path(
 		dirname(outfile),
 		paste(run,'ext',sep='.')
 	),
-	tool='nm7',
+	tool='nm6',
 	...
 )
 }
 \arguments{
   \item{run}{name of the NONMEM run, typically integer}
+  \item{logfile}{path for the NONMEM run log file}
   \item{outfile}{path for the NONMEM output file, typically \file{run.lst}}
   \item{extfile}{path for the NONMEM estimates, by default \file{run.ext}}
   \item{tool}{currently \sQuote{nm7}}
@@ -30,9 +32,9 @@ as.unilog.run(
 \details{
 	The \sQuote{ext} file is digested.  In particular the rows labeled -1000000000
   and -1000000001 are taken as the parameter estimates and standard errors,
-  respectively.  The minimization status is either 0 or 1, which is less 
-  informative than for NONMEM6.  The covariance status is not currently
-  represented.
+  respectively.  The minimization status (min) is either 0 (minimized) or 1 for NONMEM7, which is less 
+  informative than for NONMEM6.  The covariance status (cov) is normally 0. It will be
+  1 if covariance was requested but no standard errors appear in extfile (as for NONMEM6).
 }
 \value{
   data.frame with columns \emph{tool, run, parameter, moment, value}.

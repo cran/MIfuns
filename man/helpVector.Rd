@@ -13,5 +13,6 @@ I want to ....
 \item \link[=forbak]{impute} missing vector values
 \item \link[=runhead]{check} some properties of vectors
 \item \link[=miTemporal]{create} date, time, and date-time objects
+\item \link[=map]{map} one set of values to another
 }
 }

@@ -1,3 +1,3 @@
 `attribute` <-
-function(x,tag,...)paste(' ',tag,"='",x,"'",sep='')
+function(x,tag,...)glue(' ',tag,"='",x,"'")
 

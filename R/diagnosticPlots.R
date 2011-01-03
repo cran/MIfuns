@@ -1,7 +1,6 @@
 `diagnosticPlots` <-
 function (data, dvname='DV', group=NULL, model=NULL, ...) 
 {
-  library(lattice)
   plots <-list()
   if(is.null(group))data$grpnames <- 'all'
   if(is.null(group))group <- 'grpnames'

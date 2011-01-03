@@ -25,11 +25,11 @@ runCommand(
 	minimized = invisible,
 	invisible = FALSE,
 	split = grid,
-	N = paste('Run', run, if (split) c('c', 'e') else NULL, sep = ''),
+	N = glue('Run', run, if (split) c('c', 'e') else NULL),
 	o = rdir,
 	e = rdir,
 	L=if(split)c(compileflag(compiler(config(dirname(command)))),NA)else NA,
-	hold_jid = if (split) c(NA, paste('Run', run, 'c', sep = '')) else NA,
+	hold_jid = if (split) c(NA, glue('Run', run, 'c')) else NA,
 	V = '',
 	j = 'y',
 	q=if(split)

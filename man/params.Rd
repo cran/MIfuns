@@ -1,8 +1,10 @@
 \name{params}
 \alias{params}
 \title{List Documented Parameters}
-\description{Returns a vector of parameters available in a specially-formatted 
-XML document, preserving the order.  Requires \pkg{XML}.}
+\description{
+Returns a vector of parameters available in a specially-formatted 
+XML document, preserving the order. 
+}
 \usage{
 params(within, by = "name", type = "parameter", ...)
 }

@@ -6,7 +6,7 @@
   The function logs an act of acceptance of the current installation, noting the 
   conditions of acceptance.  Currently, the conditions include the login of the 
   acceptor, the time of acceptance (GMT) and any contingent packages that 
-  survive \code{packageCheck}.  Requires \pkg{XML}.
+  survive \code{packageCheck}.  
 }
 \usage{
 accept(
