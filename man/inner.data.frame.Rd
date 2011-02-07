@@ -60,7 +60,7 @@ cells within columns that represent extreme quantiles. By default, the
 
 \seealso{
 	\itemize{
-		\item{}{\code{\link{helpPrepare}}}
+		\item \code{\link{helpPrepare}}
 	}
 }
 \examples{

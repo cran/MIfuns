@@ -53,9 +53,9 @@ rlog(
 \author{written by Bill Knebel; modified by Tim Bergsma.}
 \seealso{
 	\itemize{
-		\item{}{\code{\link{as.unilog.run}}}
-		\item{}{\code{\link{as.runlog.file}}}
-		\item{}{\code{\link{runstate}}}
+		\item \code{\link{as.unilog.run}}
+		\item \code{\link{as.runlog.file}}
+		\item \code{\link{runstate}}
 	}
 }
 \keyword{manip}

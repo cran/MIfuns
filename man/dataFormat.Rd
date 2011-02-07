@@ -46,8 +46,8 @@ dataFormat(
 \author{Tim Bergsma}
 \seealso{
 	\itemize{
-		\item{}{\code{\link{dataSynthesis}}}
-		\item{}{\code{\link{synthesis}}}
+		\item \code{\link{dataSynthesis}}
+		\item \code{\link{synthesis}}
 	}
 }
 \keyword{manip}

@@ -22,9 +22,9 @@ nest(x, tag, ...)
 \author{Tim Bergsma}
 \seealso{
 	\itemize{
-		\item{}{\code{\link{bracket}}}
-		\item{}{\code{\link{as.xml.data.frame}}}
-		\item{}{\code{\link{as.pxml.ext}}}
+		\item \code{\link{bracket}}
+		\item \code{\link{as.xml.data.frame}}
+		\item \code{\link{as.pxml.ext}}
 	}
 }
 \examples{

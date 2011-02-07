@@ -97,8 +97,8 @@
 \author{Tim Bergsma}
 \seealso{
 	\itemize{
-		\item{}{\code{\link{gsub}}}
-		\item{}{\code{\link{regex}}}
+		\item \code{\link{gsub}}
+		\item \code{\link{regex}}
 	}
 }
 \examples{

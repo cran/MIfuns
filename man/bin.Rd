@@ -35,9 +35,9 @@ A table with bin limits encoded as column names.
 \author{Tim Bergsma}
 \seealso{
 	\itemize{
-		\item{}{\code{\link{quantile}}}
-		\item{}{\code{\link{table}}}
-		\item{}{\code{\link{cut}}}
+		\item \code{\link{quantile}}
+		\item \code{\link{table}}
+		\item \code{\link{cut}}
 	}
 }
 \examples{

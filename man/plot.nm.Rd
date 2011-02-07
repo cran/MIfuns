@@ -40,8 +40,8 @@ even assigning the same column as both categorical and continuous.
 \author{Tim Bergsma}
 \seealso{
 	\itemize{
-		\item{}{\code{\link{nmPlots}}}
-		\item{}{\code{\link{as.nm}}}
+		\item \code{\link{nmPlots}}
+		\item \code{\link{as.nm}}
 	}
 }
 \keyword{manip}

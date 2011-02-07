@@ -86,8 +86,8 @@ generic \code{moot}.
 }
 \seealso{
 	\itemize{
-		\item{}{\code{\link{summary.nm}}}
-		\item{}{\code{\link{Ops.keyed}}}
+		\item \code{\link{summary.nm}}
+		\item \code{\link{Ops.keyed}}
 	}
 }
 \examples{

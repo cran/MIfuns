@@ -92,8 +92,8 @@
 \author{Tim Bergsma}
 \seealso{
 	\itemize{
-		\item{}{\code{\link{diagnosticPlots}}}
-		\item{}{\code{\link{dataFormat}}}
+		\item \code{\link{diagnosticPlots}}
+		\item \code{\link{dataFormat}}
 	}
 }
 \keyword{manip}

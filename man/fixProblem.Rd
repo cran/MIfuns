@@ -72,8 +72,8 @@ arguments, relying on \code{extfile} as the common engine.
 \author{Tim Bergsma}
 \seealso{
 	\itemize{
-		\item{}{\code{\link{runNonmem}}}
-		\item{}{\code{\link{dataSynthesis}}}
+		\item \code{\link{runNonmem}}
+		\item \code{\link{dataSynthesis}}
 	}
 }
 \examples{

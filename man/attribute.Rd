@@ -19,7 +19,7 @@ character
 \author{Tim Bergsma}
 \seealso{
 	\itemize{
-		\item{}{\code{\link{bracket}}}
+		\item \code{\link{bracket}}
 	}
 }
 \examples{

@@ -439,7 +439,7 @@ C     open files here, if necessary
 \author{Andrew Hooker}
 \seealso{
 	\itemize{
-		\item{}{\code{\link{compute.cwres}}}
+		\item \code{\link{compute.cwres}}
 	}
 }
 \keyword{manip}

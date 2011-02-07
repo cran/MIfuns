@@ -43,9 +43,9 @@ as.unilog.run(
 \author{Tim Bergsma}
 \seealso{
 	\itemize{
-		\item{}{\code{\link{as.unilog.lst}}}
-		\item{}{\code{\link{as.unilog.pxml}}}
-		\item{}{\code{\link{as.runlog.unilog}}}
+		\item \code{\link{as.unilog.lst}}
+		\item \code{\link{as.unilog.pxml}}
+		\item \code{\link{as.runlog.unilog}}
 	}
 }
 \keyword{manip}

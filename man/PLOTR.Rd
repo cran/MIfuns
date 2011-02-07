@@ -130,11 +130,11 @@ PLOTR(
 \author{Tim Bergsma}
 \seealso{
 	\itemize{
-		\item{}{\code{\link{NONR}}}
-		\item{}{\code{\link{dataSynthesis}}}
-		\item{}{\code{\link{diagnosticPlots}}}
-		\item{}{\code{\link{covariatePlots}}}
-		\item{}{\code{\link{cwresPlots}}}
+		\item \code{\link{NONR}}
+		\item \code{\link{dataSynthesis}}
+		\item \code{\link{diagnosticPlots}}
+		\item \code{\link{covariatePlots}}
+		\item \code{\link{cwresPlots}}
 	}
 }
 \keyword{manip}

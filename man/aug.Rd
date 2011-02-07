@@ -21,7 +21,7 @@ like \code{x}
 \author{Tim Bergsma}
 \seealso{
 	\itemize{
-		\item{}{\code{\link{transform}}}
+		\item \code{\link{transform}}
 	}
 }
 \examples{

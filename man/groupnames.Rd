@@ -1,10 +1,10 @@
 \name{groupnames}
 \alias{groupnames}
 
-\title{Construct a Single Vector of Group Names from Possibly Multiple Indicies to the Plotting Data Set}
+\title{Construct a Single Vector of Group Names from Possibly Multiple Indices to the Plotting Data Set}
 \description{
  Callers of \code{PLOTR} may wish to group on more than one index.  This function combines
- those indicies into text for a single index vector.
+ those indices into text for a single index vector.
 }
 \usage{
 groupnames(data, grp, grpnames = NULL, run)
@@ -21,7 +21,7 @@ groupnames(data, grp, grpnames = NULL, run)
 \author{Tim Bergsma}
 \seealso{
 	\itemize{
-		\item{}{\code{\link{PLOTR}}}
+		\item \code{\link{PLOTR}}
 	}
 }
 \keyword{manip}

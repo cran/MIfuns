@@ -80,10 +80,10 @@ not \code{NULL} (set to \code{NA} by \code{panel.superpose}).
 \author{Tim Bergsma}
 \seealso{
 	\itemize{
-		\item{}{\code{\link{panel.covplot}}}
-		\item{}{\code{\link{panel.densitystrip}}}
-		\item{}{\code{\link{panel.hist}}}
-		\item{}{\code{\link{panel.xyplot}}}
+		\item \code{\link{panel.covplot}}
+		\item \code{\link{panel.densitystrip}}
+		\item \code{\link{panel.hist}}
+		\item \code{\link{panel.xyplot}}
 	}
 }
 \keyword{manip}

@@ -95,8 +95,8 @@ timecourse (i.e., \sQuote{rigging}). \code{as.rigged} returns a list of class \c
 \author{Tim Bergsma}
 \seealso{
 	\itemize{
-		\item{}{\code{\link{as.nm}}}
-		\item{}{\code{\link{Ops.keyed}}}
+		\item \code{\link{as.nm}}
+		\item \code{\link{Ops.keyed}}
 	}
 }
 \keyword{manip}

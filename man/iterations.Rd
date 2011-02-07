@@ -29,7 +29,7 @@ data frame indicating parameter estimates and gradients by iteration
 \author{Tim Bergsma}
 \seealso{
 	\itemize{
-		\item{}{\code{\link{cov2cor}}}
+		\item \code{\link{cov2cor}}
 	}
 }
 \examples{

@@ -12,7 +12,7 @@ sqrtm(x)
 }
 \seealso{
 	\itemize{
-		\item{}{\code{\link{compute.cwres}}}
+		\item \code{\link{compute.cwres}}
 	}
 }
 \keyword{manip}

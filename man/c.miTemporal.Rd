@@ -63,9 +63,9 @@ as.chartime(x, ...)
 \author{Tim Bergsma}
 \seealso{
 	\itemize{
-		\item{}{\code{\link{miTemporal}}} 
-		\item{}{\code{\link{seq.default}}}
-		\item{}{\code{\link{strftime}}}
+		\item \code{\link{miTemporal}} 
+		\item \code{\link{seq.default}}
+		\item \code{\link{strftime}}
 	}
 }
 \examples{

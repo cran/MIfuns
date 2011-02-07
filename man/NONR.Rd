@@ -254,8 +254,8 @@ File names and locations can be manipulated somewhat, i.e., by over-riding
  \author{written by Bill Knebel; modified by Tim Bergsma.}
 \seealso{
 	\itemize{
-		\item{}{\code{\link{runNonmem}}}
-		\item{}{\code{\link{PLOTR}}}
+		\item \code{\link{runNonmem}}
+		\item \code{\link{PLOTR}}
 	}
 }
 \keyword{manip}

@@ -141,9 +141,9 @@ unitDensity(x,...)
 \author{Tim Bergsma}
 \seealso{
 	\itemize{
-		\item{}{\code{\link{densityplot}}}
-		\item{}{\code{\link{bin}}}
-		\item{}{\code{\link{panel.stratify}}}
+		\item \code{\link{densityplot}}
+		\item \code{\link{bin}}
+		\item \code{\link{panel.stratify}}
 	}
 }
 \examples{

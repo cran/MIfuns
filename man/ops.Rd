@@ -73,7 +73,7 @@ examples.  See examples for \code{as.nm}.
 \author{Tim Bergsma}
 \seealso{
 	\itemize{
-		\item{}{\code{\link{as.nm}}}
+		\item \code{\link{as.nm}}
 	}
 }
 \keyword{manip}

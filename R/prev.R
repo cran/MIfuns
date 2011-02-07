@@ -1,5 +1,6 @@
 `prev` <-
 function(x)c(NA,x[-length(x)])#last observation
+`nxt` <- function(x)rev(prev(rev(x)))
 `runhead` <-
 function(x){#not like last observation
 	n <- x!=prev(x)

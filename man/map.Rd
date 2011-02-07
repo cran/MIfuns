@@ -2,7 +2,7 @@
 \alias{map}
 \title{Map One Set of Values to Another}
 \description{
-Systematically substitute specific values from set for corresponding values from 
+Systematically substitute specific values from one set using corresponding values from 
 another set.
 }
 \usage{
@@ -18,7 +18,7 @@ Occasionally one wants to recode a set of categories using some other idiom.
 \code{factor} supports recoding by creative use of the arguments \code{levels}
 and \code{labels}.  However, the result is a factor, and may need more
 transformation.  Furthermore, \code{factor} allows one-to-one reclassification
-but not two-to-one reclassification (repeated levels is not supported; i.e., it
+but not many-to-one reclassification (repeated levels is not supported; i.e., it
 is not directly possible to collapse two levels to a single replacement code).
 
 Here, \code{from} is the discrete set of values we expect in \code{x}, and 
@@ -35,7 +35,7 @@ error if \code{from} and \code{to} have different lengths.
 \author{Tim Bergsma}
 \seealso{
 	\itemize{
-		\item{}{\code{\link{match}}}
+		\item \code{\link{match}}
 	}
 }
 \examples{

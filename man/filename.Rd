@@ -19,7 +19,7 @@ filename(dir, run = NULL, ext = NULL)
 \author{Tim Bergsma}
 \seealso{
 	\itemize{
-		\item{}{\code{\link{dataSynthesis}}}
+		\item \code{\link{dataSynthesis}}
 	}
 }
 \examples{

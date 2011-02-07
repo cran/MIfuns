@@ -21,7 +21,7 @@ purge.dir(dir, nice = FALSE)
 \author{Tim Bergsma}
 \seealso{
 	\itemize{
-		\item{}{\code{\link{runNonmem}}}
+		\item \code{\link{runNonmem}}
 	}
 }
 \keyword{manip}

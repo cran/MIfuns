@@ -63,7 +63,7 @@ a trellis object
 to call it directly, as in the examples.}
 \seealso{
 	\itemize{
-		\item{}{\code{\link{as.pxml.ext}}}
+		\item \code{\link{as.pxml.ext}}
 	}
 }
 \examples{

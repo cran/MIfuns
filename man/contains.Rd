@@ -20,7 +20,7 @@ logical vector as long as \code{text}
 \author{Tim Bergsma}
 \seealso{
 	\itemize{
-		\item{}{\code{\link{regexpr}}}
+		\item \code{\link{regexpr}}
 	}
 }
 \examples{

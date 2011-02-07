@@ -100,7 +100,7 @@ as.miDateTime(x, ...)
 \author{Tim Bergsma}
 \seealso{
 	\itemize{
-		\item{}{\code{\link{c.miTemporal}}}
+		\item \code{\link{c.miTemporal}}
 	}
 }
 \examples{

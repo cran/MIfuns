@@ -107,7 +107,7 @@ and \sQuote{bootstrap.q} otherwise.
 \author{Tim Bergsma}
 \seealso{
 	\itemize{
-		\item{}{\code{\link{runNonmem}}}
+		\item \code{\link{runNonmem}}
 	}
 }
 \keyword{manip}

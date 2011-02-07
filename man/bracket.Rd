@@ -23,8 +23,8 @@ bracket(x, close = FALSE, ...)
 \author{Tim Bergsma}
 \seealso{
 	\itemize{
-		\item{}{\code{\link{attribute}}}
-		\item{}{\code{\link{as.xml.character}}}
+		\item \code{\link{attribute}}
+		\item \code{\link{as.xml.character}}
 	}
 }
 \examples{

@@ -27,8 +27,8 @@ character
 \author{Tim Bergsma}
 \seealso{
 	\itemize{
-		\item{}{\code{\link{as.xml}}}
-		\item{}{\code{\link{xyplot.ext}}}
+		\item \code{\link{as.xml}}
+		\item \code{\link{xyplot.ext}}
 	}
 }
 \examples{

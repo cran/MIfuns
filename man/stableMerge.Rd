@@ -29,7 +29,7 @@ stableMerge(x, y)
 \author{Tim Bergsma}
 \seealso{
 	\itemize{
-		\item{}{\code{\link{merge}}}
+		\item \code{\link{merge}}
 	}
 }
 \examples{

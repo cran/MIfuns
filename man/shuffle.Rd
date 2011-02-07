@@ -25,7 +25,7 @@ Tim Bergsma
 }
 \seealso{
 	\itemize{
-		\item{}{\code{\link{match}}}
+		\item \code{\link{match}}
 	}
 }
 \examples{

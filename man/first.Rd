@@ -32,22 +32,22 @@ after(   where,within,n=1,...)
 
 }
 \details{
-  \code{nth} returns, for each postion in \code{x}, the \eqn{n^{th}}{n^th} element of \code{x}, optionally
-  limiting candidate elements by \code{where}, and optionally repeating the evaluation within subsets
+  \code{nth} returns, for each position in \code{x}, the \eqn{n^{th}}{n^th} element of \code{x}, optionally
+  limiting candidate elements by \code{where}, and optionally breaking the evaluation across subsets
   as specified by \code{within}.  \code{n} can be 0, returning all \code{NA}, or negative,
-  which counts instances of from the end of the vector or subsets.  If \code{n} is NA, all elements are 
+  which counts instances  from the end of the vector or subsets.  If \code{n} is NA, all elements are 
   returned.
   
-  All of \code{x} \code{where}, and \code{within} are optional. The \sQuote{scale} of the function
+  All of \code{x}, \code{where}, and \code{within} are optional. The \sQuote{scale} of the function
   is set to the longest of the three (member-wise for \code{within} if it is a list).  
-  Missing \code{x} is replaced with position indicies.  
-  Missing \code{where} and \code{within} are replaced with TRUE, repeated as long as scale.
+  Missing \code{x} is replaced with the subscripts implied by \sQuote{scale}.  
+  Missing \code{where} and \code{within} are replaced with TRUE, repeated to length 'scale'.
   No warnings are given if \code{within} has NA, or list members with different lengths.
   
   \code{first} and \code{last} are convenience wrappers for \code{nth} that set \code{n} to 1 
   and -1, respectively.  \code{only} is like \code{first}, but returns NA if a second instance exists.
   
-  \code{distance} returns all position indices less the nth indicies, optionally considering 
+  \code{distance} returns subscripts less the nth subscripts, optionally considering 
   \code{where} and \code{within}. \code{before}, \code{at}, and \code{after} test
   whether distance is less than, equal to, or greater than zero.
 }
@@ -59,7 +59,7 @@ after(   where,within,n=1,...)
 \author{Tim Bergsma}
 \seealso{
 	\itemize{
-		\item{}{\code{\link{match}}}
+		\item \code{\link{match}}
 	}
 }
 

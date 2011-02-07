@@ -16,7 +16,7 @@ Extra arguments can be passed to \code{plot.nm} to exert fine control on the end
 }
 \seealso{
 	\itemize{
-		\item{}{\code{\link{plot.nm}}}
+		\item \code{\link{plot.nm}}
 	}
 }
 

@@ -87,9 +87,9 @@ runNonmem(
 \author{Tim Bergsma}
 \seealso{
 	\itemize{
-		\item{}{\code{\link{NONR}}}
-		\item{}{\code{\link{dataSynthesis}}}
-		\item{}{\code{\link{runCommand}}}
+		\item \code{\link{NONR}}
+		\item \code{\link{dataSynthesis}}
+		\item \code{\link{runCommand}}
 	}
 }
 \keyword{manip}

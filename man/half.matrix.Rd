@@ -44,8 +44,8 @@ vector with as many elements as a triangular matrix corresponding to \code{x}
 \author{Tim Bergsma}
 \seealso{
 	\itemize{
-		\item{}{\code{\link{ord.matrix}}}
-		\item{}{\code{\link{isSymmetric.matrix}}}
+		\item \code{\link{ord.matrix}}
+		\item \code{\link{isSymmetric.matrix}}
 	}
 }
 \examples{

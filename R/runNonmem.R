@@ -195,10 +195,10 @@ function (
 	 args <- names(extras)
 	 lapply(
 	 	args,
-		function(x,extras)assign(x,extras[[x]],envir=parent.frame()),
+		function(x,extras)assign(x,extras[[x]],envir=parent.frame(2)),
 		extras
 	)
-	try(source(script))
+	try(source(script,local=TRUE))
   }
   fixProblem <- function(x,run)sub('(^ *(RUN#? *)?)([^ ]+)(.*$)',glue('\\1',run,'\\4'),x,ignore.case=TRUE)
   fixFile <- function(x,run){

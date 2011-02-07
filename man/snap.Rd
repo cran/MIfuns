@@ -27,8 +27,8 @@ Tim Bergsma
 }
 \seealso{
 	\itemize{
-		\item{}{\code{\link{findInterval}}}
-		\item{}{\code{\link{cut}}}
+		\item \code{\link{findInterval}}
+		\item \code{\link{cut}}
 	}
 }
 \examples{

@@ -82,8 +82,8 @@
 \author{Tim Bergsma}
 \seealso{
 	\itemize{
-		\item{}{\code{\link{metaSub.character}}}
-		\item{}{\code{\link{sample}}}
+		\item \code{\link{metaSub.character}}
+		\item \code{\link{sample}}
 	}
 }
 \examples{

@@ -58,7 +58,7 @@ nth <- function(
 	)
 	#most general case: n > 1
 	#strategy: disqualify first set of values and search again with decremented n
-	#nth called without x gives element indicies: reduced to a unique set
+	#nth called without x gives element indices: reduced to a unique set
 	where[
 		unique(
 			nth(

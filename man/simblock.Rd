@@ -24,7 +24,7 @@ triangular version of \code{cov}.
 \author{written by Leonid Gibiansky; modified by Tim Bergsma.}
 \seealso{
 	\itemize{
-		\item{}{\code{\link{simpar}}}
+		\item \code{\link{simpar}}
 	}
 }
 \keyword{manip}

@@ -77,9 +77,9 @@ represent a single model run.
 }
 \seealso{
 	\itemize{
-		\item{}{\code{\link{as.unilog.run}}}
-		\item{}{\code{\link{rlog}}}
-		\item{}{\code{\link{as.pxml.ext}}}
+		\item \code{\link{as.unilog.run}}
+		\item \code{\link{rlog}}
+		\item \code{\link{as.pxml.ext}}
 	}
 }
 \examples{

@@ -40,7 +40,7 @@ unitHist(x, plot = FALSE, ...)
 \author{Tim Bergsma}
 \seealso{
 	\itemize{
-		\item{}{\code{\link{panel.stratify}}}
+		\item \code{\link{panel.stratify}}
 	}
 }
 \keyword{manip}

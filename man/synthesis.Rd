@@ -25,7 +25,7 @@ synthesis(x, key = character(0), frames, ...)
 \author{Tim Bergsma}
 \seealso{
 	\itemize{
-		\item{}{\code{\link{dataSynthesis}}}
+		\item \code{\link{dataSynthesis}}
 	}
 }
 \keyword{manip}

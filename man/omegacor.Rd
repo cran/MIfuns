@@ -38,8 +38,8 @@ correlation matrix
 \author{Tim Bergsma}
 \seealso{
 	\itemize{
-		\item{}{\code{\link{cov2cor}}}
-		\item{}{\code{\link{rlog}}}
+		\item \code{\link{cov2cor}}
+		\item \code{\link{rlog}}
 	}
 }
 \keyword{manip}

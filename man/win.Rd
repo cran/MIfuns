@@ -13,7 +13,7 @@ win()
 \author{Tim Bergsma}
 \seealso{
 	\itemize{
-		\item{}{\code{\link{NONR}}}
+		\item \code{\link{NONR}}
 	}
 }
 \examples{

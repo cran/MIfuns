@@ -37,7 +37,7 @@ naKeys(x, ...)
 }
 \arguments{
   \item{x}{a (keyed) data.frame}
-  \item{by}{a list of indicies as long as \code{nrow(x)}, whose interaction gives the aggregates (groups)}
+  \item{by}{a list of indices as long as \code{nrow(x)}, whose interaction gives the aggregates (groups)}
   \item{FUN}{an aggregating function}
   \item{across}{column names in \code{key(x)} across which to aggregate; see details}
   \item{\dots}{extra arguments, usually ignored, but passed to FUN in \code{aggregate}}
@@ -98,7 +98,7 @@ Most functions and methods documented here return objects with class
 \author{Tim Bergsma}
 \seealso{
 	\itemize{
-		\item{}{\code{\link{Ops.keyed}}}
+		\item \code{\link{Ops.keyed}}
 	}
 }
 \examples{

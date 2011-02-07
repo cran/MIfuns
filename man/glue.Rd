@@ -25,7 +25,7 @@ character
 \author{Tim Bergsma}
 \seealso{
 	\itemize{
-		\item{}{\code{\link{paste}}}
+		\item \code{\link{paste}}
 	}
 }
 \examples{

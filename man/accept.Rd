@@ -53,8 +53,8 @@ accept(
 \author{Tim Bergsma}
 \seealso{
 	\itemize{
-		\item{}{\code{\link{packageCheck}}}
-		\item{}{\code{\link{acceptance}}}
+		\item \code{\link{packageCheck}}
+		\item \code{\link{acceptance}}
 	}
 }
 \keyword{manip}

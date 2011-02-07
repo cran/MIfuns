@@ -28,7 +28,7 @@ variants(x, path)
 \author{Tim Bergsma}
 \seealso{
 	\itemize{
-		\item{}{\code{\link{latest}}}
+		\item \code{\link{latest}}
 	}
 }
 \keyword{manip}

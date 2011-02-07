@@ -40,7 +40,7 @@
     par.list <- strain(par.list,available)
     eta.list <- strain(eta.list,available)
     
-    listfilename <- file.path(rundir,paste(sep='',run,'.lst'))
+    listfilename <- file.path(rundir,glue(run,'.lst'))
     listfile <- readLines(listfilename)
     iterations <- try(iterations(listfile))
     it.dat <- NULL

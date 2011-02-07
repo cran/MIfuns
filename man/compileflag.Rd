@@ -21,7 +21,7 @@ compileflag(compiler, mappings = list(ifort = 1), ...)
 \author{Tim Bergsma}
 \seealso{
 	\itemize{
-		\item{}{\code{\link{runCommand}}}
+		\item \code{\link{runCommand}}
 	}
 }\keyword{manip}
 

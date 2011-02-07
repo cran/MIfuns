@@ -18,7 +18,7 @@ latest(x)
 \author{Tim Bergsma}
 \seealso{
 	\itemize{
-		\item{}{\code{\link{variants}}}
+		\item \code{\link{variants}}
 	}
 }
 \examples{

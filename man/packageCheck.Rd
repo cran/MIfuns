@@ -24,9 +24,9 @@ an scalar character string: zero if the package does not load or if \code{exampl
 \author{Tim Bergsma}
 \seealso{
 	\itemize{
-		\item{}{\code{\link{accept}}}
-		\item{}{\code{\link{acceptance}}}
-		\item{}{\code{\link{library}}}
+		\item \code{\link{accept}}
+		\item \code{\link{acceptance}}
+		\item \code{\link{library}}
 	}
 }
 \keyword{manip}

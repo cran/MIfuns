@@ -23,8 +23,8 @@ may be.}
 \author{Tim Bergsma}
 \seealso{
 	\itemize{
-		\item{}{\code{\link{lookup}}}
-		\item{}{\code{\link{partab}}}
+		\item \code{\link{lookup}}
+		\item \code{\link{partab}}
 	}
 }
 \keyword{manip}

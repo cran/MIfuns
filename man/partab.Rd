@@ -58,9 +58,9 @@ a modeling script.  Output is suitable as an argument to \code{latex} in package
 \author{Tim Bergsma}
 \seealso{
 	\itemize{
-		\item{}{\code{\link{lookup}}}
-		\item{}{\code{\link{params}}}
-		\item{}{\code{\link{rlog}}}
+		\item \code{\link{lookup}}
+		\item \code{\link{params}}
+		\item \code{\link{rlog}}
 	}
 }
 \keyword{manip}

@@ -26,7 +26,7 @@
 \author{Tim Bergsma}
 \seealso{
 	\itemize{
-		\item{}{\code{\link{write.table}}}
+		\item \code{\link{write.table}}
 	}
 }
 \examples{

@@ -89,7 +89,7 @@ Development Solutions).
 \author{Tim Bergsma}
 \seealso{
 	\itemize{
-		\item{}{\code{\link{as.nm}}}
+		\item \code{\link{as.nm}}
 	}
 }
 \keyword{manip}

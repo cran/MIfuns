@@ -18,7 +18,7 @@ purge.files(pattern, dir = '.')
 \author{Tim Bergsma}
 \seealso{
 	\itemize{
-		\item{}{\code{\link{purge.dir}}}
+		\item \code{\link{purge.dir}}
 	}
 }
 \keyword{manip}

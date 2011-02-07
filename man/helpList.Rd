@@ -11,9 +11,11 @@
 \item \link{[.flag} subset a flag
 \item \link{[.keyed} subset a keyed data frame
 \item \link{[.miTemporal} subset a miTemporal object
+\item \link{[.nmctl} subset a control stream object
 \item \link{[[.comment} select element from a comment
 \item \link{[[.flag} select element from a flag
 \item \link{[[.miTemporal} select element from a miTemporal object
+\item \link{[[.nmctl} select element from a control stream object
 \item \link{[<-.miTemporal} assign to a miTemporal object
 \item \link{\%nested.in\%} test whether a is nested in b
 \item \link{\%nests\%} test whether a nests b
@@ -133,8 +135,9 @@
 \item \link{deranged.data.frame} instantiate records implied by range data
 \item \link{deranged.keyed} instantiate records implied by range data
 \item \link{diagnosticPlots} create standard diagnostic plots
-\item \link{distance} calculate the position of each element of a logical vector relative to the \eqn{n^{th}}{n^th} \code{TRUE} element (usually, within levels of an index)
+\item \link{distance} calculate element positions relative to the \eqn{n^{th}}{n^th} \code{TRUE} element positions (usually, within levels of an index)
 \item \link{dupKeys} give a logical index to duplicated rows of a keyed data frame, AND the rows of which they are duplicates
+\item \link{electronicAppendix} create an FDA-style electronic appendix from a subversioned directory
 \item \link{episcript} run a script in an environment that defines the passed arguments
 \item \link{explicitPath} add separators to control stream paths that have none
 \item \link{extfile} extract arbitrary file specification from a control stream
@@ -163,7 +166,7 @@
 \item \link{getPars} return the non-duplicated (ID) rows corresponding to the specified filename (internal)
 \item \link{getTabs} return the observation rows (EVID==0) corresponding to the specified filename (internal)
 \item \link{glue} paste with no separator
-\item \link{groupnames} construct a single vector of group names from possibly multiple indicies to the plotting data set (internal)
+\item \link{groupnames} construct a single vector of group names from possibly multiple indices to the plotting data set (internal)
 \item \link{half} generic
 \item \link{half.matrix} vectorize the lower triangular portion of a symmetric matrix
 \item \link{hash} prepend a character to each line of output
@@ -179,6 +182,8 @@
 \item \link{is.cwres.readable.file} compute conditional weighted residuals (internal)
 \item \link{is.square} generic
 \item \link{is.square.matrix} test whether a matrix is square
+\item \link{isSubversioned} check if files are subversioned
+\item \link{isSubversionedFile} check if one file is subversioned
 \item \link{ke} calculate elimination constant
 \item \link{key} return the key of a keyed data frame
 \item \link{key<-} assign a key
@@ -214,6 +219,7 @@
 \item \link{noPk} generic
 \item \link{noPk.nm} rows where EVID is never 0 within SUBJ
 \item \link{nth} repeat, for each element, the \eqn{n^{th}}{n^th} element where a condition is \code{TRUE}  (usually, within levels of an index)
+\item \link{nxt} calculate the next element for each element of x
 \item \link{offdiag} generic
 \item \link{offdiag.halfmatrix} select just the off-diagonal elements of a halfmatrix
 \item \link{omegacor} convert omega covariance in NONMEM output to correlation matrix
@@ -276,6 +282,7 @@
 \item \link{runNonmem} process a request for NONMEM invocation
 \item \link{runstate} determine the status of a run
 \item \link{safe.call} call a function, passing only those extra arguments that the function accepts
+\item \link{safeQuote} single-quote unquoted text that contains space
 \item \link{scavenge} find an expression in lines of text
 \item \link{seq.miTemporal} generate miTemporal sequence
 \item \link{setCwres} append conditional weighted residuals to an appropriate file
@@ -285,12 +292,20 @@
 \item \link{snap} coerce values to nearest of candidates
 \item \link{sort.keyed} sort a keyed data frame
 \item \link{sqrtm} support \code{compute.cwres}
-\item \link{stableMerge}produce a left join, with strict error checking
+\item \link{stableMerge} produce a left join, with strict error checking
 \item \link{star} replace asterisk in x with y (internal)
 \item \link{strain} reduce x to those elements that occur in options (internal)
 \item \link{summary.keyed} summarize a keyed data frame
 \item \link{summary.hidden.data.frame} summarize hidden rows of a data frame
 \item \link{summary.nm} summarize an nm object
+\item \link{svnIsText} check if subversioned files are text rather than binary
+\item \link{svnMarkAsText} tell Subversion to treat files as text
+\item \link{svnMarkAsNonText} tell Subversion to treat files as binary
+\item \link{svnMimeType} get the Subversion mime-type for files
+\item \link{svnPropGet} get a Subversion property for files
+\item \link{svnPropGetFile} get a Subversion property for one file
+\item \link{svnPropSet} set a subversion property on files
+\item \link{svnPropSetFile} set a Subversion property on a file
 \item \link{synthesis} sequentially left-join an arbitrary number of data frames, picking up novel columns (internal)
 \item \link{tabfile} extract tabfile specification from a control stream
 \item \link{text2decimal} convert mixed text to decimal

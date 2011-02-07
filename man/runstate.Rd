@@ -52,7 +52,7 @@ runstate(
 \author{Tim Bergsma.}
 \seealso{
 	\itemize{
-		\item{}{\code{\link{rlog}}}
+		\item \code{\link{rlog}}
 	}
 }
 \examples{

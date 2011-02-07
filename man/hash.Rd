@@ -27,8 +27,8 @@ used for side effects
 }
 \seealso{
 	\itemize{
-		\item{}{\code{\link{file}}}
-		\item{}{\code{\link{sink}}}
+		\item \code{\link{file}}
+		\item \code{\link{sink}}
 	}
 }
 \keyword{manip}

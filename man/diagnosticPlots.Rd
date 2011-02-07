@@ -53,8 +53,8 @@ a list of trellis objects
 \author{Tim Bergsma}
 \seealso{
 	\itemize{
-		\item{}{\code{\link{PLOTR}}}
-		\item{}{\code{\link{dataSynthesis}}}
+		\item \code{\link{PLOTR}}
+		\item \code{\link{dataSynthesis}}
 	}
 }
 \keyword{manip}

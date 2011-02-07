@@ -28,7 +28,7 @@ qsub(command, ...)
 \author{Tim Bergsma}
 \seealso{
 	\itemize{
-		\item{}{\code{\link{runCommand}}}
+		\item \code{\link{runCommand}}
 	}
 }
 \examples{

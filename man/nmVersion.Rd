@@ -19,7 +19,7 @@ nmVersion(config, ...)
 \author{Tim Bergsma}
 \seealso{
 	\itemize{
-		\item{}{\code{\link{runNonmem}}}
+		\item \code{\link{runNonmem}}
 	}
 }
 \examples{
