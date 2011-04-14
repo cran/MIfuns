@@ -3,7 +3,7 @@
 \alias{inner.data.frame}
 
 \title{
-	Limit Data to Inner Quantiles by Imputing \code{NA}.
+	Limit Data to Inner Quantiles by Imputing NA.
 }
 \description{
 \code{inner} is generic.  \code{inner.data.frame} imputes \code{NA} for

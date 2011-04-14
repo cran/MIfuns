@@ -135,7 +135,7 @@ unitDensity(x,...)
   
 }
 \value{
-  uused for side-effects
+  used for side-effects
 }
 \references{\url{http://mifuns.googlecode.com}}
 \author{Tim Bergsma}

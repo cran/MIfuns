@@ -14,5 +14,6 @@ I want to ....
 \item \link[=partab]{create} a model parameter table
 \item \link[=iterations]{list} the iteration statistics in the NONMEM output
 \item \link[=omegacor]{convert} the NONMEM output omega covariance matrix to correlations
+\item \link[=ftable2data.frame]{reformat} an ftable for printing with latex
 }
 }

@@ -33,7 +33,7 @@ plot.nm <- function(
 			id.var='ID',
 			measure.var='TIME'
 		),
-		fun=function(x)min(x,na.rm=TRUE)
+		fun.aggregate=function(x)min(x,na.rm=TRUE)
 	)
 	names(mins) <- c('ID','min')
 	x <- stableMerge(x,mins)

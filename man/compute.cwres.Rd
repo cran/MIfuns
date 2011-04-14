@@ -2,6 +2,7 @@
 \alias{compute.cwres}
 \alias{ind.cwres}
 \alias{read.cwres.data}
+\alias{nm.data-class}
 \alias{is.cwres.readable.file}
 \title{Compute the Conditional Weighted Residuals}
 \description{

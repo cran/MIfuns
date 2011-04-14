@@ -56,7 +56,7 @@ Objects of class comment can be used exactly like logicals, but look like
 conventional comments.  \code{hide.data.frame} implements consistent
 commenting of rows, including a reason for the comment. \code{hidden} and 
 \code{summary} methods analyze the result.  \code{hidden.data.frame} returns
-just the hidden rows, classified as sQuote{hidden.data.frame}.  
+just the hidden rows, classified as \sQuote{hidden.data.frame}.  
 \code{summary.hidden.data.frame} indicates, for each flag, the number
 of records commented for that reason (total) and the number of records
 commented for only that reason (unique), if any. If \code{hidden(x)} has
