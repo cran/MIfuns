@@ -1,0 +1,50 @@
+\documentclass[titlepage]{article}
+\usepackage{hyperref}
+\usepackage[left=3cm,top=3cm,bottom=3cm, right=3cm,includehead,includefoot]{geometry}
+\usepackage{graphicx}
+\usepackage{tocbibind}
+\usepackage{fixltx2e}
+\usepackage{Sweave}
+\SweaveOpts{keep.source=true}
+\SweaveOpts{eps=false} 
+\SweaveOpts{keep.source=true}
+\begin{document}
+<<handlers,echo=false,results=hide>>=
+library(MIfuns)
+source('wikimath.R')
+@
+Here we define a string of text.
+<<text>>=
+x <- "V_c /F (L * h^-1 ) ~theta_1 *(WT/70)^theta_2"
+@
+Now we try x as a column name for a data frame.
+<<data.frame>>=
+d <- data.frame(subject=1,x=2)
+names(d)[2] <- nospace(lhs(noUnits(x)))
+d
+justUnits(x)
+@
+What theta is primarily associated with this equation?
+<<theta>>=
+tos(x)
+text2decimal(tos(x))
+@
+Next we try it in a latex table.
+<<latex,results=tex>>=
+library(Hmisc)
+tex <- capture.output(latex(
+  file='',
+  title='',
+  where="!htbp",
+  rowname=NULL,
+  colheads='model',
+  data.frame(x=wiki2latex(noUnits(x)))
+))
+writeLines(tex)
+@
+Finally we try it in a figure.
+<<figure,fig=true>>=
+plot(1:10,1:10,col='white')
+text(5,5,parse(text=wiki2plotmath(noUnits(x))))
+@
+\end{document}

@@ -1,0 +1,165 @@
+\input{settings.sty}
+\usepackage{Sweave}
+\SweaveOpts{keep.source=true}
+\SweaveOpts{eps=false} 
+\begin{document}
+\vspace*{2cm}
+\begin{center}
+{\Large MIfuns Sample Script}\\
+\vspace{1.5cm}
+{\Large Alternate Parameter Table}\\
+~\\
+\today\\
+~\\
+Tim Bergsma\\
+\end{center}
+\newpage
+
+\section{Purpose}
+This script demonstrates simplified creation of parameter tables.
+\section{Set Up}
+<<model>>=
+getwd()
+library(MIfuns)
+@
+\section{Parameter Table}
+<<params>>=
+library(Hmisc)
+wikitab <- function (
+  run, 
+  project = getwd(), 
+  boot = FALSE, 
+  tool = "nm7", 
+  file = filename(rundir, run, ".ctl"), 
+  rundir = filename(project, run, if (boot) ".boot" else ""), 
+  nmlog = file.path(rundir, "NonmemRunLog.csv"), 
+  nmout = filename(rundir, run, ".lst"), 
+  x = params(within = within, by = by, type = type, ...), 
+  within = ctl2xml(readLines(file)), 
+  by = "model",
+  type = "wiki", 
+  append = NULL, 
+  pattern = NULL, 
+  ...
+) 
+{
+    stopifnot(length(run) == 1)
+    log <- rlog(run = run, boot = boot, append = FALSE, tool = tool, 
+        file = NULL, rundir = rundir, nmlog = nmlog, nmout = nmout, 
+        pattern = NULL, ...)
+    log <- data.frame(cast(log, ... ~ moment))
+    log[] <- lapply(log, as.character)
+    #names(log)[names(log) == "parameter"] <- by
+    par <- data.frame(
+      stringsAsFactors=FALSE,
+      description=as.character(
+        lookup(
+          x=x,
+          within=within,
+          by=by,
+          as=NULL,
+          type=type
+        )
+      )
+    )
+    par[by] <- x
+    par$parameter <- tos(par[[by]])
+    log <- log[log$parameter %in% par$parameter, ]
+    log <- log[sapply(log, function(x) !all(is.na(x)))]
+    #log <- log[names(log) %in% c(by, as)]
+    all <- stableMerge(par, log)
+    all <- shuffle(all,'parameter')
+    all
+}
+debug(wikitab)
+tab <- wikitab(1005,'../nonmem')
+bootci <- function(x,...){
+boot <- read.csv(glue(project,run,'.boot/'../nonmem/1005.boot/log.csv',as.is=TRUE)
+boot <- boot[boot$moment=='estimate',]
+boot <- data.frame(cast(boot,...~moment))
+boot[] <- lapply(boot,as.character)
+boot <- boot[contains('THETA|OMEGA|SIGMA',boot$parameter),c('parameter','estimate')]
+boot$estimate <- as.numeric(boot$estimate)
+boot <- data.frame(cast(boot,parameter~.,value='estimate',fun=function(x)list(lo=as.character(signif(quantile(x,probs=0.05),3)),hi=as.character(signif(quantile(x,probs=0.95),3)))))
+boot$CI <- with(boot, paste(sep='','(',lo,',',hi,')'))
+
+wikitab2latex <- function(x,...){
+  x$tool <- NULL
+  x$run <- NULL
+  x$estimate <- as.character(signif(as.numeric(x$estimate),3))
+  x$estimate <- with(x, paste(estimate,justUnits(model)))
+  x$root <- signif(sqrt(exp(text2decimal(x$estimate))-1),3)
+  x$estimate <- ifelse(contains('OMEGA|SIGMA',x$parameter),paste(x$estimate,' (\\%CV=',x$root*100,')',sep=''),x$estimate)
+  x$root <- NULL
+  x$estimate <- wiki2latex(x$estimate)
+  x$term <- wiki2latex(lhs(noUnits(x$model)))
+  x$model <- wiki2latex(noUnits(x$model))
+  x[,c('term','parameter','description','model','estimate','prse')]
+}
+#offdiag <- contains('2.1',x$parameter)
+#x$estimate[offdiag] <- text2decimal(x$estimate[offdiag])
+#omegablock <- text2decimal(x$estimate[contains('Omega..(1|2)',x$parameter)])
+#cor <- signif(half(cov2cor(as.matrix(as.halfmatrix(omegablock))))[[2]],3)
+#x$estimate[offdiag] <- paste(sep='',x$estimate[offdiag],' (COR=',cor,')')
+x$model[is.na(x$model)] <- ''
+#boot <- rlog(1:300,project='../nonmem/1005.boot',tool='nm7',boot=TRUE)
+boot <- read.csv('../nonmem/1005.boot/log.csv',as.is=TRUE)
+boot <- boot[boot$moment=='estimate',]
+boot <- data.frame(cast(boot,...~moment))
+boot[] <- lapply(boot,as.character)
+boot <- boot[contains('THETA|OMEGA|SIGMA',boot$parameter),c('parameter','estimate')]
+boot$estimate <- as.numeric(boot$estimate)
+boot <- data.frame(cast(boot,parameter~.,value='estimate',fun=function(x)list(lo=as.character(signif(quantile(x,probs=0.05),3)),hi=as.character(signif(quantile(x,probs=0.95),3)))))
+boot$CI <- with(boot, paste(sep='','(',lo,',',hi,')'))
+names(boot)[names(boot)=='parameter'] <- 'name'
+x <- stableMerge(x,boot[,c('name','CI')])
+x$name <- NULL
+x$se <- NULL
+x
+}
+debug(wikitab2latex)
+wikitab2latex(tab)
+
+tab$tool <- NULL
+tab$run <- NULL
+tab$estimate <- as.character(signif(as.numeric(tab$estimate),3))
+tab$estimate <- with(tab, wiki2latex(paste(estimate,justUnits(model))))
+tab$label <- ifelse(is.na(tab$latex),tab$label,paste(tab$label, ' (',tab$latex,')',sep=''))
+tab$latex <- NULL
+names(tab)[names(tab)=='label'] <- 'parameter'
+tab$root <- signif(sqrt(exp(as.numeric(tab$estimate))-1),3)
+tab$estimate <- ifelse(contains('Omega|sigma',tab$parameter),paste(tab$estimate,' (\\%CV=',tab$root*100,')',sep=''),tab$estimate)
+tab$root <- NULL
+#offdiag <- contains('2.1',tab$parameter)
+#tab$estimate[offdiag] <- text2decimal(tab$estimate[offdiag])
+#omegablock <- text2decimal(tab$estimate[contains('Omega..(1|2)',tab$parameter)])
+#cor <- signif(half(cov2cor(as.matrix(as.halfmatrix(omegablock))))[[2]],3)
+#tab$estimate[offdiag] <- paste(sep='',tab$estimate[offdiag],' (COR=',cor,')')
+tab$model[is.na(tab$model)] <- ''
+#boot <- rlog(1:300,project='../nonmem/1005.boot',tool='nm7',boot=TRUE)
+boot <- read.csv('../nonmem/1005.boot/log.csv',as.is=TRUE)
+boot <- boot[boot$moment=='estimate',]
+boot <- data.frame(cast(boot,...~moment))
+boot[] <- lapply(boot,as.character)
+boot <- boot[contains('THETA|OMEGA|SIGMA',boot$parameter),c('parameter','estimate')]
+boot$estimate <- as.numeric(boot$estimate)
+boot <- data.frame(cast(boot,parameter~.,value='estimate',fun=function(x)list(lo=as.character(signif(quantile(x,probs=0.05),3)),hi=as.character(signif(quantile(x,probs=0.95),3)))))
+boot$CI <- with(boot, paste(sep='','(',lo,',',hi,')'))
+names(boot)[names(boot)=='parameter'] <- 'name'
+tab <- stableMerge(tab,boot[,c('name','CI')])
+tab$name <- NULL
+tab$se <- NULL
+@ 
+<<results=tex,echo=FALSE>>=
+latex(
+	tab,
+	file='',
+	rowname=NULL,
+	caption='Parameter Estimates from Population Pharmacokinetic Model Run 1005',
+	caption.lot='Model 1005 Parameters',
+	label='p1005',
+	where='ht',
+	table.env=FALSE
+)
+@
+\end{document}

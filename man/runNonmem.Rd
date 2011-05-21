@@ -42,6 +42,7 @@ runNonmem(
 	ctlfile = filename(streams,run,'.ctl'),
 	remove  = c('^F[ISRC]','^OU','^nonmem.exe','^nul$',if(fdata)c('^FD','^PR')),
 	sync=if(boot)'n'else'y',
+	interface='nm.pl',
 	...
 )
 }
@@ -80,6 +81,7 @@ runNonmem(
   \item{ctlfile}{the original control stream}
   \item{remove}{regular expressions for files to purge}
   \item{sync}{whether the R process should wait for the run to complete}
+  \item{interface}{the name of a function to prepare NONMEM command lines}
   \item{\dots}{extra arguments for other functions}
 }
 \value{used for side effects}

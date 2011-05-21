@@ -18,7 +18,8 @@ function(x,...){
 	noOfFuncEvals          <- function(x)text2decimal(strsplit(x[[1]],':')[[1]])[[4]]
 	cumulativeNoOfFuncEvals<- function(x)text2decimal(gsub('\\.','',x[[2]]))
 	gradientCue <- function(x)grep('GRADIENT',x)
-	paramlines <- function(x,cue)x[3:(cue-1)]
+	parameterCue <- function(x)grep('PARAMETER',x)
+	paramlines <- function(x,pcue,gcue)x[pcue:(gcue-1)]
 	gradientlines <- function(x,cue)x[cue:length(x)]
 	params <- function(paramlines){
 		paramlines <- sub('^ *','',paramlines)
@@ -35,9 +36,10 @@ function(x,...){
 		as.numeric(res)
 	}
 	integrate <- function(i){
-		cue <- gradientCue(i)
-		pl <- params(paramlines(i,cue))
-		gl <- grads(gradientlines(i,cue))
+		pcue <- parameterCue(i)
+		gcue <- gradientCue(i)
+		pl <- params(paramlines(i,pcue,gcue))
+		gl <- grads(gradientlines(i,gcue))
 		pl <- data.frame(t(pl))
 		gl <- data.frame(t(gl))
 		pl$course <- 'parameter'

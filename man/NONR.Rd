@@ -1,5 +1,6 @@
 \name{NONR}
 \alias{NONR}
+\alias{NONR72}
 \title{Run NONMEM}
 \description{
 \code{NONR} executes, from R, a NONMEM run for which there exists a compatible (see note)
@@ -9,7 +10,8 @@
   (http://nmqual.googlecode.com).  Execution on the Nix grid requires
   the installation of Sun Grid Engine v6.  Following a successful NONMEM
   run \code{NONR} can call \code{PLOTR} to create diagnostic plots (pdf format) and/or
-  run a user-written script. 
+  run a user-written script. \code{NONR72} is a wrapper designed to invoke an 
+  NMQual-mediated installation of NONMEM 7.2.0 or above.
 }
 \usage{
 NONR(
@@ -42,6 +44,7 @@ NONR(
 	missing = -99, 
 	...
 )
+NONR72(...,interface='autolog.pl')
 }
 
 \arguments{
@@ -172,6 +175,7 @@ NONR(
   \item{par.list}{passed to \code{PLOTR}}
   \item{eta.list}{passed to \code{PLOTR}}
   \item{missing}{passed to \code{PLOTR}}
+  \item{interface}{the name of a function to prepare NONMEM command lines}
   \item{\dots}{additional arguments passed to functions that accept them. For example,
   you can pass \code{onefile=FALSE} to \code{pdf}, called by \code{PLOTR}.  You can also pass
   additional lattice arguments to modify the diagnostic plots.  

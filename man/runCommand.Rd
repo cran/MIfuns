@@ -28,7 +28,7 @@ runCommand(
 	N = glue('Run', run, if (split) c('c', 'e') else NULL),
 	o = rdir,
 	e = rdir,
-	L=if(split)c(compileflag(compiler(config(dirname(command)))),NA)else NA,
+	L=if(split & interface=='nm.pl')c(compileflag(compiler(config(dirname(command)))),NA)else NA,
 	hold_jid = if (split) c(NA, glue('Run', run, 'c')) else NA,
 	V = '',
 	j = 'y',
@@ -48,6 +48,7 @@ runCommand(
 	compile = TRUE,
 	execute = TRUE,
 	background=FALSE,
+	interface = 'nm.pl',
 	...
 )
 }
@@ -85,6 +86,7 @@ runCommand(
   \item{execute}{passed to \code{nm.pl}, influences default for \code{q}}
   \item{background}{\code{TRUE} appends \sQuote{l} to command lines to put the 
   process in the background.  Defunct?}
+  \item{interface}{the name of a function to prepare NONMEM command lines}
   \item{\dots}{passed to \code{nm.pl} and \code{qsub}}
 }
 \details{

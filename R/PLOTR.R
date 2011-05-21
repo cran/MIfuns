@@ -45,9 +45,10 @@
     iterations <- try(iterations(listfile))
     it.dat <- NULL
     if(inherits(iterations,'data.frame'))try(it.dat <- melt(iterations,measure.var=names(iterations)[contains('X',names(iterations))]))
-    estimated <- list(...)$estimated
-    if(!is.null(estimated))try(levels(it.dat$variable) <- estimated)
-    
+    if(!is.null(estimated)){
+    	    if(any(duplicated(estimated)))warning('estimated contains duplicates and will not be used')
+    	    else try(levels(it.dat$variable) <- estimated)
+    }
     #open device
     plotfile <- star(plotfile,run)
     safe.call(pdf,file=plotfile,onefile=onefile,...)

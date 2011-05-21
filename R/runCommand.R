@@ -18,7 +18,7 @@
 	N=glue('Run',run,if(split)c('c','e') else NULL),
 	o=rdir,
 	e=rdir,
-	L=if(split)c(compileflag(compiler(config(dirname(command)))),NA)else NA,
+	L=if(split & interface=='nm.pl')c(compileflag(compiler(config(dirname(command)))),NA)else NA,
 	hold_jid=if(split)c(NA,glue('Run',run,'c'))else NA,
 	V='',
 	j='y',
@@ -38,13 +38,29 @@
 	compile=TRUE,
 	execute=TRUE,
 	background=FALSE,
+	interface = 'nm.pl',
 	...
 ){
   force(L) #before command changes
   if(nix())internal <- FALSE
 
   #draft a command
-  if(!udef)command <- nm.pl(command,infile=ctlfile,outfile=outfile,perl=perl,checksum=checksum,split=split,compile=compile,execute=execute,...)
+  if(!udef)command <- match.fun(interface)(
+  	command=command,
+  	run=run,
+  	rdir=rdir,
+  	boot=boot,
+  	urgent=urgent,
+  	checksum=checksum,
+  	grid=grid,
+  	ctlfile=ctlfile,
+  	outfile=outfile,
+  	perl=perl,
+  	split=split,
+  	compile=compile,
+  	execute=execute,
+  	...
+  )
   if(grid) command <- qsub(command,N=N,o=o,e=e,l=L,hold_jid=hold_jid,V=V,j=j,q=q,sync=sync,shell=shell,b=b,cwd=cwd,...)
   if(background) command <- paste(command,'&')
   
@@ -94,7 +110,7 @@ nmVersion <- function(config,...){
 }
 nm.pl <- function(
 	command,
-	infile,
+	ctlfile,
 	outfile=NULL,
 	perl='perl',
 	checksum=TRUE,
@@ -104,12 +120,30 @@ nm.pl <- function(
 	...
 ){
 	if(split & xor(compile,execute)) stop('cannot split run if compile or execute is FALSE')
-	if(is.null(outfile))outfile <- sub('\\....$','.lst',infile)
+	if(is.null(outfile))outfile <- sub('\\....$','.lst',ctlfile)
 	command <- paste(perl,command)
-	mode <- c('c','e')[c(compile,execute)][xor(compile,execute)|split]
-	if(length(mode))command <- paste(command,mode)
-	command <- paste(command,infile,outfile)
+	stage <- c('c','e')[c(compile,execute)][xor(compile,execute)|split]
+	if(length(stage))command <- paste(command,stage)
+	command <- paste(command,ctlfile,outfile)
 	if(!checksum) command <- paste(command,'nochecksum')
+	command
+}
+autolog.pl <- function(
+	command,
+	rdir,
+	run,
+	perl='perl',
+	compile=TRUE, 
+	execute=TRUE,
+	split=FALSE,
+	mode='run',
+	...
+){
+	if(split & xor(compile,execute)) stop('cannot split run if compile or execute is FALSE')
+	stage <- if(split)c('c','e')else'ce'
+	if(compile==FALSE)stage <- 'e'
+	if(execute==FALSE)stage <- 'c'
+	command <- paste(perl,command,mode,stage,rdir,run)
 	command
 }
 

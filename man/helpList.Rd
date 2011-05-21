@@ -94,6 +94,7 @@
 \item \link{auc} calculate area under the curve
 \item \link{AUC} calculate the area under the curve for each subject over the time interval for dv using the trapezoidal rule
 \item \link{aug} add named elements to an object
+\item \link{autolog.pl} prepare command lines for autolog.pl.
 \item \link{backtrans} backtransform cols in x, returning x
 \item \link{badAmt} generic
 \item \link{badAmt.nm} AMT is NA where EVID is 1
@@ -113,6 +114,7 @@
 \item \link{cavg} calculate average concentration
 \item \link{check.subjects} check for missing data, numeric data, ranges, etc.
 \item \link{clear} drop regular patterns from a character vector
+\item \link{closers} set closing positions for wikmath nests
 \item \link{CLNR} delete files and directories and log what was deleted to a text file in the project
 \item \link{cmax} calculate maximum steady-state concentration
 \item \link{cmin} calculate minimum steady-state concentration
@@ -186,6 +188,7 @@
 \item \link{is.square.matrix} test whether a matrix is square
 \item \link{isSubversioned} check if files are subversioned
 \item \link{isSubversionedFile} check if one file is subversioned
+\item \link{justUnits} extract units from wikimath
 \item \link{ke} calculate elimination constant
 \item \link{key} return the key of a keyed data frame
 \item \link{key<-} assign a key
@@ -193,6 +196,7 @@
 \item \link{latest} identify the latest of each set of variants
 \item \link{lbm} calculate lean body mass
 \item \link{left.keyed} produce left join of two keyed data frames
+\item \link{lhs} extract left-hand side of wikimath
 \item \link{locf} impute NA using last observation carried forward
 \item \link{lookup} translate among parameter attributes (vector)
 \item \link{lookup.one} translate among parameter attributes (scalar)
@@ -214,13 +218,16 @@
 \item \link{nest} nest an XML fragment in a parent element
 \item \link{nix} identify Unix-like platforms (internal)
 \item \link{nm} give a zero-row data frame with suitable columns and column classes; i.e. a template for NMTRAN data sets
-\item \link{nm.pl} prepare commandlines for nm.pl
+\item \link{nm.pl} prepare command lines for nm.pl
 \item \link{nmPlots} a list of functions that plot nm objects
 \item \link{nmVersion} extract NONMEM version specification from configuration file
 \item \link{nocb} impute NA with next observation carried backward
 \item \link{NONR} run NONMEM and create diagnostic plots
+\item \link{NONR72} run NONMEM 7.2.0 or later
+\item \link{nospace} drop spaces from text
 \item \link{noPk} generic
 \item \link{noPk.nm} rows where EVID is never 0 within SUBJ
+\item \link{noUnits} drop units from wikimath
 \item \link{nth} repeat, for each element, the \eqn{n^{th}}{n^th} element where a condition is \code{TRUE}  (usually, within levels of an index)
 \item \link{nxt} calculate the next element for each element of x
 \item \link{offdiag} generic
@@ -273,6 +280,7 @@
 \item \link{resample.data.frame} create replicate data sets by stratified sampling with replacement
 \item \link{resample.filename} create replicate data sets by stratified sampling with replacement, after reading file
 \item \link{resolve} reinterpret relative file paths with respect to specified directory.
+\item \link{rhs} extract right-hand side of wikimath
 \item \link{rig} generic
 \item \link{rig.nm} generate extra rows, spaced across each subject's timecourse, for obtaining model predictions in NONMEM (EVID==2)
 \item \link{rinvchisq} generate inverse chi-square distribution
@@ -315,6 +323,7 @@
 \item \link{tmax} calculate the time of the maximum concentration
 \item \link{Tmax} calculate the time associated with the maximum concentration for each subject
 \item \link{Tmin} calculate the time associated with the minimum concentration for each subject
+\item \link{tos} extract thetas, omegas, and sigmas from wikimath
 \item \link{transform.keyed} transform a keyed data frame, preserving class
 \item \link{uniKey} generic
 \item \link{uniKey.keyed} create a single character vector from all the key columns
@@ -324,6 +333,10 @@
 \item \link{unitHist} calculate univariate histogram architecture with maximum height equal to 1
 \item \link{nmVersion} extract NONMEM version specification from configuration file
 \item \link{variants} locate variants of a file in distinctive subdirectories
+\item \link{wiki2latex} convert wikimath to latex
+\item \link{wiki2plotmath} convert wikimath to plotmath
+\item \link{wikiparse} parse wikimath
+\item \link{wikitab} extract wikimath specification from a control stream
 \item \link{win} identify Windows platforms (internal)
 \item \link{write.nm} write an nm object to file
 \item \link{write.nmctl} write an nmctl object to file

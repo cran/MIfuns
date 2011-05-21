@@ -83,3 +83,4 @@ function (
 }
 nix <- function().Platform$OS.type == 'unix'
 win <- function().Platform$OS.type == 'windows'
+NONR72 <- function(...,interface='autolog.pl')NONR(...,interface=interface)

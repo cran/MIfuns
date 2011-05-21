@@ -1,5 +1,6 @@
 \name{partab}
 \alias{partab}
+\alias{wikitab}
 \title{Construct a Parameter Table}
 \description{Merges data from \code{rlog} and \code{lookup} to describe model run parameters.}
 \usage{
@@ -20,6 +21,23 @@ partab(
 	append = NULL, 
 	pattern = NULL, 
 	...
+)
+wikitab(
+  run, 
+  project = getwd(), 
+  boot = FALSE, 
+  tool = "nm7", 
+  file = filename(rundir, run, ".ctl"), 
+  rundir = filename(project, run, if (boot) ".boot" else ""), 
+  nmlog = file.path(rundir, "NonmemRunLog.csv"), 
+  nmout = filename(rundir, run, ".lst"), 
+  x = params(within = within, by = by, type = type, ...), 
+  within = ctl2xml(readLines(file)), 
+  by = "model",
+  type = "wiki", 
+  append = NULL, 
+  pattern = NULL, 
+  ...
 )
 }
 \arguments{
@@ -52,6 +70,12 @@ value \code{NA} returns the text element for the parameter (cs. \code{NULL} in \
 
 This mechanism allows messy model details to be abstracted to a more appropriate location than 
 a modeling script.  Output is suitable as an argument to \code{latex} in package \code{Hmisc}.
+
+\code{wikitab} is like \code{partab}, but only returns the 'model' attribute (default) and the 
+element text for elements of type 'wiki' (default).  It tries to guess the parameter names from
+the model attribute, using wikimath conventions (see \code{\link{tos}}), and then fold in the 
+related details from the run log.  \code{wikitab} is more restrictive than \code{partab},
+but it lets all the usual parameter details arise from a single specification thereof.
 }
 \value{data.frame}
 \references{\url{http://mifuns.googlecode.com}}
@@ -60,7 +84,9 @@ a modeling script.  Output is suitable as an argument to \code{latex} in package
 	\itemize{
 		\item \code{\link{lookup}}
 		\item \code{\link{params}}
-		\item \code{\link{rlog}}
+  	\item \code{\link{rlog}}
+    \item \code{\link{wikimath}}
+    \item \code{\link{tos}}
 	}
 }
 \keyword{manip}
