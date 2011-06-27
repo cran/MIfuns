@@ -136,6 +136,7 @@ autolog.pl <- function(
 	compile=TRUE, 
 	execute=TRUE,
 	split=FALSE,
+	config = file.path(dirname(command),'log.xml'),
 	mode='run',
 	...
 ){
@@ -143,7 +144,7 @@ autolog.pl <- function(
 	stage <- if(split)c('c','e')else'ce'
 	if(compile==FALSE)stage <- 'e'
 	if(execute==FALSE)stage <- 'c'
-	command <- paste(perl,command,mode,stage,rdir,run)
+	command <- paste(perl,command,config,mode,stage,rdir,run)
 	command
 }
 

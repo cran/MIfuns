@@ -11,7 +11,7 @@
   the installation of Sun Grid Engine v6.  Following a successful NONMEM
   run \code{NONR} can call \code{PLOTR} to create diagnostic plots (pdf format) and/or
   run a user-written script. \code{NONR72} is a wrapper designed to invoke an 
-  NMQual-mediated installation of NONMEM 7.2.0 or above.
+  NMQual-mediated installation of NONMEM 7.2.0 or above.  See \code{\link{autolog.pl}}.
 }
 \usage{
 NONR(

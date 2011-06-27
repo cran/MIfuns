@@ -24,13 +24,13 @@ This script runs NONMEM models and diagnostics for sample phase1 data.
 > getwd()
 \end{Sinput}
 \begin{Soutput}
-[1] "/Users/timb/project/metrum-mifuns/inst/sample/script"
+[1] "/Users/timb/code/inst/sample/script"
 \end{Soutput}
 \begin{Sinput}
-> library(MIfuns)
+> library(MIfuns,lib.loc="~/Rlibs")
 \end{Sinput}
 \begin{Soutput}
-MIfuns 4.1.0 
+MIfuns 4.3.4 
 \end{Soutput}
 \begin{Sinput}
 > command <- '/common/NONMEM/nm7_osx1/test/nm7_osx1.pl'
@@ -41,14 +41,13 @@ MIfuns 4.1.0
 \end{Sinput}
 \end{Schunk}
 \subsection{Run NONMEM.}
-To force a re-run of this model, delete 1005/diagnostics.pdf.
 \begin{Schunk}
 \begin{Sinput}
-> if(!file.exists('../nonmem/1005/diagnostics.pdf'))NONR(
+> NONR(
 +      run=1005,
 +      command=command,
 +      project='../nonmem',
-+      grid=TRUE,
++      grid=FALSE,
 +      nice=TRUE,
 +      checkrunno=FALSE,
 +      cont.cov=cont.cov,
@@ -56,16 +55,14 @@ To force a re-run of this model, delete 1005/diagnostics.pdf.
 +      par.list=par.list,
 +      eta.list=eta.list,
 +      plotfile='../nonmem/*/diagnostics.pdf',
-+      streams='../nonmem/ctl'
++      streams='../nonmem/ctl',
++      checksum=FALSE
 + )
 > getwd()
 \end{Sinput}
 \begin{Soutput}
-[1] "/Users/timb/project/metrum-mifuns/inst/sample/script"
+[1] "/Users/timb/code/inst/sample/script"
 \end{Soutput}
-\begin{Sinput}
-> while(!file.exists('../nonmem/1005/diagnostics.pdf')){}
-\end{Sinput}
 \end{Schunk}
 Covariance succeeded on model 1005.
 \section{Predictive Check}
@@ -73,7 +70,7 @@ Covariance succeeded on model 1005.
 Convert control stream to R object.
 \begin{Schunk}
 \begin{Sinput}
-> ctl <- read.nmcontrol('../nonmem/ctl/1005.ctl')
+> ctl <- read.nmctl('../nonmem/ctl/1005.ctl')
 \end{Sinput}
 \end{Schunk}
 Strip comments and view.
@@ -87,38 +84,54 @@ Strip comments and view.
  [2] "$INPUT C ID TIME SEQ=DROP EVID AMT DV SUBJ HOUR TAFD TAD LDOS MDV HEIGHT WT SEX AGE DOSE FED"
  [3] "$DATA ../../data/derived/phase1.csv IGNORE=C"                                                
  [4] "$SUBROUTINE ADVAN4 TRANS4"                                                                   
- [5] "$PK  CL=THETA(1)*EXP(ETA(1)) * THETA(6)**SEX * (WT/70)**THETA(7)"                            
- [6] " V2 =THETA(2)*EXP(ETA(2))"                                                                   
- [7] " KA=THETA(3)*EXP(ETA(3))"                                                                    
- [8] " Q  =THETA(4)"                                                                               
- [9] " V3=THETA(5)"                                                                                
-[10] " S2=V2"                                                                                      
-[11] " "                                                                                           
-[12] "$ERROR  Y=F*EXP(ERR(1))"                                                                     
-[13] " IPRE=F"                                                                                     
-[14] ""                                                                                            
-[15] "$THETA (0,10,50)"                                                                            
-[16] "(0,10,100)"                                                                                  
-[17] "(0,0.2, 5)"                                                                                  
+ [5] "$PK"                                                                                         
+ [6] " CL=THETA(1)*EXP(ETA(1)) * THETA(6)**SEX * (WT/70)**THETA(7)"                                
+ [7] " V2 =THETA(2)*EXP(ETA(2))"                                                                   
+ [8] " KA=THETA(3)*EXP(ETA(3))"                                                                    
+ [9] " Q  =THETA(4)"                                                                               
+[10] " V3=THETA(5)"                                                                                
+[11] " S2=V2"                                                                                      
+[12] " "                                                                                           
+[13] "$ERROR"                                                                                      
+[14] " Y=F*EXP(ERR(1))"                                                                            
+[15] " IPRE=F"                                                                                     
+[16] ""                                                                                            
+[17] "$THETA"                                                                                      
 [18] "(0,10,50)"                                                                                   
-[19] "(0,100,1000)"                                                                                
-[20] "(0,1,2)"                                                                                     
-[21] "(0,0.75,3)"                                                                                  
-[22] ""                                                                                            
-[23] "$OMEGA 0.09 0.09 0.09 "                                                                      
-[24] ""                                                                                            
+[19] "(0,10,100)"                                                                                  
+[20] "(0,0.2, 5)"                                                                                  
+[21] "(0,10,50)"                                                                                   
+[22] "(0,100,1000)"                                                                                
+[23] "(0,1,2)"                                                                                     
+[24] "(0,0.75,3)"                                                                                  
 [25] ""                                                                                            
-[26] ""                                                                                            
+[26] "$OMEGA 0.09 0.09 0.09"                                                                       
 [27] ""                                                                                            
 [28] ""                                                                                            
-[29] "$SIGMA 0.09"                                                                                 
+[29] ""                                                                                            
 [30] ""                                                                                            
 [31] ""                                                                                            
-[32] ""                                                                                            
-[33] "$ESTIMATION MAXEVAL=9999 PRINT=5 NOABORT METHOD=1 INTER MSFO=./1005.msf"                     
-[34] "$COV PRINT=E"                                                                                
-[35] "$TABLE NOPRINT FILE=./1005.tab ONEHEADER ID AMT TIME EVID PRED IPRE CWRES"                   
-[36] "$TABLE NOPRINT FILE=./1005par.tab ONEHEADER ID TIME CL Q V2 V3 KA ETA1 ETA2 ETA3"            
+[32] "$SIGMA 0.09"                                                                                 
+[33] ""                                                                                            
+[34] ""                                                                                            
+[35] ""                                                                                            
+[36] "$ESTIMATION MAXEVAL=9999 PRINT=5 NOABORT METHOD=1 INTER MSFO=./1005.msf"                     
+[37] "$COV PRINT=E"                                                                                
+[38] "$TABLE NOPRINT FILE=./1005.tab ONEHEADER ID AMT TIME EVID PRED IPRE CWRES"                   
+[39] "$TABLE NOPRINT FILE=./1005par.tab ONEHEADER ID TIME CL Q V2 V3 KA ETA1 ETA2 ETA3"            
+[40] ""                                                                                            
+[41] ""                                                                                            
+[42] ""                                                                                            
+[43] ""                                                                                            
+[44] ""                                                                                            
+[45] ""                                                                                            
+[46] ""                                                                                            
+[47] ""                                                                                            
+[48] ""                                                                                            
+[49] ""                                                                                            
+[50] ""                                                                                            
+[51] ""                                                                                            
+[52] ""                                                                                            
 \end{Soutput}
 \end{Schunk}
 Fix records of interest.
@@ -140,7 +153,7 @@ Fix records of interest.
 \end{Soutput}
 \begin{Sinput}
 > names(ctl)[names(ctl)=='theta'] <- 'msfi'
-> ctl$msfi <- '=../1005/1005/msf'
+> ctl$msfi <- '=../1005/1005.msf'
 > ctl$omega <- NULL
 > ctl$sigma <- NULL
 > names(ctl)[names(ctl)=='estimation'] <- 'simulation'
@@ -149,30 +162,28 @@ Fix records of interest.
 > ctl$table <- NULL
 > ctl$table <- NULL
 > ctl$table <- 'DV NOHEADER NOPRINT FILE=./1105.tab FORWARD NOAPPEND'
-> write.nmcontrol('../nonmem/ctl/1105.ctl')
+> write.nmctl(ctl,'../nonmem/ctl/1105.ctl')
 \end{Sinput}
 \end{Schunk}
 \subsection{Run the simulation.}
 This run makes the predictions (simulations).
 \begin{Schunk}
 \begin{Sinput}
-> if(!file.exists('../nonmem/1105/1105.lst'))NONR(
+> NONR(
 +      run=1105,
 +      command=command,
 +      project='../nonmem',
-+      grid=TRUE,
++      grid=FALSE,
 +      nice=TRUE,
 +      diag=FALSE,
-+      streams='../nonmem/ctl'
++      streams='../nonmem/ctl',
++      checksum=FALSE
 + )
 > getwd()
 \end{Sinput}
 \begin{Soutput}
-[1] "/Users/timb/project/metrum-mifuns/inst/sample/script"
+[1] "/Users/timb/code/inst/sample/script"
 \end{Soutput}
-\begin{Sinput}
-> while(!file.exists('../nonmem/1105/1105.lst')){}
-\end{Sinput}
 \end{Schunk}
 \subsection{Recover and format the original dataset.}
 Now we fetch the results and integrate them with the other data.
@@ -591,7 +602,7 @@ We also show densityplots of predictions at those quartiles.
 > getwd()
 \end{Sinput}
 \begin{Soutput}
-[1] "/Users/timb/project/metrum-mifuns/inst/sample/script"
+[1] "/Users/timb/code/inst/sample/script"
 \end{Soutput}
 \begin{Sinput}
 > dir.create('../nonmem/1005.boot')
@@ -638,519 +649,27 @@ We also show densityplots of predictions at those quartiles.
 \end{Sinput}
 \end{Schunk}
 \subsection{Run bootstrap models.}
-To force a re-run of bootstraps, delete log.csv.
 \begin{Schunk}
 \begin{Sinput}
-> if(!file.exists('../nonmem/1005.boot/CombRunLog.csv'))NONR(
+> NONR(
 +      run=1:300,
 +      command=command,
 +      project='../nonmem/1005.boot/',
 +      boot=TRUE,
 +      nice=TRUE,
-+      streams='../nonmem/1005.boot/ctl'
++      grid=FALSE,
++      concurrent=FALSE,
++      streams='../nonmem/1005.boot/ctl',
++      checksum=FALSE
 + )
-> getwd()  
-\end{Sinput}
-\begin{Soutput}
-[1] "/Users/timb/project/metrum-mifuns/inst/sample/script"
-\end{Soutput}
-\end{Schunk}
-\subsection{Summarize bootstrap models.}
-When the bootstraps are complete, we return here and summarize. If you 
-do not have time for bootstraps, use read.csv() on ../nonmem/1005.boot/log.csv.
-\begin{Schunk}
-\begin{Sinput}
-> #wait for bootstraps to finish
-> #while(!(all(file.exists(paste(sep='','../nonmem/1005.boot/',1:300,'.boot/',1:300,'.lst'))))){}
-> if(file.exists('../nonmem/1005.boot/log.csv')){
-+     boot <- read.csv('../nonmem/1005.boot/log.csv',as.is=TRUE)
-+ }else{
-+     boot <- rlog(
+> boot <- rlog(
 + 	run=1:300,
 + 	project='../nonmem/1005.boot',
 + 	boot=TRUE,
 + 	append=FALSE,
 + 	tool='nm7'
-+     )
-+     write.csv(boot, '../nonmem/1005.boot/log.csv')
-+ }
-> head(boot)
-\end{Sinput}
-\begin{Soutput}
-  X tool run parameter   moment
-1 1  nm7   1      prob     text
-2 2  nm7   1       min   status
-3 3  nm7   1       ofv  minimum
-4 4  nm7   1    THETA1 estimate
-5 5  nm7   1    THETA1     prse
-6 6  nm7   1    THETA2 estimate
-                                             value
-1 1 phase1 2 CMT like 1004 but diff. initial on V3
-2                                                0
-3                                 2760.84241850239
-4                                          7.98893
-5                                             <NA>
-6                                           19.892
-\end{Soutput}
-\begin{Sinput}
-> unique(boot$parameter)
-\end{Sinput}
-\begin{Soutput}
- [1] "prob"     "min"      "ofv"      "THETA1"   "THETA2"   "THETA3"  
- [7] "THETA4"   "THETA5"   "THETA6"   "THETA7"   "OMEGA1.1" "OMEGA2.1"
-[13] "OMEGA2.2" "OMEGA3.1" "OMEGA3.2" "OMEGA3.3" "SIGMA1.1"
-\end{Soutput}
-\begin{Sinput}
-> text2decimal(unique(boot$parameter))
-\end{Sinput}
-\begin{Soutput}
- [1]  NA  NA  NA 1.0 2.0 3.0 4.0 5.0 6.0 7.0 1.1 2.1 2.2 3.1 3.2 3.3 1.1
-\end{Soutput}
-\begin{Sinput}
-> boot$X <- NULL
-\end{Sinput}
-\end{Schunk}
-It looks like we have 14 estimated parameters.  We will map them to the
-original control stream.
-\begin{Schunk}
-\begin{Sinput}
-> boot <- boot[!is.na(text2decimal(boot$parameter)),]
-> head(boot)
-\end{Sinput}
-\begin{Soutput}
-  tool run parameter   moment     value
-4  nm7   1    THETA1 estimate   7.98893
-5  nm7   1    THETA1     prse      <NA>
-6  nm7   1    THETA2 estimate    19.892
-7  nm7   1    THETA2     prse      <NA>
-8  nm7   1    THETA3 estimate 0.0650249
-9  nm7   1    THETA3     prse      <NA>
-\end{Soutput}
-\begin{Sinput}
-> unique(boot$moment)
-\end{Sinput}
-\begin{Soutput}
-[1] "estimate" "prse"    
-\end{Soutput}
-\begin{Sinput}
-> unique(boot$value[boot$moment=='prse'])
-\end{Sinput}
-\begin{Soutput}
-[1] NA
-\end{Soutput}
-\end{Schunk}
-prse, and therefore moment, is noninformative for these bootstraps.
-\begin{Schunk}
-\begin{Sinput}
-> boot <- boot[boot$moment=='estimate',]
-> boot$moment <- NULL
-> unique(boot$tool)
-\end{Sinput}
-\begin{Soutput}
-[1] "nm7"
-\end{Soutput}
-\begin{Sinput}
-> boot$tool <- NULL
-> head(boot)
-\end{Sinput}
-\begin{Soutput}
-   run parameter     value
-4    1    THETA1   7.98893
-6    1    THETA2    19.892
-8    1    THETA3 0.0650249
-10   1    THETA4   3.35627
-12   1    THETA5   123.566
-14   1    THETA6   1.18258
-\end{Soutput}
-\begin{Sinput}
-> unique(boot$value[boot$parameter %in% c('OMEGA2.1','OMEGA3.1','OMEGA3.2')])
-\end{Sinput}
-\begin{Soutput}
-[1] "0"
-\end{Soutput}
-\begin{Sinput}
-> unique(boot$parameter[boot$value=='0'])
-\end{Sinput}
-\begin{Soutput}
-[1] "OMEGA2.1" "OMEGA3.1" "OMEGA3.2"
-\end{Soutput}
-\end{Schunk}
-Off-diagonals (and only off-diagonals) are noninformative.
-\begin{Schunk}
-\begin{Sinput}
-> boot <- boot[!boot$value=='0',]
-> any(is.na(as.numeric(boot$value)))
-\end{Sinput}
-\begin{Soutput}
-[1] FALSE
-\end{Soutput}
-\begin{Sinput}
-> boot$value <- as.numeric(boot$value)
-> head(boot)
-\end{Sinput}
-\begin{Soutput}
-   run parameter       value
-4    1    THETA1   7.9889300
-6    1    THETA2  19.8920000
-8    1    THETA3   0.0650249
-10   1    THETA4   3.3562700
-12   1    THETA5 123.5660000
-14   1    THETA6   1.1825800
-\end{Soutput}
-\end{Schunk}
-\subsection{Restrict data to 95 percentiles.}
-We did 300 runs.  Min and max are strongly dependent on number of runs, since 
-with an unbounded distribution, (almost) any value is possible with enough sampling.
-We clip to the 95 percentiles, to give distributions that are somewhat more
-scale independent.
-\begin{Schunk}
-\begin{Sinput}
-> boot <- inner(
-+ 	boot, 
-+ 	preserve='run',
-+ 	id.var='parameter',
-+ 	measure.var='value'
 + )
-> head(boot)
-\end{Sinput}
-\begin{Soutput}
-  run parameter       value
-1   1    THETA1   7.9889300
-2   1    THETA2  19.8920000
-3   1    THETA3   0.0650249
-4   1    THETA4   3.3562700
-5   1    THETA5 123.5660000
-6   1    THETA6   1.1825800
-\end{Soutput}
-\begin{Sinput}
-> any(is.na(boot$value))
-\end{Sinput}
-\begin{Soutput}
-[1] TRUE
-\end{Soutput}
-\begin{Sinput}
-> boot <- boot[!is.na(boot$value),]
+> write.csv(boot, '../nonmem/1005.boot/log.csv')  
 \end{Sinput}
 \end{Schunk}
-\subsection{Recover parameter metadata from a specially-marked control stream.}
-We want meaningful names for our parameters.  Harvest these from a reviewed control
-stream.
-\begin{Schunk}
-\begin{Sinput}
-> stream <- readLines('../nonmem/ctl/1005.ctl')
-> tail(stream)
-\end{Sinput}
-\begin{Soutput}
-[1] ";<parameter name='SIGMA1.1' label='$\\sigma^{1.1}prop$'>proportional error</parameter>"
-[2] ""                                                                                      
-[3] "$ESTIMATION MAXEVAL=9999 PRINT=5 NOABORT METHOD=1 INTER MSFO=./1005.msf"               
-[4] "$COV PRINT=E"                                                                          
-[5] "$TABLE NOPRINT FILE=./1005.tab ONEHEADER ID AMT TIME EVID PRED IPRE CWRES"             
-[6] "$TABLE NOPRINT FILE=./1005par.tab ONEHEADER ID TIME CL Q V2 V3 KA ETA1 ETA2 ETA3"      
-\end{Soutput}
-\begin{Sinput}
-> doc <- ctl2xml(stream)
-> doc
-\end{Sinput}
-\begin{Soutput}
- [1] "<document>"                                                                                                                                                 
- [2] "<parameter name='THETA1' latex='$\\theta_1$' unit='$L/h$'    label='CL/F' model='$CL/F \\sim \\theta_6^{MALE} * (WT/70)^{\\theta_7}$'>clearance</parameter>"
- [3] "<parameter name='THETA2' latex='$\\theta_2$' unit='$L$'      label='Vc/F' model='$Vc/F \\sim (WT/70)^{1}$'   >central volume</parameter>"                   
- [4] "<parameter name='THETA3' latex='$\\theta_3$' unit='$h^{-1}$' label='Ka'                                     >absorption constant</parameter>"               
- [5] "<parameter name='THETA4' latex='$\\theta_4$' unit='$L/h$'    label='Q/F'                                    >intercompartmental clearance</parameter>"      
- [6] "<parameter name='THETA5' latex='$\\theta_5$' unit='$L$'      label='Vp/F'                                   >peripheral volume</parameter>"                 
- [7] "<parameter name='THETA6' latex='$\\theta_6$'                 label='Male.CL'                                >male effect on clearance</parameter>"          
- [8] "<parameter name='THETA7' latex='$\\theta_7$'                 label='WT.CL'                                  >weight effect on clearance</parameter>"        
- [9] "<parameter name='OMEGA1.1' label='$\\Omega^{1.1}CL/F$'>interindividual variability on clearance</parameter>"                                                
-[10] "<parameter name='OMEGA2.2' label='$\\Omega^{2.2}Vc/F$'>interindividual variability on central volume</parameter>"                                           
-[11] "<parameter name='OMEGA3.3' label='$\\Omega^{3.3}Ka$'>interindividual variability on Ka</parameter>"                                                         
-[12] "<parameter name='SIGMA1.1' label='$\\sigma^{1.1}prop$'>proportional error</parameter>"                                                                      
-[13] "</document>"                                                                                                                                                
-\end{Soutput}
-\begin{Sinput}
-> params <- unique(boot[,'parameter',drop=FALSE])
-> params$defs <- lookup(params$parameter,within=doc)
-> params$labels <- lookup(params$parameter,within=doc,as='label')
-> params
-\end{Sinput}
-\begin{Soutput}
-   parameter                                          defs              labels
-1     THETA1                                     clearance                CL/F
-2     THETA2                                central volume                Vc/F
-3     THETA3                           absorption constant                  Ka
-4     THETA4                  intercompartmental clearance                 Q/F
-5     THETA5                             peripheral volume                Vp/F
-6     THETA6                      male effect on clearance             Male.CL
-7     THETA7                    weight effect on clearance               WT.CL
-8   OMEGA1.1      interindividual variability on clearance $\\Omega^{1.1}CL/F$
-9   OMEGA2.2 interindividual variability on central volume $\\Omega^{2.2}Vc/F$
-10  OMEGA3.3             interindividual variability on Ka   $\\Omega^{3.3}Ka$
-11  SIGMA1.1                            proportional error $\\sigma^{1.1}prop$
-\end{Soutput}
-\begin{Sinput}
-> boot$parameter <- lookup(boot$parameter,within=doc,as='label')
-> head(boot)
-\end{Sinput}
-\begin{Soutput}
-  run parameter       value
-1   1      CL/F   7.9889300
-2   1      Vc/F  19.8920000
-3   1        Ka   0.0650249
-4   1       Q/F   3.3562700
-5   1      Vp/F 123.5660000
-6   1   Male.CL   1.1825800
-\end{Soutput}
-\end{Schunk}
-\subsection{Create covariate plot.}
-Now we make a covariate plot for clearance.  We will normalize clearance 
-by its median (we also could have used the model estimate).  We need to take 
-cuts of weight, since we can only really show categorically-constrained distributions.
-Male effect is already categorical.  I.e, the reference individual has median
-clearance, is female, and has median weight.
-\subsubsection{Recover original covariates for guidance.}
-\begin{Schunk}
-\begin{Sinput}
-> covariates <- read.csv('../data/derived/phase1.csv',na.strings='.')
-> head(covariates)
-\end{Sinput}
-\begin{Soutput}
-     C ID TIME SEQ EVID  AMT    DV SUBJ HOUR TAFD  TAD LDOS MDV HEIGHT WEIGHT
-1    C  1 0.00   0    0   NA 0.000    1 0.00 0.00   NA   NA   0    174   74.2
-2 <NA>  1 0.00   1    1 1000    NA    1 0.00 0.00 0.00 1000   1    174   74.2
-3 <NA>  1 0.25   0    0   NA 0.363    1 0.25 0.25 0.25 1000   0    174   74.2
-4 <NA>  1 0.50   0    0   NA 0.914    1 0.50 0.50 0.50 1000   0    174   74.2
-5 <NA>  1 1.00   0    0   NA 1.120    1 1.00 1.00 1.00 1000   0    174   74.2
-6 <NA>  1 2.00   0    0   NA 2.280    1 2.00 2.00 2.00 1000   0    174   74.2
-  SEX  AGE DOSE FED SMK DS CRCN predose zerodv
-1   0 29.1 1000   1   0  0 83.5       1      1
-2   0 29.1 1000   1   0  0 83.5       0      0
-3   0 29.1 1000   1   0  0 83.5       0      0
-4   0 29.1 1000   1   0  0 83.5       0      0
-5   0 29.1 1000   1   0  0 83.5       0      0
-6   0 29.1 1000   1   0  0 83.5       0      0
-\end{Soutput}
-\begin{Sinput}
-> with(covariates,constant(WEIGHT,within=ID))
-\end{Sinput}
-\begin{Soutput}
-[1] TRUE
-\end{Soutput}
-\begin{Sinput}
-> covariates <- unique(covariates[,c('ID','WEIGHT')])
-> head(covariates)
-\end{Sinput}
-\begin{Soutput}
-   ID WEIGHT
-1   1   74.2
-16  2   80.3
-31  3   94.2
-46  4   85.2
-61  5   82.8
-76  6   63.9
-\end{Soutput}
-\begin{Sinput}
-> covariates$WT <- as.numeric(covariates$WEIGHT)
-> wt <- median(covariates$WT)
-> wt
-\end{Sinput}
-\begin{Soutput}
-[1] 81
-\end{Soutput}
-\begin{Sinput}
-> range(covariates$WT)
-\end{Sinput}
-\begin{Soutput}
-[1]  61 117
-\end{Soutput}
-\end{Schunk}
-\subsubsection{Reproduce the control stream submodel for selective cuts of a continuous covariate.}
-In the model we normalized by 70 kg, so that cut will have null effect.
-Let's try 65, 75, and 85 kg. We have to make a separate column for each
-cut, which is a bit of work. Basically, we make two more copies of our
-weight effect columns, and raise our normalized cuts to those powers, 
-effectively reproducing the submodel from the control stream.
-\begin{Schunk}
-\begin{Sinput}
-> head(boot) 
-\end{Sinput}
-\begin{Soutput}
-  run parameter       value
-1   1      CL/F   7.9889300
-2   1      Vc/F  19.8920000
-3   1        Ka   0.0650249
-4   1       Q/F   3.3562700
-5   1      Vp/F 123.5660000
-6   1   Male.CL   1.1825800
-\end{Soutput}
-\begin{Sinput}
-> unique(boot$parameter)
-\end{Sinput}
-\begin{Soutput}
- [1] "CL/F"                "Vc/F"                "Ka"                 
- [4] "Q/F"                 "Vp/F"                "Male.CL"            
- [7] "WT.CL"               "$\\Omega^{1.1}CL/F$" "$\\Omega^{2.2}Vc/F$"
-[10] "$\\Omega^{3.3}Ka$"   "$\\sigma^{1.1}prop$"
-\end{Soutput}
-\begin{Sinput}
-> clearance <- boot[boot$parameter %in% c('CL/F','WT.CL','Male.CL'),]
-> head(clearance)
-\end{Sinput}
-\begin{Soutput}
-   run parameter    value
-1    1      CL/F 7.988930
-6    1   Male.CL 1.182580
-7    1     WT.CL 1.308790
-12   2      CL/F 7.636730
-17   2   Male.CL 0.956565
-18   2     WT.CL 2.369810
-\end{Soutput}
-\begin{Sinput}
-> frozen <- data.frame(cast(clearance,run~parameter),check.names=FALSE)
-> head(frozen)
-\end{Sinput}
-\begin{Soutput}
-  run    CL/F  Male.CL   WT.CL
-1   1 7.98893 1.182580 1.30879
-2   2 7.63673 0.956565 2.36981
-3   3 9.15198 0.937231 1.88593
-4   4 9.56138 1.028670 1.47186
-5   5 8.36964 0.914796 1.97656
-6   6 9.09701 1.079030 1.16319
-\end{Soutput}
-\begin{Sinput}
-> frozen$WT.CL65 <- (65/70)**frozen$WT.CL
-> frozen$WT.CL75 <- (75/70)**frozen$WT.CL
-> frozen$WT.CL85 <- (85/70)**frozen$WT.CL
-\end{Sinput}
-\end{Schunk}
-\subsubsection{Normalize key parameter}
-\begin{Schunk}
-\begin{Sinput}
-> cl <- median(boot$value[boot$parameter=='CL/F'])
-> cl
-\end{Sinput}
-\begin{Soutput}
-[1] 8.56139
-\end{Soutput}
-\begin{Sinput}
-> head(frozen)
-\end{Sinput}
-\begin{Soutput}
-  run    CL/F  Male.CL   WT.CL   WT.CL65  WT.CL75  WT.CL85
-1   1 7.98893 1.182580 1.30879 0.9075635 1.094499 1.289313
-2   2 7.63673 0.956565 2.36981 0.8389352 1.177625 1.584253
-3   3 9.15198 0.937231 1.88593 0.8695648 1.138960 1.442193
-4   4 9.56138 1.028670 1.47186 0.8966618 1.106883 1.330787
-5   5 8.36964 0.914796 1.97656 0.8637440 1.146104 1.467795
-6   6 9.09701 1.079030 1.16319 0.9174092 1.083560 1.253376
-\end{Soutput}
-\begin{Sinput}
-> frozen[['CL/F']] <- frozen[['CL/F']]/cl
-> head(frozen)
-\end{Sinput}
-\begin{Soutput}
-  run      CL/F  Male.CL   WT.CL   WT.CL65  WT.CL75  WT.CL85
-1   1 0.9331347 1.182580 1.30879 0.9075635 1.094499 1.289313
-2   2 0.8919965 0.956565 2.36981 0.8389352 1.177625 1.584253
-3   3 1.0689830 0.937231 1.88593 0.8695648 1.138960 1.442193
-4   4 1.1168023 1.028670 1.47186 0.8966618 1.106883 1.330787
-5   5 0.9776029 0.914796 1.97656 0.8637440 1.146104 1.467795
-6   6 1.0625623 1.079030 1.16319 0.9174092 1.083560 1.253376
-\end{Soutput}
-\begin{Sinput}
-> frozen$WT.CL <- NULL
-> molten <- melt(frozen,id.var='run',na.rm=TRUE)
-> head(molten)
-\end{Sinput}
-\begin{Soutput}
-  run variable     value
-1   1     CL/F 0.9331347
-2   2     CL/F 0.8919965
-3   3     CL/F 1.0689830
-4   4     CL/F 1.1168023
-5   5     CL/F 0.9776029
-6   6     CL/F 1.0625623
-\end{Soutput}
-\end{Schunk}
-\subsubsection{Plot.}
-Now we plot.  We reverse the variable factor to give us top-down layout
-of strips.
-\begin{Schunk}
-\begin{Sinput}
-> levels(molten$variable)
-\end{Sinput}
-\begin{Soutput}
-[1] "CL/F"    "Male.CL" "WT.CL65" "WT.CL75" "WT.CL85"
-\end{Soutput}
-\begin{Sinput}
-> molten$variable <- factor(molten$variable,levels=rev(levels(molten$variable)))
-> print(stripplot(variable~value,molten,panel=panel.covplot))
-\end{Sinput}
-\end{Schunk}
-\includegraphics{model-covplot}
-\subsubsection{Summarize}
-We see that clearance is estimated with good precision.  Ignoring outliers, there 
-is not much effect on clearance of being male, relative to female.  Increasing 
-weight is associated with increasing clearance.  There is a 79 percent probability
-that an 85 kg person will have at least 25 percent greater clearance than a 70 kg
-person.
-\section{Parameter Table}
-\begin{Schunk}
-\begin{Sinput}
-> library(Hmisc)
-> tab <- partab(1005,'../nonmem',tool='nm7',as=c('label','latex','model','estimate','unit','prse','se'))
-> tab$estimate <- as.character(signif(as.numeric(tab$estimate),3))
-> tab$estimate <- ifelse(is.na(tab$unit),tab$estimate,paste(tab$estimate, tab$unit))
-> tab$unit <- NULL
-> tab$label <- ifelse(is.na(tab$latex),tab$label,paste(tab$label, ' (',tab$latex,')',sep=''))
-> tab$latex <- NULL
-> names(tab)[names(tab)=='label'] <- 'parameter'
-> tab$root <- signif(sqrt(exp(as.numeric(tab$estimate))-1),3)
-> tab$estimate <- ifelse(contains('Omega|sigma',tab$parameter),paste(tab$estimate,' (\\%CV=',tab$root*100,')',sep=''),tab$estimate)
-> tab$root <- NULL
-> #offdiag <- contains('2.1',tab$parameter)
-> #tab$estimate[offdiag] <- text2decimal(tab$estimate[offdiag])
-> #omegablock <- text2decimal(tab$estimate[contains('Omega..(1|2)',tab$parameter)])
-> #cor <- signif(half(cov2cor(as.matrix(as.halfmatrix(omegablock))))[[2]],3)
-> #tab$estimate[offdiag] <- paste(sep='',tab$estimate[offdiag],' (COR=',cor,')')
-> tab$model[is.na(tab$model)] <- ''
-> #boot <- rlog(1:300,project='../nonmem/1005.boot',tool='nm7',boot=TRUE)
-> boot <- read.csv('../nonmem/1005.boot/log.csv',as.is=TRUE)
-> boot <- boot[boot$moment=='estimate',]
-> boot <- data.frame(cast(boot,...~moment))
-> boot[] <- lapply(boot,as.character)
-> boot <- boot[contains('THETA|OMEGA|SIGMA',boot$parameter),c('parameter','estimate')]
-> boot$estimate <- as.numeric(boot$estimate)
-> boot <- data.frame(cast(boot,parameter~.,value='estimate',fun=function(x)list(lo=as.character(signif(quantile(x,probs=0.05),3)),hi=as.character(signif(quantile(x,probs=0.95),3)))))
-> boot$CI <- with(boot, paste(sep='','(',lo,',',hi,')'))
-> names(boot)[names(boot)=='parameter'] <- 'name'
-> tab <- stableMerge(tab,boot[,c('name','CI')])
-> tab$name <- NULL
-> tab$se <- NULL
-\end{Sinput}
-\end{Schunk}
-% latex.default(tab, file = "", rowname = NULL, caption = "Parameter Estimates from Population Pharmacokinetic Model Run 1005",      caption.lot = "Model 1005 Parameters", label = "p1005", where = "ht",      table.env = FALSE) 
-%
-\begin{table}[ht]
- \caption[Model 1005 Parameters]{Parameter Estimates from Population Pharmacokinetic Model Run 1005\label{p1005}} 
- \begin{center}
- \begin{tabular}{lllll}\hline\hline
-\multicolumn{1}{c}{parameter}&\multicolumn{1}{c}{model}&\multicolumn{1}{c}{estimate}&\multicolumn{1}{c}{prse}&\multicolumn{1}{c}{CI}\tabularnewline
-\hline
-CL/F ($\theta_1$)&$CL/F \sim \theta_6^{MALE} * (WT/70)^{\theta_7}$&8.58 $L/h$&9.51&(7.14,9.89)\tabularnewline
-Vc/F ($\theta_2$)&$Vc/F \sim (WT/70)^{1}$&21.6 $L$&9.33&(18.5,25.4)\tabularnewline
-Ka ($\theta_3$)&&0.0684 $h^{-1}$&8.04&(0.0586,0.0793)\tabularnewline
-Q/F ($\theta_4$)&&3.78 $L/h$&13.5&(3.03,4.83)\tabularnewline
-Vp/F ($\theta_5$)&&107 $L$&15.7&(85.7,148)\tabularnewline
-Male.CL ($\theta_6$)&&0.999&13.7&(0.799,1.31)\tabularnewline
-WT.CL ($\theta_7$)&&1.67&21.9&(1.03,2.34)\tabularnewline
-$\Omega^{1.1}CL/F$&&0.196 (\%CV=46.5)&23.1&(0.115,0.26)\tabularnewline
-$\Omega^{2.2}Vc/F$&&0.129 (\%CV=37.1)&30.4&(0.0623,0.181)\tabularnewline
-$\Omega^{3.3}Ka$&&0.107 (\%CV=33.6)&25.2&(0.0638,0.157)\tabularnewline
-$\sigma^{1.1}prop$&&0.0671 (\%CV=26.3)&11.4&(0.055,0.0796)\tabularnewline
-\hline
-\end{tabular}
-
-\end{center}
-
-\end{table}\end{document}
+\end{document}

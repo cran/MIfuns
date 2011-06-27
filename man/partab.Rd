@@ -23,21 +23,21 @@ partab(
 	...
 )
 wikitab(
-  run, 
-  project = getwd(), 
-  boot = FALSE, 
-  tool = "nm7", 
-  file = filename(rundir, run, ".ctl"), 
-  rundir = filename(project, run, if (boot) ".boot" else ""), 
-  nmlog = file.path(rundir, "NonmemRunLog.csv"), 
-  nmout = filename(rundir, run, ".lst"), 
-  x = params(within = within, by = by, type = type, ...), 
-  within = ctl2xml(readLines(file)), 
-  by = "model",
-  type = "wiki", 
-  append = NULL, 
-  pattern = NULL, 
-  ...
+	run, 
+	project = getwd(), 
+	boot = FALSE, 
+	tool = "nm7", 
+	file = filename(rundir, run, ".ctl"), 
+	rundir = filename(project, run, if (boot) ".boot" else ""), 
+	nmlog = file.path(rundir, "NonmemRunLog.csv"), 
+	nmout = filename(rundir, run, ".lst"), 
+	x = params(within = within, by = by, type = type, ...), 
+	within = ctl2xml(readLines(file)), 
+	by = "model",
+	type = "wiki", 
+	append = NULL, 
+	pattern = NULL, 
+ 	...
 )
 }
 \arguments{

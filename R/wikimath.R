@@ -31,6 +31,8 @@ closers <- function(x,sub,sup,...){
 }
 wiki2latex    <- function(x,...)wikiparse(x,sim='\\\\sim',dot='\\\\cdot',pregreek = '\\\\',wrap=c('$\\mathrm{','}$'),...)
 wiki2plotmath <- function(x,...)wikiparse(x,sim='%~~%',dot='%.%',sub='',openSub='[',closeSub=']',...)
+wiki2label    <- function(x,...)nospace(noUnits(lhs(x)))
+wiki2parameter<- function(x,...)tos(x)
 wikiparse <- function(
   x,
   sim='~',
@@ -47,8 +49,8 @@ wikiparse <- function(
 ){
   x <- sub('^ *','',x) #strip leading white
   x <- sub('~',sim,x) #substitute equality symbol
-  x <- sub('\\*',dot,x) #substitute multiply symbol
-  x <- gsub('(theta|omega|sigma)',glue(pregreek,'\\1'),x,ignore.case=TRUE) #prefix greek symbols
+  x <- gsub('\\*',dot,x) #substitute multiply symbol
+  x <- gsub('(theta|omega|sigma|eta)',glue(pregreek,'\\1'),x,ignore.case=TRUE) #prefix greek symbols
   #replace sub/sup closers
   x <- sapply(x,strsplit,split='')
   x <- lapply(x,closers, sub=closeSub,sup=closeSup)

@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
 <nonmem>
 <text><![CDATA[
-/Users/timb/project/metrum-mifuns/inst/sample/script/../nonmem/1005.lock/1005.lst
-2010.08.30.2237.46
+/Users/timb/code/inst/sample/script/../nonmem/1005/1005.lst
+2011.06.08.1122.51
 $PROB 1005 phase1 2 CMT like 1004 but diff. initial on V3
 $INPUT C ID TIME SEQ=DROP EVID AMT DV SUBJ HOUR TAFD TAD LDOS MDV HEIGHT WT SEX AGE DOSE FED
 $DATA ../../data/derived/phase1.csv IGNORE=C
@@ -18,11 +18,11 @@ $PK
 $ERROR
  Y=F*EXP(ERR(1)); + ERR(2)
  IPRE=F
-
+;<doc>
 $THETA 
 (0,10,50)     ;CL        <parameter name='THETA1' latex='$\theta_1$' unit='$L/h$'    label='CL/F' model='$CL/F \sim \theta_6^{MALE} * (WT/70)^{\theta_7}$'>clearance</parameter>
 (0,10,100)    ;V         <parameter name='THETA2' latex='$\theta_2$' unit='$L$'      label='Vc/F' model='$Vc/F \sim (WT/70)^{1}$'   >central volume</parameter>
-(0,0.2, 5)    ;KA        <parameter name='THETA3' latex='$\theta_3$' unit='$h^{-1}$' label='Ka'                                     >absorption constant</parameter>
+(0,0.2, 5)    ;KA        <parameter name='THETA3' latex='$\theta_3$' unit='$h^{-1}$' label='Ka'                                     >absorption rate constant</parameter>
 (0,10,50)     ;Q         <parameter name='THETA4' latex='$\theta_4$' unit='$L/h$'    label='Q/F'                                    >intercompartmental clearance</parameter>
 (0,100,1000)  ;V3        <parameter name='THETA5' latex='$\theta_5$' unit='$L$'      label='Vp/F'                                   >peripheral volume</parameter>
 (0,1,2)       ;SEX       <parameter name='THETA6' latex='$\theta_6$'                 label='Male.CL'                                >male effect on clearance</parameter>
@@ -42,10 +42,23 @@ $ESTIMATION MAXEVAL=9999 PRINT=5 NOABORT METHOD=1 INTER MSFO=./1005.msf
 $COV PRINT=E
 $TABLE NOPRINT FILE=./1005.tab ONEHEADER ID AMT TIME EVID PRED IPRE CWRES
 $TABLE NOPRINT FILE=./1005par.tab ONEHEADER ID TIME CL Q V2 V3 KA ETA1 ETA2 ETA3
+
+;<wiki model='CL/F (L/h) ~ theta_1 *  theta_6 ^MALE * (WT/70)^theta_7  * e^eta_1'>apparent oral clearance</wiki>
+;<wiki model='V_c /F (L) ~ theta_2 * (WT/70)^1 * e^eta_2'                       >central volume of distribution</wiki>
+;<wiki model='K_a (h^-1 ) ~ theta_3 * e^eta_3'                                  >absorption rate constant</wiki>
+;<wiki model='Q/F (L/h) ~ theta_4'                                              >intercompartmental clearance</wiki>
+;<wiki model='V_p /F (L) ~ theta_5'                                             >peripheral volume of distribution</wiki>
+;<wiki model='MALE_CL/F ~ theta_6'                                              >male effect on clearance</wiki>
+;<wiki model = 'WT_CL/F ~ theta_7'                                              >weight effect on clearance</wiki>
+;<wiki model='IIV_CL/F ~ Omega_1.1'                                             >interindividual variability of clearance</wiki>
+;<wiki model='IIV_V_c /F ~ Omega_2.2'                                           >interindividual variability of central volume</wiki>
+;<wiki model='IIV_K_a  ~ Omega_3.3'                                             >interindividual variability of Ka</wiki>
+;<wiki model='err_prop ~ Sigma_1.1'                                             >proportional error</wiki>
+;</doc>
 License Registered to: Metrum Research Group
 Expiration Date:    14 JUL 2011
-Current Date:       30 AUG 2010
-Days until program expires : 319
+Current Date:        8 JUN 2011
+Days until program expires :  36
 1NONLINEAR MIXED EFFECTS MODEL PROGRAM (NONMEM) VERSION 7.1.2
  ORIGINALLY DEVELOPED BY STUART BEAL, LEWIS SHEINER, AND ALISON BOECKMANN
  CURRENT DEVELOPERS ARE ROBERT BAUER, ICON DEVELOPMENT SOLUTIONS,
@@ -209,7 +222,7 @@ Days until program expires : 319
             -4.6731E-02
  GRADIENT:  -9.4356E-03  8.1782E-03  4.5771E-02 -1.9044E-02 -7.8125E-04 -1.0624E-03 -7.2147E-04  3.5290E-03 -2.6681E-03  1.1598E-02
              9.0593E-03
- Elapsed estimation time in seconds:     3.11
+ Elapsed estimation time in seconds:     4.71
  
  #TERM:
 0MINIMIZATION SUCCESSFUL
@@ -228,7 +241,7 @@ Days until program expires : 319
  EPSshrink(%):   8.8722E+00
  
  #TERE:
- Elapsed covariance time in seconds:     4.27
+ Elapsed covariance time in seconds:     6.85
 1
  
  
@@ -550,7 +563,7 @@ Days until program expires : 319
  
          5.84E-02  1.74E-01  2.84E-01  3.85E-01  5.21E-01  6.64E-01  1.08E+00  1.32E+00  1.65E+00  1.80E+00  3.07E+00
  
-2010.08.30.2237.54
+2011.06.08.1123.05
 ........................................
 NONMEM run with /common/NONMEM/nm7_osx1/test/nm7_osx1.pl
 ........................................
@@ -612,8 +625,8 @@ i386</result></test></system></tests><checksum><path name="nm">da2f3f7a80eafc922
 <checksum>test/nm.pl</checksum>
 <nonmem version="7" level="1.2" date="03-01-2010" />
 <meta>nmqual 7.1.0 for nonmem 7.1.2</meta>
-</configuration></nmqual><tests on="execution"><environment><variable name="SHELL">/bin/csh</variable><variable name="USER">timb</variable><variable name="PATH">/tmp/279101.1.all.q:/common/sge/bin/darwin-x86:/usr/local/bin:/usr/X11R6/bin:/bin:/sbin:/usr/bin:/bin:/usr/sbin:/sbin</variable></environment><system><test><command>perl -e 'use POSIX; print join qq(,\n),uname'</command><result>Darwin,
-metrum-host03.managed.contegix.com,
+</configuration></nmqual><tests on="execution"><environment><variable name="SHELL">/bin/zsh</variable><variable name="USER">timb</variable><variable name="PATH">/common/sge/bin/darwin-x86:/opt/local/bin:/usr/X11R6/bin:/bin:/sbin:/usr/bin:/bin:/usr/sbin:/sbin</variable></environment><system><test><command>perl -e 'use POSIX; print join qq(,\n),uname'</command><result>Darwin,
+metrum-host01.managed.contegix.com,
 9.8.0,
 Darwin Kernel Version 9.8.0: Wed Jul 15 16:55:01 PDT 2009; root:xnu-1228.15.4~1/RELEASE_I386,
 i386</result></test></system></tests><text><![CDATA[

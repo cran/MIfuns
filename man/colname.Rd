@@ -17,18 +17,28 @@ colname(x) <- value
   \item{value}{named character vector}
 }
 \details{
-Changing column names is a common task.  One can change them all at once, e.g.\\
-\code{colnames(x) <- c(...)}\\
-\code{names(x) <- c(...)}\\
-or one at a time, e.g.\\
-\code{names(x)[names(x)==old] <- new}\\
+Changing column names is a common task.  One can change them all at once, e.g.
+
+\code{colnames(x) <- c(...)}
+
+\code{names(x) <- c(...)}
+
+or one at a time, e.g.
+
+\code{names(x)[names(x)==old] <- new}
+
 \pkg{reshape} supplies \code{rename}, a function that changes a subset of 
-identified names, returning the object itself.\\
-\code{library(reshape)}\\
-\code{x <- rename(x, c(label=value,...))}\\
+identified names, returning the object itself.
+
+\code{library(reshape)}
+
+\code{x <- rename(x, c(label=value,...))}
+
 In contrast, \code{name} and its data frame equivalent \code{colname} change a
-subset of identified names using assignment syntax.\\
-\code{name(x) <- c(label=value,...)}\\
+subset of identified names using assignment syntax.
+
+\code{name(x) <- c(label=value,...)}
+
 }
 \value{
 used for side effects

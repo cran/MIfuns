@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
 <nonmem>
 <text><![CDATA[
-/Users/timb/project/metrum-mifuns/inst/sample/script/../nonmem/1105.lock/1105.lst
-2010.08.30.2253.10
+/Users/timb/code/inst/sample/script/../nonmem/1105/1105.lst
+2011.06.08.1123.09
 $PROB 1105 phase1 2 CMT like 1004 but diff. initial on V3
 $INPUT C ID TIME SEQ=DROP EVID AMT DV SUBJ HOUR TAFD TAD LDOS MDV HEIGHT WT SEX AGE DOSE FED
 $DATA ../../data/derived/phase1.csv IGNORE=C
@@ -16,19 +16,16 @@ $PK
  S2=V2
  
 $ERROR
- Y=F*EXP(ERR(1)); + ERR(2)
+ Y=F*EXP(ERR(1))
  IPRE=F
 
-$MSFI=../1005/1005.msf
-;$OMEGA
-;$SIGMA
+$MSFI =../1005/1005.msf
 $SIMULATION ONLYSIM (1968) SUBPROBLEMS=500
-;$COV
 $TABLE DV NOHEADER NOPRINT FILE=./1105.tab FORWARD NOAPPEND
 License Registered to: Metrum Research Group
 Expiration Date:    14 JUL 2011
-Current Date:       30 AUG 2010
-Days until program expires : 319
+Current Date:        8 JUN 2011
+Days until program expires :  36
 1NONLINEAR MIXED EFFECTS MODEL PROGRAM (NONMEM) VERSION 7.1.2
  ORIGINALLY DEVELOPED BY STUART BEAL, LEWIS SHEINER, AND ALISON BOECKMANN
  CURRENT DEVELOPERS ARE ROBERT BAUER, ICON DEVELOPMENT SOLUTIONS,
@@ -3118,7 +3115,7 @@ Days until program expires : 319
  SIMULATION STEP PERFORMED
  SOURCE  1:
     SEED1:    2068107800   SEED2:             0
-2010.08.30.2253.41
+2011.06.08.1123.49
 ........................................
 NONMEM run with /common/NONMEM/nm7_osx1/test/nm7_osx1.pl
 ........................................
@@ -3180,8 +3177,8 @@ i386</result></test></system></tests><checksum><path name="nm">da2f3f7a80eafc922
 <checksum>test/nm.pl</checksum>
 <nonmem version="7" level="1.2" date="03-01-2010" />
 <meta>nmqual 7.1.0 for nonmem 7.1.2</meta>
-</configuration></nmqual><tests on="execution"><environment><variable name="SHELL">/bin/csh</variable><variable name="USER">timb</variable><variable name="PATH">/tmp/279105.1.all.q:/common/sge/bin/darwin-x86:/usr/local/bin:/usr/X11R6/bin:/bin:/sbin:/usr/bin:/bin:/usr/sbin:/sbin</variable></environment><system><test><command>perl -e 'use POSIX; print join qq(,\n),uname'</command><result>Darwin,
-metrum-host02.managed.contegix.com,
+</configuration></nmqual><tests on="execution"><environment><variable name="SHELL">/bin/zsh</variable><variable name="USER">timb</variable><variable name="PATH">/common/sge/bin/darwin-x86:/opt/local/bin:/usr/X11R6/bin:/bin:/sbin:/usr/bin:/bin:/usr/sbin:/sbin</variable></environment><system><test><command>perl -e 'use POSIX; print join qq(,\n),uname'</command><result>Darwin,
+metrum-host01.managed.contegix.com,
 9.8.0,
 Darwin Kernel Version 9.8.0: Wed Jul 15 16:55:01 PDT 2009; root:xnu-1228.15.4~1/RELEASE_I386,
 i386</result></test></system></tests><text><![CDATA[

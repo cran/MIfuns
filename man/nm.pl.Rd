@@ -4,7 +4,9 @@
 \title{Build Commands to Invoke NONMEM}
 \description{
  Format a set of commandlines, suitable for submission to a command shell, to
- operate the executable for an NMQual-mediated NONMEM installation.
+ operate the executable for an NMQual-mediated NONMEM installation.  \code{nm.pl}
+ is the default for NONMEM 7.1.2 and earlier.  \code{autolog.pl} is the default 
+ for NONMEM 7.2.0 and later.
 }
 \usage{
 nm.pl(
@@ -25,7 +27,8 @@ autolog.pl(
 	perl = "perl", 
 	compile = TRUE, 
 	execute = TRUE, 
-	split = FALSE, 
+	split = FALSE,
+	config = file.path(dirname(command),"log.xml"),
 	mode = "run", 
 	...
 )
@@ -42,16 +45,21 @@ autolog.pl(
   \item{split}{whether to compile and execute as separate steps}
   \item{rdir}{run directory}
   \item{run}{run name}
+  \item{config}{path to a configuration file (sensu NMQual 8)}
   \item{mode}{process mode}
   \item{\dots}{ignored}
 }
 \details{
 	If \code{split} is \code{TRUE}, two commands are returned, having the mode flags \sQuote{c} and \sQuote{e}, respectively.
-	nm.pl drops the 'c' or 'e' argument if \code{split} is FALSE and
+	\code{nm.pl} drops the \sQuote{c} or \sQuote{e} argument if \code{split} is FALSE and
 	both \code{compile} and \code{execute} are TRUE.  In the identical case,
-	autolog.pl passes 'ce'. autolog.pl also returns a run directory and run
-	name, rather than input and output file paths.  autolog.pl does not 
-	support \code{checksum}.
+	\code{autolog.pl} passes \sQuote{ce}. 
+	
+	\code{autolog.pl} returns a run directory and run name, rather than input
+	and output file paths as in \code{nm.pl}. \code{autolog.pl} does not 
+	support \code{checksum}. By default, \code{autolog.pl} expects a config
+	file called \sQuote{log.xml} in the same directory as \code{command}; it also
+	assumes the mode is \sQuote{run}.  See also \url{http://nmqual.googlecode.com}.
 }
 \value{character}
 \references{\url{http://mifuns.googlecode.com}}
