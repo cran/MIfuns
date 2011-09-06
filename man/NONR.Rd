@@ -44,7 +44,38 @@ NONR(
 	missing = -99, 
 	...
 )
-NONR72(...,interface='autolog.pl')
+NONR72(
+	run, 
+	command, 
+	project = getwd(), 
+	boot = FALSE,
+	grid = boot, 
+	concurrent = grid,
+	urgent = !boot,
+	udef= FALSE, 
+	invisible=udef,
+	compile = TRUE,
+	execute = TRUE,
+	split = FALSE,
+	checkrunno = TRUE, 
+	checksum = TRUE, 
+	diag = !boot, 
+	fdata = TRUE, 
+	logtrans = FALSE,
+	nice= TRUE, 
+	epilog = NULL, 
+	dvname = NULL, 
+	grp = NULL, 
+	grpnames = NULL, 
+	cont.cov = NULL, 
+	cat.cov = NULL, 
+	par.list = NULL, 
+	eta.list = NULL, 
+	missing = -99, 
+	...,
+	interface='autolog.pl',
+	q='all.q'
+)
 }
 
 \arguments{
@@ -176,6 +207,7 @@ NONR72(...,interface='autolog.pl')
   \item{eta.list}{passed to \code{PLOTR}}
   \item{missing}{passed to \code{PLOTR}}
   \item{interface}{the name of a function to prepare NONMEM command lines}
+  \item{q}{choice of queue, passed to \code{qsub}}
   \item{\dots}{additional arguments passed to functions that accept them. For example,
   you can pass \code{onefile=FALSE} to \code{pdf}, called by \code{PLOTR}.  You can also pass
   additional lattice arguments to modify the diagnostic plots.  

@@ -142,7 +142,9 @@
 \item \link{deranged.keyed} instantiate records implied by range data
 \item \link{diagnosticPlots} create standard diagnostic plots
 \item \link{distance} calculate element positions relative to the \eqn{n^{th}}{n^th} \code{TRUE} element positions (usually, within levels of an index)
-\item \link{dupKeys} give a logical index to duplicated rows of a keyed data frame, AND the rows of which they are duplicates
+\item \link{dupKeys} generic
+\item \link{dupKeys.default} give a logical index to duplicated rows of a keyed data frame, AND the rows of which they are duplicates
+\item \link{dupKeys.nm} default behavior, after stripping comments
 \item \link{electronicAppendix} create an FDA-style electronic appendix from a subversioned directory
 \item \link{episcript} run a script in an environment that defines the passed arguments
 \item \link{explicitPath} add separators to control stream paths that have none
@@ -223,7 +225,9 @@
 \item \link{moot.nm} identify moot rows (rows not influencing NONMEM estimates)
 \item \link{msffile} extract msffile specification from a control stream
 \item \link{naInContext} display rows of data with missing values, as well as other rows with the same key
-\item \link{naKeys} detect rows for which one or more key fields is NA
+\item \link{naKeys} generic
+\item \link{naKeys.default} detect rows for which one or more key fields is NA
+\item \link{naKeys.nm} default behavior, after stripping comments
 \item \link{name<-} change identified object names
 \item \link{nest} nest an XML fragment in a parent element
 \item \link{nix} identify Unix-like platforms (internal)

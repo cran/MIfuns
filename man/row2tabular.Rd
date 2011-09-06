@@ -11,11 +11,10 @@ row2tabular(x, ...)
 }
 \details{Elements are collapsed into a string, with ampersand as the separator.}
 \value{character}
-\references{url{http://mifuns.googlecode.com}}
+\references{\url{http://mifuns.googlecode.com}}
 \author{Tim Bergsma}
-\seealso{
-	itemize{
-		item code{link{tabular.data.frame}}
+\seealso{	\itemize{
+			\item \code{\link{tabular.data.frame}}
 	}
 }
 \examples{

@@ -4,10 +4,12 @@
 \alias{as.keyed.data.frame}
 \alias{as.keyed}
 \alias{dupKeys}
+\alias{dupKeys.default}
 \alias{key}
 \alias{key<-}
 \alias{merge.keyed}
 \alias{naKeys}
+\alias{naKeys.default}
 \alias{print.keyed.summary}
 \alias{sort.keyed}
 \alias{summary.keyed}

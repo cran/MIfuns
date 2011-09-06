@@ -11,6 +11,7 @@
 \usage{
 runCommand(
 	command,
+	...,
 	run,
 	rdir,
 	boot,
@@ -48,8 +49,7 @@ runCommand(
 	compile = TRUE,
 	execute = TRUE,
 	background=FALSE,
-	interface = 'nm.pl',
-	...
+	interface = 'nm.pl'
 )
 }
 \arguments{

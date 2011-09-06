@@ -1,5 +1,7 @@
 \name{summary.nm}
 \alias{summary.nm}
+\alias{naKeys.nm}
+\alias{dupKeys.nm}
 \alias{badAmt}
 \alias{badAmt.nm}
 \alias{badDv.nm}
@@ -24,9 +26,11 @@
 \title{Analyze an NM Object}
 \description{
 These methods test data set features related to use with NONMEM software((c) Icon 
-Development Solutions).
+Development Solutions).  The tests are performed after removing comments.
 }
 \usage{
+\method{naKeys}{nm}(x, ...)
+\method{dupKeys}{nm}(x, ...)
 \method{badAmt}{nm}(x, ...)
 \method{badDv}{nm}(x, ...)
 \method{badII}{nm}(x, ...)

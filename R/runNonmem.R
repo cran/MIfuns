@@ -32,11 +32,25 @@ function (
 	outfile = filename(rundir,run,'.lst'),
 	streams = project,
 	ctlfile = filename(streams,run,'.ctl'),
-	remove  = c('^F[ISRC]','^OU','^nonmem.exe','^nul$',if(fdata)c('^FD','^PR')),
+	remove = c(
+		"^F[ISRCMP]","^OU","^nonmem", "^nul$",
+		"WK","LNK$","fort","^nm","lnk$","set$",
+		"^gar","INT","^temp","^tr","^new",
+		if(fdata)c('^FD','^PR')
+	),
 	sync=if(boot)'n'else'y',
 	interface='nm.pl',
-	...
+	...,
+	perm.cond=NULL
 ){
+  # Note: runNonmem calls runCommand, which supports the qsub argument 'pe';
+  # it also calls PLOTR, which supports the trellis.skeleton argument 'perm.cond'.
+  # If 'pe' is passed to runNonmem, trellis.skeleton partial-matches it as 'perm.cond'.
+  # To disambiguate, runNonmem should declare at least one of them, and pass explicitly.
+  # Currently we declare 'perm.cond' and pass only to PLOTR. Thus, trellis.skeleton
+  # always receives a fully-named 'perm.cond' (with the usual default value) 
+  # and will do no partial matching.  
+  
   #Define some functions.
   final <- function(x)sub('\\.lock','',x)
  
@@ -147,6 +161,7 @@ function (
 			outfile=final(outfile),
 			rundir=final(rundir),
 			plotfile=plotfile,
+			perm.cond=perm.cond,
 			...
 		),
 		error=function(e)warning(e$message,call.=FALSE,immediate.=TRUE)
@@ -167,6 +182,7 @@ function (
 			ctlfile=ctlfile,
 			outfile=final(outfile),
 			rundir=final(rundir),
+			perm.cond=perm.cond,
 			...,
 			script=script
 		),

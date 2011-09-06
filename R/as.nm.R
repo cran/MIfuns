@@ -27,52 +27,68 @@ read.nm <- function(
 	class(tran) <- c('nm',class(tran))
 	tran
 }
+naKeys.nm <- function(x,...){
+	res <- !x$C #if records are commented, they're not na keys
+	res[!x$C] <- naKeys.default(x[!x$C,]) #if not commented, then evaluated
+	res
+
+}
+
+dupKeys.nm <- function(x,...){
+	res <- !x$C #if records are commented, they're not dup keys
+	res[!x$C] <- dupKeys.default(x[!x$C,]) #if not commented, then evaluated
+	res
+
+}
 
 badDv <- function(x,...)UseMethod('badDv')
 badDv.nm <- function(x,...){
 	if(!all(c('DV','EVID') %in% names(x)))return(rep(FALSE,nrow(x)))
-	with(x,is.na(DV) & EVID==0)
+	with(x,is.na(DV) & EVID==0 & !C)
 }
 
 falseDv <- function(x,...)UseMethod('falseDv')
 falseDv.nm <- function(x,...){
 	if(!all(c('DV','EVID') %in% names(x)))return(rep(FALSE,nrow(x)))
-	with(x,!is.na(DV) & EVID!=0)
+	with(x,!is.na(DV) & EVID!=0 & !C)
 }
 
 zeroDv <- function(x,...)UseMethod('zeroDv')
 zeroDv.nm <- function(x,...){
 	if(!all(c('DV','EVID') %in% names(x)))return(rep(FALSE,nrow(x)))
-	with(x,!is.na(DV) & EVID==0 & DV==0)
+	with(x,!is.na(DV) & EVID==0 & DV==0 & !C)
 }
 predoseDv <- function(x,...)UseMethod('predoseDv')
 predoseDv.nm <- function(x,...){
 	if(!all(c('DV','EVID') %in% names(x)))return(rep(FALSE,nrow(x)))
-	with(x,!is.na(DV) & before(EVID %in% c(1,4),within=SUBJ))
+	relevant <- with(x,before(EVID %in% c(1,4) & !C,within=SUBJ)) #NA if condition never matches (no doses)
+	relevant[is.na(relevant)] <- TRUE # if no doses, DV is predose.
+	!is.na(x$DV) & relevant & !x$C
+
 }
 
 badAmt <- function(x,...)UseMethod('badAmt')
 badAmt.nm <- function(x,...){
 	if(!all(c('AMT','EVID') %in% names(x)))return(rep(FALSE,nrow(x)))
-	with(x,is.na(AMT) & EVID==1 %in% c(1,4))
+	with(x,is.na(AMT) & EVID==1 %in% c(1,4) & !C)
 }
 
 falseAmt <- function(x,...)UseMethod('falseAmt')
 falseAmt.nm <- function(x,...){
 	if(!all(c('AMT','EVID') %in% names(x)))return(rep(FALSE,nrow(x)))
-	with(x,!is.na(AMT) & !EVID %in% c(1,4))
+	with(x,!is.na(AMT) & !EVID %in% c(1,4) & !C)
 }
 
 zeroAmt <- function(x,...)UseMethod('zeroAmt')
 zeroAmt.nm <- function(x,...){
 	if(!all(c('AMT','EVID') %in% names(x)))return(rep(FALSE,nrow(x)))
-	with(x,!is.na(AMT) & AMT==0 & EVID %in% c(1,4))
+	with(x,!is.na(AMT) & AMT==0 & EVID %in% c(1,4) & !C)
 }
 
 noPk <- function(x,...)UseMethod('noPk')
 noPk.nm <- function(x,...){
 	if(!'EVID' %in% names(x))return(rep(FALSE,nrow(x)))
-	with(x,is.na(first(where=EVID==0,within=SUBJ)))
+	with(x,is.na(first(where=EVID==0 & !C,within=SUBJ)))
 }
 
 badII <- function(x,...)UseMethod('badII')
@@ -81,9 +97,9 @@ badII.nm <- function (x, ...){
     goodADDL <- FALSE
     goodSS <- FALSE
     goodII <- FALSE
-    if('ADDL' %in% names(x)) goodADDL <- with(x,!is.na(ADDL) & ADDL > 0)
-    if('SS'   %in% names(x))   goodSS <- with(x,  !is.na(SS) &   SS > 0)
-    if('II'   %in% names(x))   goodII <- with(x,  !is.na(II) &   II > 0)
+    if('ADDL' %in% names(x)) goodADDL <- with(x,!is.na(ADDL) & ADDL > 0 & !C)
+    if('SS'   %in% names(x))   goodSS <- with(x,  !is.na(SS) &   SS > 0 & !C)
+    if('II'   %in% names(x))   goodII <- with(x,  !is.na(II) &   II > 0 & !C)
     goodII & !(goodADDL | goodSS)
 }
 
@@ -109,7 +125,7 @@ badII.nm <- function (x, ...){
 		'zeroAmt',
 		'noPk',
 		'badII'
-	))z[test] <- sum(match.fun(test)(x))
+	))z[test] <- sum(match.fun(test)(object)) # argument now has comments: diagnostics must support.
 	if(length(by))z <- c(z,list(table=table(x[,by,drop=FALSE])))
 	class(z) <- 'nm.summary'
 	z	

@@ -15,15 +15,14 @@ wrap(x, environment, options = NULL, args = NULL, depth = 0)
 \details{\code{x} is wrapped in the specified environment,
 with options and aruments formatted appropriately.}
 \value{character}
-\references{url{http://mifuns.googlecode.com}}
+\references{\url{http://mifuns.googlecode.com}}
 \author{Tim Bergsma}
-\seealso{
-	itemize{
-		item code{link{command}}
-		item code{link{latex.args}}
-		item code{link{latex.options}}
-		item code{link{spaces}}
-		item code{link{ltable.data.frame}}
+\seealso{	\itemize{
+			\item \code{\link{command}}
+			\item \code{\link{latex.args}}
+			\item \code{\link{latex.options}}
+			\item \code{\link{spaces}}
+			\item \code{\link{ltable.data.frame}}
 	}
 }
 \examples{

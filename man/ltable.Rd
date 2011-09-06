@@ -11,11 +11,10 @@ ltable(x, ...)
 }
 \details{\code{ltable} is generic.}
 \value{character}
-\references{url{http://mifuns.googlecode.com}}
+\references{\url{http://mifuns.googlecode.com}}
 \author{Tim Bergsma}
-\seealso{
-	itemize{
-		item code{link{ltable.data.frame}}
+\seealso{	\itemize{
+			\item \code{\link{ltable.data.frame}}
 	}
 }
 \keyword{manip}

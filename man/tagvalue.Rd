@@ -14,11 +14,10 @@ tagvalue(x, sep = "=", collapse = ",", ...)
 \details{List names, where present, prefix list values, with the indicated
 separator.}
 \value{Character}
-\references{url{http://mifuns.googlecode.com}}
+\references{\url{http://mifuns.googlecode.com}}
 \author{Tim Bergsma}
-\seealso{
-	itemize{
-		item code{link{latex.options}}
+\seealso{	\itemize{
+			\item \code{\link{latex.options}}
 	}
 }
 \examples{

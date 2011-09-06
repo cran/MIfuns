@@ -16,13 +16,12 @@ the options (possibly named) inserted in square brackets,
 and the arguments each enclosed in curly braces.  \code{depth} 
 spaces are added to the left end of the string.}
 \value{character}
-\references{url{http://mifuns.googlecode.com}}
+\references{\url{http://mifuns.googlecode.com}}
 \author{Tim Bergsma}
-\seealso{
-	itemize{
-		item code{link{wrap}}
-		item code{link{ltable.data.frame}}
-		item code{link{spaces}}
+\seealso{	\itemize{
+			\item \code{\link{wrap}}
+			\item \code{\link{ltable.data.frame}}
+			\item \code{\link{spaces}}
 	}
 }
 \examples{

@@ -9,8 +9,8 @@
 	if(!inherits(x,'keyed'))class(x) <- c("keyed",class(x))
 	x
 }
-
-`dupKeys` <- function(x,...){
+`dupKeys` <- function(x,...)UseMethod('dupKeys')
+`dupKeys.default` <- function(x,...){
 	if(!all(key(x) %in% names(x)))stop('nonexistent key field(s)')
 	y <- x[,key(x),drop=FALSE]
 	duplicated(y)|duplicated(y,fromLast=TRUE)
@@ -29,8 +29,8 @@
 	key(z) <- key(x)
 	z
 }
-
-`naKeys` <- function(x,...){
+`naKeys` <- function(x,...)UseMethod('naKeys')
+`naKeys.default` <- function(x,...){
 	if(!all(key(x) %in% names(x)))stop('nonexistent key field(s)')
 	if(nrow(x)==0)return(logical(0))
 	y <- sapply(

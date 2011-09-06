@@ -10,12 +10,11 @@ spaces(x)
 }
 \details{generates a string of \code{x} spaces}
 \value{character}
-\references{url{http://mifuns.googlecode.com}}
+\references{\url{http://mifuns.googlecode.com}}
 \author{Tim Bergsma}
-\seealso{
-	itemize{
-		item code{link{command}}
-		item code{link{wrap}}
+\seealso{	\itemize{
+			\item \code{\link{command}}
+			\item \code{\link{wrap}}
 	}
 }
 \examples{

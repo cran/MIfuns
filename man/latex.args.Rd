@@ -11,12 +11,11 @@ latex.args(x, ...)
 }
 \details{Each element wrapped in curly braces; elements are strung together.}
 \value{character}
-\references{url{http://mifuns.googlecode.com}}
+\references{\url{http://mifuns.googlecode.com}}
 \author{Tim Bergsma}
-\seealso{
-	itemize{
-		item code{link{wrap}}
-		item code{link{command}}
+\seealso{	\itemize{
+			\item \code{\link{wrap}}
+			\item \code{\link{command}}
 	}
 }
 \examples{

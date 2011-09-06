@@ -40,10 +40,16 @@ runNonmem(
 	outfile = filename(rundir,run,'.lst'),
 	streams = project,
 	ctlfile = filename(streams,run,'.ctl'),
-	remove  = c('^F[ISRC]','^OU','^nonmem.exe','^nul$',if(fdata)c('^FD','^PR')),
+	remove = c(
+		"^F[ISRCMP]","^OU","^nonmem", "^nul$",
+		"WK","LNK$","fort","^nm","lnk$","set$",
+		"^gar","INT","^temp","^tr","^new",
+		if(fdata)c('^FD','^PR')
+	),
 	sync=if(boot)'n'else'y',
 	interface='nm.pl',
-	...
+	...,
+	perm.cond=NULL
 )
 }
 \arguments{
@@ -83,6 +89,7 @@ runNonmem(
   \item{sync}{whether the R process should wait for the run to complete}
   \item{interface}{the name of a function to prepare NONMEM command lines}
   \item{\dots}{extra arguments for other functions}
+  \item{perm.cond}{passed to PLOTR; defined here to prevent partial matching of \code{pe} argument to \code{qsub}}
 }
 \value{used for side effects}
 \references{\url{http://mifuns.googlecode.com}}

@@ -11,11 +11,10 @@ is.one.nonalpha(x, ...)
 }
 \details{Used to help identify proper latex command words.}
 \value{logical}
-\references{url{http://mifuns.googlecode.com}}
+\references{\url{http://mifuns.googlecode.com}}
 \author{Tim Bergsma}
-\seealso{
-	itemize{
-		item code{link{is.latex.token}}
+\seealso{	\itemize{
+			\item \code{\link{is.latex.token}}
 	}
 }
 \examples{

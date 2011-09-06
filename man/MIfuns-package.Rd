@@ -28,8 +28,8 @@ I want to ....
 \tabular{ll}{
 Package: \tab MIfuns\cr
 Type: \tab Package\cr
-Version: \tab 4.3.7\cr
-Date: \tab 2011-06-27\cr
+Version: \tab 5.0\cr
+Date: \tab 2011-09-06\cr
 License: \tab GPL\cr
 }
 }

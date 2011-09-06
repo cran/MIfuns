@@ -3,6 +3,7 @@ function(x,...)UseMethod('as.nmctl')
 
 as.character.nmctl <-
 function(x,...){
+	if(length(x)==0) return(character(0))
 	order <- sapply(x,length)
 	recnums <- 1:length(x)
 	record <- rep(recnums,order)

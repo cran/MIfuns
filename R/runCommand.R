@@ -1,6 +1,7 @@
 `runCommand` <-
   function (
   	command,
+  	...,
 	run,
 	rdir,
 	boot,
@@ -38,8 +39,7 @@
 	compile=TRUE,
 	execute=TRUE,
 	background=FALSE,
-	interface = 'nm.pl',
-	...
+	interface = 'nm.pl'
 ){
   force(L) #before command changes
   if(nix())internal <- FALSE
