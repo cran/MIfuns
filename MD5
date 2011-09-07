@@ -1,7 +1,7 @@
-6e553f68ab4316970a5a9d889298a936 *DESCRIPTION
+739fdc4a76ebbbbd7ffe3a0f080d3fd7 *DESCRIPTION
 5252d3f8529132717580762f00416e19 *NAMESPACE
 bb95afa7ffb0018e23979ff674dfc035 *R/CLNR.R
-c2ccfb5d1a185f78977e5404a2c1c996 *R/NONR.R
+b099503ebd9080c2763037b400dabd5a *R/NONR.R
 f3a0b8cac6eac9d19e34207e3c356788 *R/PLOTR.R
 08d2a78cb1910696fe2174a4c7baf129 *R/Tmax.R
 d2cf6e1fd3f681ed7be1f956be8c6eef *R/accept.R
@@ -57,7 +57,7 @@ afe4210d2046dd2b3a900977e8ef2705 *R/plot.nm.R
 ba839aefd2b8405854fa6b234ff04a22 *R/rig.R
 7f843c16e4c6ccb0216879e736982d79 *R/rlog.R
 f64d98b6c17a9625cd2649caf5ee302f *R/runCommand.R
-fb9f75cd4cf3150c0a7e3288235d38c1 *R/runNonmem.R
+70ebdeb1979a621b51d5dc4a93aaba63 *R/runNonmem.R
 505bda428e0d2ed4f55860104eb018aa *R/runlog.R
 9e81c8f82f7a91ab09d8bc6396c7af17 *R/safeQuote.R
 ca68eb8b7f65dc9ac3b423b786608edd *R/shuffle.R
@@ -147,7 +147,7 @@ d99b3abfbafaea1df0c403dd8b320a91 *inst/tabular/tabular.tex
 0a8df3cd0e9e1ab1cbc46a8607ca591b *inst/wikimath/wikimath.tex
 4536c86b85535a378e7ebe067d0555d5 *man/AUC.Rd
 df3d1114c0561e56ee79ac8a96dc0f6a *man/CLNR.Rd
-71dca0e5b974b5ac105bfcda20fd96b0 *man/MIfuns-package.Rd
+6d9db7a8adf752e94cc25e81cbc8203f *man/MIfuns-package.Rd
 e348849f5cfae505d446a40fb908fa81 *man/NONR.Rd
 440abc828a67a59f5c90a0ac95827bee *man/PLOTR.Rd
 f7d9c0c21541451a7696388dd18c6525 *man/Tmax.Rd
